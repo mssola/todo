@@ -135,7 +135,7 @@ if (!defined($contents)) {
 
 # Setup the command.
 my %ary = ();
-$ary{$1} = $2 while ($contents =~ /"(\w+)":\s?"([\w\-]+)"/g);
+$ary{$1} = $2 while ($contents =~ /"(\w+)":\s?"([\w\-]*)"/g);
 foreach (qw{dbname user host password}) {
     check(\%ary, $_);
 }
