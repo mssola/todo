@@ -1,0 +1,52 @@
+#!/bin/bash
+# Copyright (C) 2013-2014 Miquel Sabaté Solà
+# This file is licensed under the MIT license.
+# See the LICENSE file.
+
+set -e
+
+if !(which go &> /dev/null); then
+    echo "ERROR: you don't have go installed!"
+    exit 1
+fi
+
+# Install/update dependencies
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/.."
+cd $dir
+go get -d -v ./...
+go get -u code.google.com/p/go.tools/cmd/cover
+go get -u github.com/stretchr/testify/assert
+
+# PostgreSQL
+base="todo"
+if [ ! -f "$dir/db/database.json" ]; then
+    read -p 'PostgreSQL User: ' user
+    echo -n 'PostgreSQL Password: '
+    read -s password
+    echo
+    cat <<DB > "$dir/db/database.json"
+{
+    "development": {
+        "user": "$user",
+        "dbname": "$base-dev",
+        "password": "$password",
+        "host": "localhost",
+        "sslmode": "disable"
+    },
+    "production": {
+        "user": "$user",
+        "dbname": "$base",
+        "password": "$password",
+        "host": "localhost",
+        "sslmode": "disable"
+    },
+    "test": {
+        "user": "$user",
+        "dbname": "$base-test",
+        "password": "$password",
+        "host": "localhost",
+        "sslmode": "disable"
+    }
+}
+DB
+fi

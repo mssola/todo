@@ -1,0 +1,21 @@
+{
+    "development": {
+        "user": "postgres",
+        "dbname": "todo-development",
+        "password": "",
+        "sslmode": "disable"
+    },
+    "production": {
+        "user": "postgres",
+        "dbname": "todo-production",
+        "password": "",
+        "sslmode": "disable"
+    },
+    "test": {
+        "user": "postgres",
+        "dbname": "todo",
+        "password": "",
+        "sslmode": "disable"
+    }
+}
+
