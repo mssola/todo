@@ -13,7 +13,6 @@ create table if not exists users (
 create table if not exists topics (
     id uuid primary key,
     name varchar(255) unique not null check (name <> ''),
-    user_id uuid references users(id) on delete cascade,
     created_at timestamp
 );
 

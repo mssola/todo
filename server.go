@@ -32,6 +32,10 @@ func main() {
 	r.HandleFunc("/logout", app.Logout).Methods("POST").
 		MatcherFunc(app.UserLogged)
 	r.HandleFunc("/users", app.UsersCreate).Methods("POST")
+	r.HandleFunc("/topics", app.TopicsIndex).Methods("GET").
+		MatcherFunc(app.UserLogged)
+	r.HandleFunc("/topics", app.TopicsCreate).Methods("POST").
+		MatcherFunc(app.UserLogged)
 	n.UseHandler(r)
 
 	// Run, Forrest, run!

@@ -25,7 +25,7 @@ func InitTest() {
 
 	os.Setenv("TODO_ENV", "test")
 	InitDB()
-	tables := []string{"users"}
+	tables := []string{"users", "topics"}
 	for _, v := range tables {
 		_, err := Db.Db.Exec(fmt.Sprintf("truncate table %v cascade", v))
 		if err != nil {
@@ -57,7 +57,7 @@ func TestUsersCreate(t *testing.T) {
 	param["name"] = []string{"user"}
 	param["password"] = []string{"1234"}
 
-	req, err := http.NewRequest("POST", "/", nil)
+	req, err := http.NewRequest("POST", "/users", nil)
 	assert.Nil(t, err)
 	req.PostForm = param
 	w := httptest.NewRecorder()

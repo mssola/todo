@@ -25,7 +25,6 @@ type User struct {
 type Topic struct {
 	Id         string
 	Name       string
-	User_id    string
 	Created_at time.Time
 }
 
