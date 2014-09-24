@@ -10,6 +10,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"github.com/mssola/go-utils/security"
+	"github.com/mssola/todo/app/models"
 )
 
 // Global variable that holds the cookie store for this application. It gets
@@ -34,7 +35,7 @@ func IsUserLogged(id interface{}) bool {
 		return false
 	}
 
-	var u User
+	var u models.User
 	e := Db.SelectOne(&u, "select * from users where id=$1", id.(string))
 	return e == nil
 }
@@ -49,7 +50,7 @@ func UserLogged(req *http.Request, rm *mux.RouteMatch) bool {
 // Login a user. It expects the "name" and "password" form values. Regardless
 // if it was successful or not, it will redirect the user to the root path.
 func Login(res http.ResponseWriter, req *http.Request) {
-	var u User
+	var u models.User
 
 	// Check if the user exists and that the password is spot on.
 	n, password := req.FormValue("name"), req.FormValue("password")

@@ -54,7 +54,6 @@ func layoutHelpers(name string, data interface{}) template.FuncMap {
 		"yield": func() template.HTML {
 			var buffer bytes.Buffer
 
-			fmt.Printf("%v\n", view(name))
 			b, e := ioutil.ReadFile(view(name))
 			if e != nil {
 				r := fmt.Sprintf("Could not read: %v => %v", name, e)

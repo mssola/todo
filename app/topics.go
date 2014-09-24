@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/mssola/todo/app/lib"
+	"github.com/mssola/todo/app/models"
 	"github.com/nu7hatch/gouuid"
 )
 
@@ -24,7 +25,7 @@ func TopicsCreate(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	t := &Topic{
+	t := &models.Topic{
 		Id:         uuid.String(),
 		Name:       req.FormValue("name"),
 		Created_at: time.Now(),

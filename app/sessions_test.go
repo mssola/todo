@@ -10,11 +10,12 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/mssola/todo/app/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func login(res http.ResponseWriter, req *http.Request) {
-	var user User
+	var user models.User
 	err := Db.SelectOne(&user, "select * from users")
 	if err != nil {
 		panic("There are no users...")
@@ -46,7 +47,7 @@ func TestUserLogged(t *testing.T) {
 	assert.False(t, UserLogged(req, nil))
 
 	createUser("user", "1234")
-	var user User
+	var user models.User
 	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 
@@ -105,7 +106,7 @@ func TestLogin(t *testing.T) {
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
 	s, _ = store.Get(req, sessionName)
 	assert.NotEmpty(t, s.Values["userId"])
-	var user User
+	var user models.User
 	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 	assert.Equal(t, s.Values["userId"], user.Id)
@@ -123,7 +124,7 @@ func TestLogout(t *testing.T) {
 	login(w, req)
 
 	// Check that the user has really been logged in.
-	var user User
+	var user models.User
 	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 	s, _ := store.Get(req, sessionName)

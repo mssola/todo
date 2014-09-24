@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/mssola/todo/app/models"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -29,7 +30,7 @@ func TestTopicsCreate(t *testing.T) {
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/topics")
 
-	var topic Topic
+	var topic models.Topic
 	err = Db.SelectOne(&topic, "select * from topics")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, topic.Id)
@@ -52,7 +53,7 @@ func TestTopicsCreateNoName(t *testing.T) {
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/topics")
 
-	var topic Topic
+	var topic models.Topic
 	err = Db.SelectOne(&topic, "select * from topics")
 	assert.Empty(t, topic.Id)
 	assert.NotNil(t, err)

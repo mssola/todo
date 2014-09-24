@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/mssola/go-utils/security"
+	"github.com/mssola/todo/app/models"
 	"github.com/nu7hatch/gouuid"
 )
 
@@ -27,7 +28,7 @@ func UsersCreate(res http.ResponseWriter, req *http.Request) {
 		http.Redirect(res, req, "/", http.StatusFound)
 		return
 	}
-	u := &User{
+	u := &models.User{
 		Id:            uuid.String(),
 		Name:          req.FormValue("name"),
 		Password_hash: security.PasswordSalt(req.FormValue("password")),

@@ -16,6 +16,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/mssola/go-utils/security"
 	"github.com/mssola/todo/app/lib"
+	"github.com/mssola/todo/app/models"
 	"github.com/nu7hatch/gouuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -41,7 +42,7 @@ func createUser(name, password string) {
 		panic(err)
 	}
 
-	u := &User{
+	u := &models.User{
 		Id:            uuid.String(),
 		Name:          name,
 		Password_hash: security.PasswordSalt(password),
@@ -67,7 +68,7 @@ func TestUsersCreate(t *testing.T) {
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
 
-	var user User
+	var user models.User
 	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, user.Id)
@@ -94,7 +95,7 @@ func TestUserCreateAlreadyExists(t *testing.T) {
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
 
-	var user User
+	var user models.User
 	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, user.Id)

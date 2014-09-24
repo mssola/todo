@@ -5,28 +5,12 @@
 package app
 
 import (
-	"time"
-
 	"github.com/coopernurse/gorp"
 	"github.com/mssola/go-utils/db"
 	"github.com/mssola/go-utils/misc"
 	"github.com/mssola/go-utils/path"
+	"github.com/mssola/todo/app/models"
 )
-
-// These are the tables stored in the DB.
-
-type User struct {
-	Id            string
-	Name          string
-	Password_hash string
-	Created_at    time.Time
-}
-
-type Topic struct {
-	Id         string
-	Name       string
-	Created_at time.Time
-}
 
 // Global instance that holds a connection to the DB. It gets initialized after
 // calling the InitDB function. You have to call CloseDB in order to close the
@@ -43,11 +27,26 @@ func InitDB() {
 		Heroku:      true,
 	})
 	Db = gorp.DbMap{Db: c, Dialect: gorp.PostgresDialect{}}
-	Db.AddTableWithName(User{}, "users")
-	Db.AddTableWithName(Topic{}, "topics")
+	Db.AddTableWithName(models.User{}, "users")
+	Db.AddTableWithName(models.Topic{}, "topics")
 }
 
 // Close the global DB connection.
 func CloseDB() {
 	Db.Db.Close()
+}
+
+// This struct holds all the data that can be passed to a view.
+type ViewData struct {
+	// The id of the current user.
+	Id string
+
+	// Set to true if the current user is logged in.
+	LoggedIn bool
+
+	// Set to true if the views has to include Javascript.
+	JS bool
+
+	// Set to true if an error has happenned.
+	Error bool
 }
