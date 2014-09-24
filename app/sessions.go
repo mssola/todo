@@ -7,6 +7,7 @@ package app
 import (
 	"net/http"
 
+	"github.com/mssola/todo/app/config"
 	"github.com/mssola/todo/app/models"
 )
 
@@ -22,7 +23,7 @@ func Login(res http.ResponseWriter, req *http.Request) {
 	}
 
 	// It's ok to login this user.
-	s, _ := store.Get(req, sessionName)
+	s := config.GetStore(req)
 	s.Values["userId"] = u.Id
 	s.Save(req, res)
 	http.Redirect(res, req, "/", http.StatusFound)
@@ -30,7 +31,7 @@ func Login(res http.ResponseWriter, req *http.Request) {
 
 // Logout the current user.
 func Logout(res http.ResponseWriter, req *http.Request) {
-	s, _ := store.Get(req, sessionName)
+	s := config.GetStore(req)
 	delete(s.Values, "userId")
 	s.Save(req, res)
 

@@ -2,7 +2,7 @@
 // This file is licensed under the MIT license.
 // See the LICENSE file.
 
-package app
+package config
 
 import (
 	"net/http"
@@ -16,21 +16,6 @@ import (
 	"github.com/mssola/go-utils/security"
 	"github.com/mssola/todo/app/models"
 )
-
-// This struct holds all the data that can be passed to a view.
-type ViewData struct {
-	// The id of the current user.
-	Id string
-
-	// Set to true if the current user is logged in.
-	LoggedIn bool
-
-	// Set to true if the views has to include Javascript.
-	JS bool
-
-	// Set to true if an error has happenned.
-	Error bool
-}
 
 // Initialize the global DB connection.
 func InitDB() {
@@ -65,6 +50,18 @@ func InitSession() {
 		Path:   "/",
 		MaxAge: 60 * 60 * 24 * 30 * 12, // A year.
 	}
+}
+
+// TODO: can't we just extend http.Request ?
+
+func GetStore(req *http.Request) *sessions.Session {
+	s, _ := store.Get(req, sessionName)
+	return s
+}
+
+func GetCookie(req *http.Request, name string) interface{} {
+	s, _ := store.Get(req, sessionName)
+	return s.Values[name]
 }
 
 // A route matcher as expected by the mux package. It returns true (thus,

@@ -10,13 +10,14 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/mssola/todo/app/config"
 	"github.com/mssola/todo/app/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestTopicsCreate(t *testing.T) {
 	InitTest()
-	defer CloseDB()
+	defer config.CloseDB()
 
 	param := make(url.Values)
 	param["name"] = []string{"user"}
@@ -40,7 +41,7 @@ func TestTopicsCreate(t *testing.T) {
 
 func TestTopicsCreateNoName(t *testing.T) {
 	InitTest()
-	defer CloseDB()
+	defer config.CloseDB()
 
 	param := make(url.Values)
 

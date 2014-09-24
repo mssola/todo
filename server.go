@@ -12,6 +12,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/mssola/go-utils/misc"
 	"github.com/mssola/todo/app"
+	"github.com/mssola/todo/app/config"
 )
 
 func main() {
@@ -19,23 +20,23 @@ func main() {
 	n := negroni.Classic()
 
 	// Sessions.
-	app.InitSession()
+	config.InitSession()
 
 	// Database.
-	app.InitDB()
-	defer app.CloseDB()
+	config.InitDB()
+	defer config.CloseDB()
 
 	// Routing.
 	r := mux.NewRouter()
 	r.HandleFunc("/", app.RootIndex).Methods("GET")
 	r.HandleFunc("/login", app.Login).Methods("POST")
 	r.HandleFunc("/logout", app.Logout).Methods("POST").
-		MatcherFunc(app.UserLogged)
+		MatcherFunc(config.UserLogged)
 	r.HandleFunc("/users", app.UsersCreate).Methods("POST")
 	r.HandleFunc("/topics", app.TopicsIndex).Methods("GET").
-		MatcherFunc(app.UserLogged)
+		MatcherFunc(config.UserLogged)
 	r.HandleFunc("/topics", app.TopicsCreate).Methods("POST").
-		MatcherFunc(app.UserLogged)
+		MatcherFunc(config.UserLogged)
 	n.UseHandler(r)
 
 	// Run, Forrest, run!

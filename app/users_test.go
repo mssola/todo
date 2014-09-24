@@ -15,6 +15,7 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/mssola/go-utils/security"
+	"github.com/mssola/todo/app/config"
 	"github.com/mssola/todo/app/lib"
 	"github.com/mssola/todo/app/models"
 	"github.com/nu7hatch/gouuid"
@@ -22,11 +23,11 @@ import (
 )
 
 func InitTest() {
-	InitSession()
+	config.InitSession()
 	lib.ViewsDir = "../views"
 
 	os.Setenv("TODO_ENV", "test")
-	InitDB()
+	config.InitDB()
 	tables := []string{"users", "topics"}
 	for _, v := range tables {
 		_, err := models.Db.Db.Exec(fmt.Sprintf("truncate table %v cascade", v))
@@ -53,7 +54,7 @@ func createUser(name, password string) {
 
 func TestUsersCreate(t *testing.T) {
 	InitTest()
-	defer CloseDB()
+	defer config.CloseDB()
 
 	param := make(url.Values)
 	param["name"] = []string{"user"}
@@ -79,7 +80,7 @@ func TestUsersCreate(t *testing.T) {
 
 func TestUserCreateAlreadyExists(t *testing.T) {
 	InitTest()
-	defer CloseDB()
+	defer config.CloseDB()
 	createUser("user", "1234")
 
 	param := make(url.Values)

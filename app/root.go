@@ -7,6 +7,7 @@ package app
 import (
 	"net/http"
 
+	"github.com/mssola/todo/app/config"
 	"github.com/mssola/todo/app/lib"
 	"github.com/mssola/todo/app/models"
 )
@@ -18,15 +19,14 @@ import (
 //  3. If the current user is logged in, then it redirects the user to the
 //     /topics page.
 func RootIndex(res http.ResponseWriter, req *http.Request) {
-	s, _ := store.Get(req, sessionName)
-	id := s.Values["userId"]
+	id := config.GetCookie(req, "userId")
 
 	if id == nil {
 		count := models.Count("users")
 		if count == 0 {
-			lib.Render(res, "users/new", &ViewData{})
+			lib.Render(res, "users/new", &config.ViewData{})
 		} else {
-			lib.Render(res, "application/login", &ViewData{})
+			lib.Render(res, "application/login", &config.ViewData{})
 		}
 	} else {
 		http.Redirect(res, req, "/topics", http.StatusFound)
