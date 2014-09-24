@@ -22,6 +22,13 @@ type User struct {
 	Created_at    time.Time
 }
 
+type Topic struct {
+	Id         string
+	Name       string
+	User_id    string
+	Created_at time.Time
+}
+
 // Global instance that holds a connection to the DB. It gets initialized after
 // calling the InitDB function. You have to call CloseDB in order to close the
 // connection.
@@ -38,6 +45,7 @@ func InitDB() {
 	})
 	Db = gorp.DbMap{Db: c, Dialect: gorp.PostgresDialect{}}
 	Db.AddTableWithName(User{}, "users")
+	Db.AddTableWithName(Topic{}, "topics")
 }
 
 // Close the global DB connection.
