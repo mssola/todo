@@ -6,6 +6,8 @@ package app
 
 import (
 	"net/http"
+
+	"github.com/mssola/todo/app/lib"
 )
 
 // Renders the root page. It has three different options:
@@ -21,9 +23,9 @@ func RootIndex(res http.ResponseWriter, req *http.Request) {
 	if id == nil {
 		count, err := Db.SelectInt("select count(*) from users")
 		if err == nil && count == 0 {
-			render(res, "users/new", &Options{})
+			lib.Render(res, "users/new", &ViewData{})
 		} else {
-			render(res, "application/login", &Options{})
+			lib.Render(res, "application/login", &ViewData{})
 		}
 	} else {
 		http.Redirect(res, req, "/topics", http.StatusFound)

@@ -15,13 +15,14 @@ import (
 
 	_ "github.com/lib/pq"
 	"github.com/mssola/go-utils/security"
+	"github.com/mssola/todo/app/lib"
 	"github.com/nu7hatch/gouuid"
 	"github.com/stretchr/testify/assert"
 )
 
 func InitTest() {
 	InitSession()
-	viewsDir = "../views"
+	lib.ViewsDir = "../views"
 
 	os.Setenv("TODO_ENV", "test")
 	InitDB()

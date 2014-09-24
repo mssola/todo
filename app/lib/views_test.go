@@ -2,7 +2,7 @@
 // This file is licensed under the MIT license.
 // See the LICENSE file.
 
-package app
+package lib
 
 import (
 	"testing"
@@ -12,7 +12,7 @@ import (
 )
 
 func TestView(t *testing.T) {
-	viewsDir = "views"
+	ViewsDir = "views"
 	assert.Equal(t, view("path"), "views/path.tpl")
 	assert.Equal(t, view("path/sub"), "views/path/sub.tpl")
 	assert.Equal(t, view("/path/sub"), "views/path/sub.tpl")

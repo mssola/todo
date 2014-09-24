@@ -8,12 +8,13 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/mssola/todo/app/lib"
 	"github.com/nu7hatch/gouuid"
 )
 
 func TopicsIndex(res http.ResponseWriter, req *http.Request) {
-	o := &Options{}
-	render(res, "topics/index", o)
+	o := &ViewData{}
+	lib.Render(res, "topics/index", o)
 }
 
 func TopicsCreate(res http.ResponseWriter, req *http.Request) {

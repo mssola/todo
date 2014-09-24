@@ -2,7 +2,7 @@
 // This file is licensed under the MIT license.
 // See the LICENSE file.
 
-package app
+package lib
 
 import (
 	"bytes"
@@ -17,7 +17,7 @@ import (
 
 var (
 	// The directory where all the views are being stored.
-	viewsDir = "views"
+	ViewsDir = "views"
 )
 
 const (
@@ -28,29 +28,14 @@ const (
 	viewsExt = "tpl"
 )
 
-// This struct holds all the data that can be passed to a view.
-type Options struct {
-	// The id of the current user.
-	Id string
-
-	// Set to true if the current user is logged in.
-	LoggedIn bool
-
-	// Set to true if the views has to include Javascript.
-	JS bool
-
-	// Set to true if an error has happenned.
-	Error bool
-}
-
 // Returns the path to be used to open the view with the given name.
 func view(name string) string {
-	return path.Join(viewsDir, name+"."+viewsExt)
+	return path.Join(ViewsDir, name+"."+viewsExt)
 }
 
 // Render the view with the given name after evaluating the passed data. The
 // rendered view will be written to the given writer.
-func render(res http.ResponseWriter, name string, data interface{}) {
+func Render(res http.ResponseWriter, name string, data interface{}) {
 	b, e := ioutil.ReadFile(view(layout))
 	if e != nil {
 		panic("Could not read layout file!")
