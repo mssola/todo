@@ -31,7 +31,7 @@ func TestTopicsCreate(t *testing.T) {
 	assert.Equal(t, w.HeaderMap["Location"][0], "/topics")
 
 	var topic models.Topic
-	err = Db.SelectOne(&topic, "select * from topics")
+	err = models.Db.SelectOne(&topic, "select * from topics")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, topic.Id)
 	assert.Equal(t, topic.Name, "user")
@@ -54,9 +54,9 @@ func TestTopicsCreateNoName(t *testing.T) {
 	assert.Equal(t, w.HeaderMap["Location"][0], "/topics")
 
 	var topic models.Topic
-	err = Db.SelectOne(&topic, "select * from topics")
+	err = models.Db.SelectOne(&topic, "select * from topics")
 	assert.Empty(t, topic.Id)
 	assert.NotNil(t, err)
-	count, err := Db.SelectInt("select count(*) from users")
+	count, err := models.Db.SelectInt("select count(*) from users")
 	assert.Equal(t, count, 0)
 }

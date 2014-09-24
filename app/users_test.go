@@ -29,7 +29,7 @@ func InitTest() {
 	InitDB()
 	tables := []string{"users", "topics"}
 	for _, v := range tables {
-		_, err := Db.Db.Exec(fmt.Sprintf("truncate table %v cascade", v))
+		_, err := models.Db.Db.Exec(fmt.Sprintf("truncate table %v cascade", v))
 		if err != nil {
 			panic(fmt.Sprintf("Could not trucate table: %v\n", err))
 		}
@@ -48,7 +48,7 @@ func createUser(name, password string) {
 		Password_hash: security.PasswordSalt(password),
 		Created_at:    time.Now(),
 	}
-	Db.Insert(u)
+	models.Db.Insert(u)
 }
 
 func TestUsersCreate(t *testing.T) {
@@ -69,7 +69,7 @@ func TestUsersCreate(t *testing.T) {
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
 
 	var user models.User
-	err = Db.SelectOne(&user, "select * from users")
+	err = models.Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, user.Id)
 	assert.Equal(t, user.Name, "user")
@@ -96,7 +96,7 @@ func TestUserCreateAlreadyExists(t *testing.T) {
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
 
 	var user models.User
-	err = Db.SelectOne(&user, "select * from users")
+	err = models.Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, user.Id)
 	assert.Equal(t, user.Name, "user")

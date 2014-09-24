@@ -6,34 +6,16 @@ package app
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/mssola/go-utils/security"
 	"github.com/mssola/todo/app/models"
-	"github.com/nu7hatch/gouuid"
 )
 
 // Creates a user. It expects the "name" and the "password" form values to be
 // present. Moreover, only one user is allowed in this application.
 func UsersCreate(res http.ResponseWriter, req *http.Request) {
-	count, err := Db.SelectInt("select count(*) from users")
-	if err != nil || count > 0 {
-		http.Redirect(res, req, "/", http.StatusFound)
-		return
-	}
+	password := security.PasswordSalt(req.FormValue("password"))
 
-	// Create the user and redirect.
-	uuid, err := uuid.NewV4()
-	if err != nil {
-		http.Redirect(res, req, "/", http.StatusFound)
-		return
-	}
-	u := &models.User{
-		Id:            uuid.String(),
-		Name:          req.FormValue("name"),
-		Password_hash: security.PasswordSalt(req.FormValue("password")),
-		Created_at:    time.Now(),
-	}
-	Db.Insert(u)
+	models.CreateUser(req.FormValue("name"), password)
 	http.Redirect(res, req, "/", http.StatusFound)
 }

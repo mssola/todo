@@ -16,7 +16,7 @@ import (
 
 func login(res http.ResponseWriter, req *http.Request) {
 	var user models.User
-	err := Db.SelectOne(&user, "select * from users")
+	err := models.Db.SelectOne(&user, "select * from users")
 	if err != nil {
 		panic("There are no users...")
 	}
@@ -48,7 +48,7 @@ func TestUserLogged(t *testing.T) {
 
 	createUser("user", "1234")
 	var user models.User
-	err = Db.SelectOne(&user, "select * from users")
+	err = models.Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 
 	s, err = store.Get(req, sessionName)
@@ -107,7 +107,7 @@ func TestLogin(t *testing.T) {
 	s, _ = store.Get(req, sessionName)
 	assert.NotEmpty(t, s.Values["userId"])
 	var user models.User
-	err = Db.SelectOne(&user, "select * from users")
+	err = models.Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 	assert.Equal(t, s.Values["userId"], user.Id)
 }
@@ -125,7 +125,7 @@ func TestLogout(t *testing.T) {
 
 	// Check that the user has really been logged in.
 	var user models.User
-	err = Db.SelectOne(&user, "select * from users")
+	err = models.Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 	s, _ := store.Get(req, sessionName)
 	assert.Equal(t, s.Values["userId"], user.Id)

@@ -6,11 +6,9 @@ package app
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/mssola/todo/app/lib"
 	"github.com/mssola/todo/app/models"
-	"github.com/nu7hatch/gouuid"
 )
 
 func TopicsIndex(res http.ResponseWriter, req *http.Request) {
@@ -19,17 +17,6 @@ func TopicsIndex(res http.ResponseWriter, req *http.Request) {
 }
 
 func TopicsCreate(res http.ResponseWriter, req *http.Request) {
-	uuid, err := uuid.NewV4()
-	if err != nil {
-		http.Redirect(res, req, "/topics", http.StatusFound)
-		return
-	}
-
-	t := &models.Topic{
-		Id:         uuid.String(),
-		Name:       req.FormValue("name"),
-		Created_at: time.Now(),
-	}
-	Db.Insert(t)
+	models.CreateTopic(req.FormValue("name"))
 	http.Redirect(res, req, "/topics", http.StatusFound)
 }

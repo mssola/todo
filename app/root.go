@@ -8,6 +8,7 @@ import (
 	"net/http"
 
 	"github.com/mssola/todo/app/lib"
+	"github.com/mssola/todo/app/models"
 )
 
 // Renders the root page. It has three different options:
@@ -21,8 +22,8 @@ func RootIndex(res http.ResponseWriter, req *http.Request) {
 	id := s.Values["userId"]
 
 	if id == nil {
-		count, err := Db.SelectInt("select count(*) from users")
-		if err == nil && count == 0 {
+		count := models.Count("users")
+		if count == 0 {
 			lib.Render(res, "users/new", &ViewData{})
 		} else {
 			lib.Render(res, "application/login", &ViewData{})
