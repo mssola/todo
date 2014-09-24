@@ -1,7 +1,7 @@
 
 <div class="dialog">
     <div class="dialog-header">
-        <h1>Crear usuari</h1>
+        <h1>Create user</h1>
     </div>
     <div class="dialog-body">
         <form action="/users" method="POST" autocomplete="off" accept-charset="utf-8">
