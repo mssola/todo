@@ -1,0 +1,61 @@
+
+@import "mixins";
+
+
+/*
+ * The base style for a button.
+ */
+.btn {
+    @include border-radius(2px);
+
+    position: relative;
+    cursor: pointer;
+    font-weight: bold;
+
+    padding: .4em .75em .35em;
+    white-space: nowrap;
+}
+
+/*
+ * Yellow buttons are used for any kind of button that is not related to
+ * canceling an action.
+ */
+.yellow-btn {
+    @include background-linear-gradient(#ffd343, #ffdf76);
+    border: 1px solid #dca900;
+    color: #4d4d4d!important;
+
+    &:hover {
+        @include background-linear-gradient(#ffd343, #ffeba9);
+        color: #1a1a1a!important;
+    }
+}
+
+/*
+ * Red buttons are used for canceling actions.
+ */
+.red-btn {
+    @include linear-gradient-simple(#efefef, #fefefe);
+
+    color: #900;
+    border: 1px solid #d5d5d5;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+
+    &:hover {
+        @include linear-gradient-simple(#b33630, #dc5f59);
+
+        color: #fff;
+        border: 1px solid #cd504a;
+        text-shadow: 0px -1px 0 rgba(0,0,0,0.3);
+    }
+
+    &:disabled {
+        @include linear-gradient-simple(#efefef, #fefefe);
+
+        color: #cb7f7f;
+        text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+        border-color: #e1e1e1;
+        cursor: default;
+    }
+}
+

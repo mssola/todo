@@ -1,0 +1,32 @@
+
+@mixin background-linear-gradient($one, $another) {
+    background-color: $one;
+    background-image: -webkit-gradient(linear,50% 0,50% 100%,color-stop(30%,$another),color-stop(95%,$one));
+    background-image: -webkit-linear-gradient($another 30%,$one 95%);
+    background-image: -moz-linear-gradient($another 30%,$one 95%);
+    background-image: -o-linear-gradient($another 30%,$one 95%);
+    background-image: linear-gradient($another 30%,$one 95%);
+    background-repeat: repeat-x;
+}
+
+@mixin linear-gradient-simple($one, $another) {
+    background-color: $one;
+    background-image: -moz-linear-gradient($another, $one);
+    background-image: -webkit-linear-gradient($another, $one);
+    background-image: linear-gradient($another, $one);
+    background-repeat: repeat-x;
+}
+
+@mixin box-sizing {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+}
+
+@mixin border-radius($value) {
+    -webkit-border-radius: $value;
+    -moz-border-radius: $value;
+    -ms-border-radius: $value;
+    -o-border-radius: $value;
+    border-radius: $value;
+}
+

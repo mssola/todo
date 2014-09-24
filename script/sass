@@ -1,0 +1,32 @@
+#!/bin/bash
+# Copyright (C) 2014 Miquel Sabaté Solà <mikisabate@gmail.com>
+# This file is licensed under the MIT license.
+# See the LICENSE file.
+
+# Launch a background job that deal with Sass.
+
+# Get pidfile.
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+todo="/tmp/todo"
+mkdir -p $todo
+pidfile="$todo/assets.pid"
+touch $pidfile
+
+# Kill off old processes
+while read pid; do
+  kill $pid > /dev/null 2>&1;
+done < $pidfile
+
+# Truncate the PID file
+> $pidfile
+
+# If the user just wanted to stop all old processes, then exit here.
+if [[ $1 == "stop" ]]; then
+  exit 1
+fi
+
+# SASS
+cssdir="$dir/../public/stylesheets"
+csslog="$todo/sass.log"
+sass --watch "$cssdir" > $csslog 2>&1 &
+echo $! >> $pidfile

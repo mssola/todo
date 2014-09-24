@@ -1,0 +1,48 @@
+
+@import "mixins";
+
+
+/*
+ * A dialog is basically a container with a dialog-like aspect.
+ */
+
+.dialog {
+    .dialog-header {
+        position: relative;
+
+        padding: 10px 20px;
+        margin: 0;
+
+        color: white;
+        text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.5);
+
+        border: 1px solid #586873;
+        border-radius: 4px 4px 0 0;
+        border-bottom: 1px solid #18334b;
+        border-bottom-color: #586873;
+        @include background-linear-gradient(#2d618c, #3776ab);
+    }
+
+    .dialog-body {
+        @include box-sizing;
+
+        padding: 20px;
+        font-size: 14px;
+        background-color: white;
+        border: 1px solid #A7ADB1;
+        border-top-color: white;
+        border-radius: 0 0 4px 4px;
+        color: #333333;
+
+        label {
+            display: inline-block;
+            margin-bottom: 10px;
+        }
+    }
+
+    .btn {
+        float: right;
+        margin-top: 5px;
+    }
+}
+

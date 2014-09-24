@@ -11,6 +11,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"path"
+	"strings"
 	"time"
 )
 
@@ -68,12 +69,13 @@ func layoutHelpers(name string, data interface{}) template.FuncMap {
 		"yield": func() template.HTML {
 			var buffer bytes.Buffer
 
+			fmt.Printf("%v\n", view(name))
 			b, e := ioutil.ReadFile(view(name))
 			if e != nil {
 				r := fmt.Sprintf("Could not read: %v => %v", name, e)
 				panic(r)
 			}
-			t := template.New(name).Funcs(viewHelpers())
+			t := template.New(name).Funcs(viewHelpers(name))
 			t, e = t.Parse(string(b))
 			if e != nil {
 				r := fmt.Sprintf("Could not parse: %v => %v", name, e)
@@ -82,13 +84,20 @@ func layoutHelpers(name string, data interface{}) template.FuncMap {
 			t.Execute(&buffer, data)
 			return template.HTML(buffer.String())
 		},
+		"view": func() template.HTML {
+			s := strings.SplitN(name, "/", 2)
+			if len(s) == 2 {
+				return template.HTML(s[0] + "_" + s[1])
+			}
+			return template.HTML("")
+		},
 	}
 }
 
 // Returns all the helpers available to any view. We have the following
 // helpers: fmtDate and inc. The inc helper just increases the given integer
 // value by one. The fmtDate helper executes the fmtDate function.
-func viewHelpers() template.FuncMap {
+func viewHelpers(name string) template.FuncMap {
 	return template.FuncMap{
 		"fmtDate": fmtDate,
 		"inc": func(n int) int {

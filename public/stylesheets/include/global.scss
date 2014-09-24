@@ -1,0 +1,61 @@
+
+/*
+ * Selections & shit.
+ */
+
+/*
+ * TODO
+ */
+::selection {
+  /*
+    background-color: #2B2B2B;
+    color: #eee;
+    */
+}
+
+/*
+ * Basic tags.
+ */
+
+a:link, a:visited {
+    color: #27b;
+    text-decoration: none;
+}
+
+a, a:hover, a:active, a:focus {
+    /* Don't let Firefox's stupid outline dots to appear */
+    outline: 0;
+    cursor: pointer;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+button::-moz-focus-inner {
+    /* Don't let Firefox's stupid outline dots to appear */
+    border: 0;
+}
+
+input::-moz-focus-inner {
+    /* Don't let Firefox's stupid outline dots to appear */
+    border: 0;
+}
+
+h1 {
+    padding: 0;
+    margin: 0;
+    font-size: 16px;
+}
+
+/*
+ * Handy classes.
+ */
+
+.clearout {
+    clear: both;
+}
+
+@import "text";
+@import "button";
+
