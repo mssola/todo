@@ -64,6 +64,7 @@ func TestUsersCreate(t *testing.T) {
 	UsersCreate(w, req)
 
 	assert.Equal(t, w.Code, 302)
+	assert.Equal(t, w.HeaderMap["Location"][0], "/")
 
 	var user User
 	err = Db.SelectOne(&user, "select * from users")
@@ -90,6 +91,7 @@ func TestUserCreateAlreadyExists(t *testing.T) {
 	UsersCreate(w, req)
 
 	assert.Equal(t, w.Code, 302)
+	assert.Equal(t, w.HeaderMap["Location"][0], "/")
 
 	var user User
 	err = Db.SelectOne(&user, "select * from users")

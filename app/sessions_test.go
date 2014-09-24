@@ -76,6 +76,7 @@ func TestLogin(t *testing.T) {
 	Login(w, req)
 
 	assert.Equal(t, w.Code, 302)
+	assert.Equal(t, w.HeaderMap["Location"][0], "/")
 	s, _ := store.Get(req, sessionName)
 	assert.Empty(t, s.Values["userId"])
 
@@ -88,6 +89,7 @@ func TestLogin(t *testing.T) {
 	Login(w, req)
 
 	assert.Equal(t, w.Code, 302)
+	assert.Equal(t, w.HeaderMap["Location"][0], "/")
 	s, _ = store.Get(req, sessionName)
 	assert.Empty(t, s.Values["userId"])
 
@@ -100,6 +102,7 @@ func TestLogin(t *testing.T) {
 	Login(w, req)
 
 	assert.Equal(t, w.Code, 302)
+	assert.Equal(t, w.HeaderMap["Location"][0], "/")
 	s, _ = store.Get(req, sessionName)
 	assert.NotEmpty(t, s.Values["userId"])
 	var user User
