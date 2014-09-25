@@ -22,17 +22,12 @@ func Login(res http.ResponseWriter, req *http.Request) {
 	}
 
 	// It's ok to login this user.
-	s := lib.GetStore(req)
-	s.Values["userId"] = id
-	s.Save(req, res)
+	lib.SetCookie(res, req, "userId", id)
 	http.Redirect(res, req, "/", http.StatusFound)
 }
 
 // Logout the current user.
 func Logout(res http.ResponseWriter, req *http.Request) {
-	s := lib.GetStore(req)
-	delete(s.Values, "userId")
-	s.Save(req, res)
-
+	lib.DeleteCookie(res, req, "userId")
 	http.Redirect(res, req, "/", http.StatusFound)
 }

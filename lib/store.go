@@ -15,27 +15,50 @@ import (
 // initialized by calling the InitSession function.
 var store *sessions.CookieStore
 
-// The name of the session to be used for the safe cookies.
-const sessionName = "todo"
+const (
+	// The name of the session to be used for the safe cookies.
+	sessionName = "todo"
+
+	// Max-Age of a whole year.
+	maxAge = 60 * 60 * 24 * 30 * 12
+)
 
 // Initialize the global cookie store.
 func InitSession() {
 	store = sessions.NewCookieStore([]byte(security.NewAuthToken()))
-	store.Options = &sessions.Options{
-		Path:   "/",
-		MaxAge: 60 * 60 * 24 * 30 * 12, // A year.
-	}
+	store.Options = &sessions.Options{Path: "/", MaxAge: maxAge}
 }
 
+// Tries to get the cookie store for the given request. It panics if it fails.
 func GetStore(req *http.Request) *sessions.Session {
+	// Try to cache the session.
 	s, err := store.Get(req, sessionName)
 	if err != nil {
-		panic("Could not get the cookie store!")
+		// Missed! Let's generate a new session. Moreover, Gorilla's
+		// documentation says that this method *never* fails on creating
+		// a new session, so it's safe to ignore the given error.
+		s, _ = store.New(req, sessionName)
 	}
 	return s
 }
 
+// Returns the value for the specified cookie. If the cookie does not exist,
+// then an empty interface{} gets returned.
 func GetCookie(req *http.Request, name string) interface{} {
 	s := GetStore(req)
 	return s.Values[name]
+}
+
+// Sets the given value to the specified cookie.
+func SetCookie(res http.ResponseWriter, req *http.Request, key, value string) {
+	s := GetStore(req)
+	s.Values[key] = value
+	s.Save(req, res)
+}
+
+// Deletes the specified cookie.
+func DeleteCookie(res http.ResponseWriter, req *http.Request, key string) {
+	s := GetStore(req)
+	delete(s.Values, key)
+	s.Save(req, res)
 }

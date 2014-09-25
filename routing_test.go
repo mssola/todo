@@ -24,11 +24,8 @@ func TestUserLogged(t *testing.T) {
 
 	assert.False(t, userLogged(req, nil))
 
-	s := lib.GetStore(req)
-	assert.Nil(t, err)
-	s.Values["userId"] = "1"
 	w := httptest.NewRecorder()
-	s.Save(req, w)
+	lib.SetCookie(w, req, "userId", "1")
 
 	assert.False(t, userLogged(req, nil))
 
@@ -43,11 +40,8 @@ func TestUserLogged(t *testing.T) {
 	err = app.Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 
-	s = lib.GetStore(req)
-	assert.Nil(t, err)
-	s.Values["userId"] = user.Id
 	w = httptest.NewRecorder()
-	s.Save(req, w)
+	lib.SetCookie(w, req, "userId", user.Id)
 
 	assert.True(t, userLogged(req, nil))
 }

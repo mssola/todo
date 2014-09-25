@@ -21,10 +21,7 @@ func login(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic("There are no users...")
 	}
-
-	s := lib.GetStore(req)
-	s.Values["userId"] = user.Id
-	s.Save(req, res)
+	lib.SetCookie(res, req, "userId", user.Id)
 }
 
 func TestLogin(t *testing.T) {
@@ -45,8 +42,7 @@ func TestLogin(t *testing.T) {
 
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
-	s := lib.GetStore(req)
-	assert.Empty(t, s.Values["userId"])
+	assert.Empty(t, lib.GetCookie(req, "userId"))
 
 	// Wrong password.
 	password := security.PasswordSalt("1111")
@@ -60,8 +56,7 @@ func TestLogin(t *testing.T) {
 
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
-	s = lib.GetStore(req)
-	assert.Empty(t, s.Values["userId"])
+	assert.Empty(t, lib.GetCookie(req, "userId"))
 
 	// Ok.
 	req, err = http.NewRequest("POST", "/", nil)
@@ -73,12 +68,11 @@ func TestLogin(t *testing.T) {
 
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
-	s = lib.GetStore(req)
-	assert.NotEmpty(t, s.Values["userId"])
+	assert.NotEmpty(t, lib.GetCookie(req, "userId"))
 	var user User
 	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
-	assert.Equal(t, s.Values["userId"], user.Id)
+	assert.Equal(t, lib.GetCookie(req, "userId"), user.Id)
 }
 
 func TestLogout(t *testing.T) {
@@ -98,11 +92,9 @@ func TestLogout(t *testing.T) {
 	var user User
 	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
-	s := lib.GetStore(req)
-	assert.Equal(t, s.Values["userId"], user.Id)
+	assert.Equal(t, lib.GetCookie(req, "userId"), user.Id)
 
 	// Logout
 	Logout(w, req)
-	s = lib.GetStore(req)
-	assert.Empty(t, s.Values["userId"])
+	assert.Empty(t, lib.GetCookie(req, "userId"))
 }
