@@ -16,15 +16,15 @@ import (
 func Login(res http.ResponseWriter, req *http.Request) {
 	// Check if the user exists and that the password is spot on.
 	n, password := req.FormValue("name"), req.FormValue("password")
-	u := models.MatchPassword(n, password)
-	if u == nil {
+	id, err := models.MatchPassword(n, password)
+	if err != nil {
 		http.Redirect(res, req, "/", http.StatusFound)
 		return
 	}
 
 	// It's ok to login this user.
 	s := lib.GetStore(req)
-	s.Values["userId"] = u.Id
+	s.Values["userId"] = id
 	s.Save(req, res)
 	http.Redirect(res, req, "/", http.StatusFound)
 }

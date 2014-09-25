@@ -44,13 +44,16 @@ func CreateUser(name, password string) error {
 	return Db.Insert(u)
 }
 
-// Match the user with the given name and password and return it.
-func MatchPassword(name, password string) *User {
-	u := &User{}
+// Match the user with the given name and password and its id.
+func MatchPassword(name, password string) (string, error) {
+	var u User
 
-	e := Db.SelectOne(u, "select * from users where name=$1", name)
-	if e != nil || !security.PasswordMatch(u.Password_hash, password) {
-		return nil
+	e := Db.SelectOne(&u, "select * from users where name=$1", name)
+	if e != nil {
+		return "", e
 	}
-	return u
+	if !security.PasswordMatch(u.Password_hash, password) {
+		return "", errors.New("Wrong password!")
+	}
+	return u.Id, nil
 }
