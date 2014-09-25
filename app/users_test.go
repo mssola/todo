@@ -10,7 +10,6 @@ import (
 	"net/url"
 	"testing"
 
-	_ "github.com/lib/pq"
 	"github.com/mssola/go-utils/security"
 	"github.com/mssola/todo/app/models"
 	"github.com/stretchr/testify/assert"
