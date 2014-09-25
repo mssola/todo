@@ -10,12 +10,14 @@ import (
 	"github.com/nu7hatch/gouuid"
 )
 
+// A topic is my way to divide different "contexts" inside my To Do list.
 type Topic struct {
 	Id         string
 	Name       string
 	Created_at time.Time
 }
 
+// Given a name, try to create a new topic.
 func CreateTopic(name string) error {
 	uuid, err := uuid.NewV4()
 	if err != nil {

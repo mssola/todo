@@ -8,7 +8,6 @@ import (
 	"fmt"
 
 	"github.com/codegangsta/negroni"
-	_ "github.com/lib/pq"
 	"github.com/mssola/go-utils/misc"
 	"github.com/mssola/todo/app/models"
 	"github.com/mssola/todo/lib"

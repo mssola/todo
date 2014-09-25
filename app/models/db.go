@@ -1,4 +1,3 @@
-// Copyright (C) 2014 Miquel Sabaté Solà <mikisabate@gmail.com>
 // This file is licensed under the MIT license.
 // See the LICENSE file.
 
@@ -9,6 +8,7 @@ import (
 	"os"
 
 	"github.com/coopernurse/gorp"
+	_ "github.com/lib/pq"
 	"github.com/mssola/go-utils/db"
 	"github.com/mssola/go-utils/misc"
 	"github.com/mssola/go-utils/path"
@@ -34,13 +34,14 @@ func InitDB() {
 	Db.AddTableWithName(Topic{}, "topics")
 }
 
+// Initialize the database before running an unit test.
 func InitTestDB() {
 	lib.InitSession()
 	lib.ViewsDir = "../views"
 
 	os.Setenv("TODO_ENV", "test")
 	InitDB()
-	TruncateTables("users", "topics")
+	Db.TruncateTables()
 }
 
 // Close the global DB connection.
@@ -48,17 +49,16 @@ func CloseDB() {
 	Db.Db.Close()
 }
 
-// TODO: test
-func TruncateTables(tables ...string) {
-	for _, v := range tables {
-		_, err := Db.Db.Exec(fmt.Sprintf("truncate table %v cascade", v))
-		if err != nil {
-			panic(fmt.Sprintf("Could not trucate table: %v\n", err))
-		}
-	}
+// Returns true if there is a row in the given table that matches the given id.
+// It returns false otherwise.
+func Exists(name, id string) bool {
+	q := fmt.Sprintf("select count(*) from %v where id=$1", name)
+	c, err := Db.SelectInt(q, id)
+	return err == nil && c == 1
 }
 
-// TODO: test
+// Count the number of rows for the given table. Returns a 0 on error. I know
+// that this is not idiomatic, but it comes in handy in this case.
 func Count(name string) int64 {
 	count, err := Db.SelectInt("select count(*) from " + name)
 	if err != nil {

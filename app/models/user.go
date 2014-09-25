@@ -12,6 +12,7 @@ import (
 	"github.com/nu7hatch/gouuid"
 )
 
+// There can only be one user in this application.
 type User struct {
 	Id            string
 	Name          string
@@ -19,7 +20,9 @@ type User struct {
 	Created_at    time.Time
 }
 
-// TODO: test
+// Create a new user with the given name and password. The given password is
+// stored as-is. Therefore, it should've been encrypted before calling this
+// function.
 func CreateUser(name, password string) error {
 	// Only one user is allowed in this application.
 	count, err := Db.SelectInt("select count(*) from users")
@@ -41,7 +44,7 @@ func CreateUser(name, password string) error {
 	return Db.Insert(u)
 }
 
-// TODO: test
+// Match the user with the given name and password and return it.
 func MatchPassword(name, password string) *User {
 	u := &User{}
 
@@ -50,10 +53,4 @@ func MatchPassword(name, password string) *User {
 		return nil
 	}
 	return u
-}
-
-// TODO: test
-func Logged(id string) bool {
-	c, err := Db.SelectInt("select count(*) from users where id=$1", id)
-	return err == nil && c == 1
 }
