@@ -7,6 +7,7 @@ package models
 import (
 	"testing"
 
+	"github.com/mssola/go-utils/security"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -35,26 +36,23 @@ func TestCreateUser(t *testing.T) {
 	assert.Equal(t, err.Error(), "Too many users!")
 }
 
-/*
-TODO
 func TestMatchPassword(t *testing.T) {
 	InitTestDB()
 	defer CloseDB()
 
 	// User does not exist.
-	u := MatchPassword("u", "1234")
-	assert.Nil(t, u)
+	u, err := MatchPassword("u", "1234")
+	assert.NotNil(t, err)
 
 	// User exists but has a different password.
 	password := security.PasswordSalt("1111")
-	err := CreateUser("u", password)
+	err = CreateUser("u", password)
 	assert.Nil(t, err)
-	u = MatchPassword("u", "1234")
-	assert.Nil(t, u)
+	u, err = MatchPassword("u", "1234")
+	assert.NotNil(t, err)
 
 	// User exists and has this password.
-	u = MatchPassword("u", "1111")
-	assert.NotNil(t, u)
-	assert.Equal(t, u.Name, "u")
+	u, err = MatchPassword("u", "1111")
+	assert.Nil(t, err)
+	assert.NotEmpty(t, u)
 }
-*/

@@ -42,15 +42,7 @@ func InitTestDB() {
 	os.Setenv("TODO_ENV", "test")
 	InitDB()
 
-	// TODO: remove this.
-	tables := []string{"users", "topics"}
-	for _, v := range tables {
-		_, err := Db.Db.Exec(fmt.Sprintf("delete from %v", v))
-		_, err = Db.Db.Exec(fmt.Sprintf("truncate table %v cascade", v))
-		if err != nil {
-			panic(fmt.Sprintf("Could not trucate table: %v\n", err))
-		}
-	}
+	Db.TruncateTables()
 }
 
 // Close the global DB connection.
