@@ -11,14 +11,13 @@ import (
 	"testing"
 
 	"github.com/mssola/go-utils/security"
-	"github.com/mssola/todo/app/models"
 	"github.com/mssola/todo/lib"
 	"github.com/stretchr/testify/assert"
 )
 
 func login(res http.ResponseWriter, req *http.Request) {
-	var user models.User
-	err := models.Db.SelectOne(&user, "select * from users")
+	var user User
+	err := Db.SelectOne(&user, "select * from users")
 	if err != nil {
 		panic("There are no users...")
 	}
@@ -29,8 +28,8 @@ func login(res http.ResponseWriter, req *http.Request) {
 }
 
 func TestLogin(t *testing.T) {
-	models.InitTestDB()
-	defer models.CloseTestDB()
+	InitTestDB()
+	defer CloseTestDB()
 
 	// This guy will be re-used throughout this test.
 	param := make(url.Values)
@@ -51,7 +50,7 @@ func TestLogin(t *testing.T) {
 
 	// Wrong password.
 	password := security.PasswordSalt("1111")
-	models.CreateUser("user", password)
+	createUser("user", password)
 
 	req, err = http.NewRequest("POST", "/", nil)
 	assert.Nil(t, err)
@@ -76,19 +75,19 @@ func TestLogin(t *testing.T) {
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
 	s = lib.GetStore(req)
 	assert.NotEmpty(t, s.Values["userId"])
-	var user models.User
-	err = models.Db.SelectOne(&user, "select * from users")
+	var user User
+	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 	assert.Equal(t, s.Values["userId"], user.Id)
 }
 
 func TestLogout(t *testing.T) {
-	models.InitTestDB()
-	defer models.CloseTestDB()
+	InitTestDB()
+	defer CloseTestDB()
 
 	// Create the user and loggin it in.
 	password := security.PasswordSalt("1111")
-	models.CreateUser("user", password)
+	createUser("user", password)
 
 	req, err := http.NewRequest("POST", "/", nil)
 	assert.Nil(t, err)
@@ -96,8 +95,8 @@ func TestLogout(t *testing.T) {
 	login(w, req)
 
 	// Check that the user has really been logged in.
-	var user models.User
-	err = models.Db.SelectOne(&user, "select * from users")
+	var user User
+	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 	s := lib.GetStore(req)
 	assert.Equal(t, s.Values["userId"], user.Id)

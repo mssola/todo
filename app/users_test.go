@@ -11,13 +11,60 @@ import (
 	"testing"
 
 	"github.com/mssola/go-utils/security"
-	"github.com/mssola/todo/app/models"
 	"github.com/stretchr/testify/assert"
 )
 
+func TestCreateUser(t *testing.T) {
+	InitTestDB()
+
+	// There's nothing before.
+	var u User
+	err := Db.SelectOne(&u, "select * from users")
+	assert.NotNil(t, err)
+	assert.Empty(t, u.Id)
+
+	// Now we create a user.
+	err = createUser("u1", "1234")
+	assert.Nil(t, err)
+	err = Db.SelectOne(&u, "select * from users")
+	assert.NotEmpty(t, u.Id)
+	assert.Equal(t, u.Name, "u1")
+	assert.NotEmpty(t, u.Password_hash)
+	assert.NotEmpty(t, u.Created_at)
+
+	// We cannot create another user.
+	err = createUser("u2", "1234")
+	assert.NotNil(t, err)
+	assert.Equal(t, err.Error(), "Too many users!")
+
+	CloseTestDB()
+}
+
+func TestMatchPassword(t *testing.T) {
+	InitTestDB()
+
+	// User does not exist.
+	u, err := matchPassword("u", "1234")
+	assert.NotNil(t, err)
+
+	// User exists but has a different password.
+	password := security.PasswordSalt("1111")
+	err = createUser("u", password)
+	assert.Nil(t, err)
+	u, err = matchPassword("u", "1234")
+	assert.NotNil(t, err)
+
+	// User exists and has this password.
+	u, err = matchPassword("u", "1111")
+	assert.Nil(t, err)
+	assert.NotEmpty(t, u)
+
+	CloseTestDB()
+}
+
 func TestUsersCreate(t *testing.T) {
-	models.InitTestDB()
-	defer models.CloseTestDB()
+	InitTestDB()
+	defer CloseTestDB()
 
 	param := make(url.Values)
 	param["name"] = []string{"user"}
@@ -32,8 +79,8 @@ func TestUsersCreate(t *testing.T) {
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
 
-	var user models.User
-	err = models.Db.SelectOne(&user, "select * from users")
+	var user User
+	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, user.Id)
 	assert.Equal(t, user.Name, "user")
@@ -42,11 +89,11 @@ func TestUsersCreate(t *testing.T) {
 }
 
 func TestUserCreateAlreadyExists(t *testing.T) {
-	models.InitTestDB()
-	defer models.CloseTestDB()
+	InitTestDB()
+	defer CloseTestDB()
 
 	password := security.PasswordSalt("1234")
-	models.CreateUser("user", password)
+	createUser("user", password)
 
 	param := make(url.Values)
 	param["name"] = []string{"another"}
@@ -61,8 +108,8 @@ func TestUserCreateAlreadyExists(t *testing.T) {
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
 
-	var user models.User
-	err = models.Db.SelectOne(&user, "select * from users")
+	var user User
+	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, user.Id)
 	assert.Equal(t, user.Name, "user")

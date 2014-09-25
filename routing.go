@@ -9,7 +9,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mssola/todo/app"
-	"github.com/mssola/todo/app/models"
 	"github.com/mssola/todo/lib"
 )
 
@@ -19,7 +18,7 @@ func userLogged(req *http.Request, rm *mux.RouteMatch) bool {
 	id := lib.GetCookie(req, "userId")
 
 	if value, ok := id.(string); ok {
-		return models.Exists("users", value)
+		return app.Exists("users", value)
 	}
 	return false
 }

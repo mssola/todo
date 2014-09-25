@@ -10,13 +10,12 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/mssola/todo/app/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestTopicsCreate(t *testing.T) {
-	models.InitTestDB()
-	defer models.CloseTestDB()
+	InitTestDB()
+	defer CloseTestDB()
 
 	param := make(url.Values)
 	param["name"] = []string{"user"}
@@ -30,8 +29,8 @@ func TestTopicsCreate(t *testing.T) {
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/topics")
 
-	var topic models.Topic
-	err = models.Db.SelectOne(&topic, "select * from topics")
+	var topic Topic
+	err = Db.SelectOne(&topic, "select * from topics")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, topic.Id)
 	assert.Equal(t, topic.Name, "user")
@@ -39,8 +38,8 @@ func TestTopicsCreate(t *testing.T) {
 }
 
 func TestTopicsCreateNoName(t *testing.T) {
-	models.InitTestDB()
-	defer models.CloseTestDB()
+	InitTestDB()
+	defer CloseTestDB()
 
 	param := make(url.Values)
 
@@ -53,10 +52,10 @@ func TestTopicsCreateNoName(t *testing.T) {
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/topics")
 
-	var topic models.Topic
-	err = models.Db.SelectOne(&topic, "select * from topics")
+	var topic Topic
+	err = Db.SelectOne(&topic, "select * from topics")
 	assert.Empty(t, topic.Id)
 	assert.NotNil(t, err)
-	count, err := models.Db.SelectInt("select count(*) from users")
+	count, err := Db.SelectInt("select count(*) from users")
 	assert.Equal(t, count, 0)
 }

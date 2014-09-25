@@ -10,13 +10,12 @@ import (
 	"testing"
 
 	"github.com/mssola/go-utils/security"
-	"github.com/mssola/todo/app/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateUserPage(t *testing.T) {
-	models.InitTestDB()
-	defer models.CloseTestDB()
+	InitTestDB()
+	defer CloseTestDB()
 
 	req, err := http.NewRequest("GET", "/", nil)
 	assert.Nil(t, err)
@@ -28,11 +27,11 @@ func TestCreateUserPage(t *testing.T) {
 }
 
 func TestLoginPage(t *testing.T) {
-	models.InitTestDB()
-	defer models.CloseTestDB()
+	InitTestDB()
+	defer CloseTestDB()
 
 	password := security.PasswordSalt("1111")
-	models.CreateUser("user", password)
+	createUser("user", password)
 
 	req, err := http.NewRequest("GET", "/", nil)
 	assert.Nil(t, err)
@@ -44,11 +43,11 @@ func TestLoginPage(t *testing.T) {
 }
 
 func TestTopicsRedirect(t *testing.T) {
-	models.InitTestDB()
-	defer models.CloseTestDB()
+	InitTestDB()
+	defer CloseTestDB()
 
 	password := security.PasswordSalt("1111")
-	models.CreateUser("user", password)
+	createUser("user", password)
 
 	req, err := http.NewRequest("GET", "/", nil)
 	assert.Nil(t, err)

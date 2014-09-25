@@ -6,58 +6,81 @@ package app
 
 import (
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
-	"github.com/mssola/todo/app/models"
 	"github.com/mssola/todo/lib"
+	"github.com/nu7hatch/gouuid"
 )
 
-func renderShow(res http.ResponseWriter, topic *models.Topic) {
+// A topic is my way to divide different "contexts" inside my To Do list.
+type Topic struct {
+	Id         string
+	Name       string
+	Contents   string
+	Created_at time.Time
+}
+
+// Given a name, try to create a new topic.
+func createTopic(name string) error {
+	uuid, err := uuid.NewV4()
+	if err != nil {
+		return err
+	}
+
+	t := &Topic{
+		Id:   uuid.String(),
+		Name: name,
+	}
+	return Db.Insert(t)
+}
+
+func renderShow(res http.ResponseWriter, topic *Topic) {
 	o := &lib.ViewData{}
 	lib.Render(res, "topics/show", o)
 }
 
 func TopicsIndex(res http.ResponseWriter, req *http.Request) {
-	var t models.Topic
+	var t Topic
 
-	models.Db.SelectOne(&t, "select * from topics order by name limit 1")
+	Db.SelectOne(&t, "select * from topics order by name limit 1")
 	renderShow(res, &t)
 }
 
 func TopicsCreate(res http.ResponseWriter, req *http.Request) {
-	models.CreateTopic(req.FormValue("name"))
+	createTopic(req.FormValue("name"))
 	http.Redirect(res, req, "/topics", http.StatusFound)
 }
 
 func TopicsShow(res http.ResponseWriter, req *http.Request) {
-	var t models.Topic
+	var t Topic
 
 	p := mux.Vars(req)
-	models.Db.SelectOne(&t, "select * from topics where id=$1", p["id"])
+	Db.SelectOne(&t, "select * from topics where id=$1", p["id"])
 	renderShow(res, &t)
 }
 
 func TopicsUpdate(res http.ResponseWriter, req *http.Request) {
-	var t models.Topic
+	var t Topic
 
 	// Get the original.
 	p := mux.Vars(req)
-	models.Db.SelectOne(&t, "select * from topics where id=$1", p["id"])
+	Db.SelectOne(&t, "select * from topics where id=$1", p["id"])
 
 	// We can either rename, or change the contents, but not both things at the
 	// same time.
 	name := req.FormValue("name")
 	if name != "" {
-		t.name = name
+		t.Name = name
 	} else {
-		t.contents = req.FormValue("contents")
+		t.Contents = req.FormValue("contents")
 	}
-	models.Db.update(&t)
+	Db.Update(&t)
 	http.Redirect(res, req, "/topics", http.StatusFound)
 }
 
 func TopicsDestroy(res http.ResponseWriter, req *http.Request) {
 	p := mux.Vars(req)
-	models.Db.Exec("delete from topics where id=$1", p["id"])
+	Db.Exec("delete from topics where id=$1", p["id"])
 	http.Redirect(res, req, "/topics", http.StatusFound)
 }

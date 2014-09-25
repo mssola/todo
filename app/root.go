@@ -7,7 +7,6 @@ package app
 import (
 	"net/http"
 
-	"github.com/mssola/todo/app/models"
 	"github.com/mssola/todo/lib"
 )
 
@@ -21,7 +20,7 @@ func RootIndex(res http.ResponseWriter, req *http.Request) {
 	id := lib.GetCookie(req, "userId")
 
 	if id == nil {
-		count := models.Count("users")
+		count := Count("users")
 		if count == 0 {
 			lib.Render(res, "users/new", &lib.ViewData{})
 		} else {

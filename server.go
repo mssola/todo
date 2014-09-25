@@ -9,7 +9,7 @@ import (
 
 	"github.com/codegangsta/negroni"
 	"github.com/mssola/go-utils/misc"
-	"github.com/mssola/todo/app/models"
+	"github.com/mssola/todo/app"
 	"github.com/mssola/todo/lib"
 )
 
@@ -21,8 +21,8 @@ func main() {
 	lib.InitSession()
 
 	// Database.
-	models.InitDB()
-	defer models.CloseDB()
+	app.InitDB()
+	defer app.CloseDB()
 
 	// Routing.
 	r := route()

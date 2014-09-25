@@ -7,7 +7,6 @@ package app
 import (
 	"net/http"
 
-	"github.com/mssola/todo/app/models"
 	"github.com/mssola/todo/lib"
 )
 
@@ -16,7 +15,7 @@ import (
 func Login(res http.ResponseWriter, req *http.Request) {
 	// Check if the user exists and that the password is spot on.
 	n, password := req.FormValue("name"), req.FormValue("password")
-	id, err := models.MatchPassword(n, password)
+	id, err := matchPassword(n, password)
 	if err != nil {
 		http.Redirect(res, req, "/", http.StatusFound)
 		return
