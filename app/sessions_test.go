@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"testing"
 
+	"github.com/mssola/go-utils/security"
 	"github.com/mssola/todo/app/models"
 	"github.com/mssola/todo/lib"
 	"github.com/stretchr/testify/assert"
@@ -49,7 +50,9 @@ func TestLogin(t *testing.T) {
 	assert.Empty(t, s.Values["userId"])
 
 	// Wrong password.
-	createUser("user", "1111")
+	password := security.PasswordSalt("1111")
+	models.CreateUser("user", password)
+
 	req, err = http.NewRequest("POST", "/", nil)
 	assert.Nil(t, err)
 	req.PostForm = param
@@ -84,7 +87,9 @@ func TestLogout(t *testing.T) {
 	defer models.CloseDB()
 
 	// Create the user and loggin it in.
-	createUser("user", "1111")
+	password := security.PasswordSalt("1111")
+	models.CreateUser("user", password)
+
 	req, err := http.NewRequest("POST", "/", nil)
 	assert.Nil(t, err)
 	w := httptest.NewRecorder()

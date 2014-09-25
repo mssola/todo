@@ -9,29 +9,12 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"testing"
-	"time"
 
 	_ "github.com/lib/pq"
 	"github.com/mssola/go-utils/security"
 	"github.com/mssola/todo/app/models"
-	"github.com/nu7hatch/gouuid"
 	"github.com/stretchr/testify/assert"
 )
-
-func createUser(name, password string) {
-	uuid, err := uuid.NewV4()
-	if err != nil {
-		panic(err)
-	}
-
-	u := &models.User{
-		Id:            uuid.String(),
-		Name:          name,
-		Password_hash: security.PasswordSalt(password),
-		Created_at:    time.Now(),
-	}
-	models.Db.Insert(u)
-}
 
 func TestUsersCreate(t *testing.T) {
 	models.InitTestDB()
@@ -62,7 +45,9 @@ func TestUsersCreate(t *testing.T) {
 func TestUserCreateAlreadyExists(t *testing.T) {
 	models.InitTestDB()
 	defer models.CloseDB()
-	createUser("user", "1234")
+
+	password := security.PasswordSalt("1234")
+	models.CreateUser("user", password)
 
 	param := make(url.Values)
 	param["name"] = []string{"another"}
