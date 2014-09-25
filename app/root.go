@@ -7,8 +7,8 @@ package app
 import (
 	"net/http"
 
-	"github.com/mssola/todo/app/lib"
 	"github.com/mssola/todo/app/models"
+	"github.com/mssola/todo/lib"
 )
 
 // Renders the root page. It has three different options:

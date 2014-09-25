@@ -10,8 +10,8 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/mssola/todo/app/lib"
 	"github.com/mssola/todo/app/models"
+	"github.com/mssola/todo/lib"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -9,8 +9,8 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mssola/todo/app"
-	"github.com/mssola/todo/app/lib"
 	"github.com/mssola/todo/app/models"
+	"github.com/mssola/todo/lib"
 )
 
 // A route matcher as expected by the mux package. It returns true (thus,
