@@ -28,7 +28,7 @@ func login(res http.ResponseWriter, req *http.Request) {
 }
 
 func TestLogin(t *testing.T) {
-	InitTest()
+	models.InitTestDB()
 	defer models.CloseDB()
 
 	// This guy will be re-used throughout this test.
@@ -80,7 +80,7 @@ func TestLogin(t *testing.T) {
 }
 
 func TestLogout(t *testing.T) {
-	InitTest()
+	models.InitTestDB()
 	defer models.CloseDB()
 
 	// Create the user and loggin it in.

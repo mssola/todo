@@ -14,7 +14,7 @@ import (
 )
 
 func TestCreateUserPage(t *testing.T) {
-	InitTest()
+	models.InitTestDB()
 	defer models.CloseDB()
 
 	req, err := http.NewRequest("GET", "/", nil)
@@ -27,7 +27,7 @@ func TestCreateUserPage(t *testing.T) {
 }
 
 func TestLoginPage(t *testing.T) {
-	InitTest()
+	models.InitTestDB()
 	defer models.CloseDB()
 
 	createUser("user", "1111")
@@ -41,7 +41,7 @@ func TestLoginPage(t *testing.T) {
 }
 
 func TestTopicsRedirect(t *testing.T) {
-	InitTest()
+	models.InitTestDB()
 	defer models.CloseDB()
 
 	createUser("user", "1111")

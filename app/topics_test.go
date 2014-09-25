@@ -15,7 +15,7 @@ import (
 )
 
 func TestTopicsCreate(t *testing.T) {
-	InitTest()
+	models.InitTestDB()
 	defer models.CloseDB()
 
 	param := make(url.Values)
@@ -39,7 +39,7 @@ func TestTopicsCreate(t *testing.T) {
 }
 
 func TestTopicsCreateNoName(t *testing.T) {
-	InitTest()
+	models.InitTestDB()
 	defer models.CloseDB()
 
 	param := make(url.Values)

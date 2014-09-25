@@ -5,10 +5,14 @@
 package models
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/coopernurse/gorp"
 	"github.com/mssola/go-utils/db"
 	"github.com/mssola/go-utils/misc"
 	"github.com/mssola/go-utils/path"
+	"github.com/mssola/todo/lib"
 )
 
 // Global instance that holds a connection to the DB. It gets initialized after
@@ -30,9 +34,28 @@ func InitDB() {
 	Db.AddTableWithName(Topic{}, "topics")
 }
 
+func InitTestDB() {
+	lib.InitSession()
+	lib.ViewsDir = "../views"
+
+	os.Setenv("TODO_ENV", "test")
+	InitDB()
+	TruncateTables("users", "topics")
+}
+
 // Close the global DB connection.
 func CloseDB() {
 	Db.Db.Close()
+}
+
+// TODO: test
+func TruncateTables(tables ...string) {
+	for _, v := range tables {
+		_, err := Db.Db.Exec(fmt.Sprintf("truncate table %v cascade", v))
+		if err != nil {
+			panic(fmt.Sprintf("Could not trucate table: %v\n", err))
+		}
+	}
 }
 
 // TODO: test

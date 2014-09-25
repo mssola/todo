@@ -5,36 +5,18 @@
 package app
 
 import (
-	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
-	"os"
 	"testing"
 	"time"
 
 	_ "github.com/lib/pq"
 	"github.com/mssola/go-utils/security"
 	"github.com/mssola/todo/app/models"
-	"github.com/mssola/todo/lib"
 	"github.com/nu7hatch/gouuid"
 	"github.com/stretchr/testify/assert"
 )
-
-func InitTest() {
-	lib.InitSession()
-	lib.ViewsDir = "../views"
-
-	os.Setenv("TODO_ENV", "test")
-	models.InitDB()
-	tables := []string{"users", "topics"}
-	for _, v := range tables {
-		_, err := models.Db.Db.Exec(fmt.Sprintf("truncate table %v cascade", v))
-		if err != nil {
-			panic(fmt.Sprintf("Could not trucate table: %v\n", err))
-		}
-	}
-}
 
 func createUser(name, password string) {
 	uuid, err := uuid.NewV4()
@@ -52,7 +34,7 @@ func createUser(name, password string) {
 }
 
 func TestUsersCreate(t *testing.T) {
-	InitTest()
+	models.InitTestDB()
 	defer models.CloseDB()
 
 	param := make(url.Values)
@@ -78,7 +60,7 @@ func TestUsersCreate(t *testing.T) {
 }
 
 func TestUserCreateAlreadyExists(t *testing.T) {
-	InitTest()
+	models.InitTestDB()
 	defer models.CloseDB()
 	createUser("user", "1234")
 
