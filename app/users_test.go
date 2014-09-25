@@ -17,7 +17,7 @@ import (
 
 func TestUsersCreate(t *testing.T) {
 	models.InitTestDB()
-	defer models.CloseDB()
+	defer models.CloseTestDB()
 
 	param := make(url.Values)
 	param["name"] = []string{"user"}
@@ -43,7 +43,7 @@ func TestUsersCreate(t *testing.T) {
 
 func TestUserCreateAlreadyExists(t *testing.T) {
 	models.InitTestDB()
-	defer models.CloseDB()
+	defer models.CloseTestDB()
 
 	password := security.PasswordSalt("1234")
 	models.CreateUser("user", password)

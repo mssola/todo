@@ -30,7 +30,7 @@ func login(res http.ResponseWriter, req *http.Request) {
 
 func TestLogin(t *testing.T) {
 	models.InitTestDB()
-	defer models.CloseDB()
+	defer models.CloseTestDB()
 
 	// This guy will be re-used throughout this test.
 	param := make(url.Values)
@@ -84,7 +84,7 @@ func TestLogin(t *testing.T) {
 
 func TestLogout(t *testing.T) {
 	models.InitTestDB()
-	defer models.CloseDB()
+	defer models.CloseTestDB()
 
 	// Create the user and loggin it in.
 	password := security.PasswordSalt("1111")

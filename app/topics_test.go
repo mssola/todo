@@ -16,7 +16,7 @@ import (
 
 func TestTopicsCreate(t *testing.T) {
 	models.InitTestDB()
-	defer models.CloseDB()
+	defer models.CloseTestDB()
 
 	param := make(url.Values)
 	param["name"] = []string{"user"}
@@ -40,7 +40,7 @@ func TestTopicsCreate(t *testing.T) {
 
 func TestTopicsCreateNoName(t *testing.T) {
 	models.InitTestDB()
-	defer models.CloseDB()
+	defer models.CloseTestDB()
 
 	param := make(url.Values)
 

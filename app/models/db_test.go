@@ -12,7 +12,7 @@ import (
 
 func TestExists(t *testing.T) {
 	InitTestDB()
-	defer CloseDB()
+	defer CloseTestDB()
 
 	// Does not exist.
 	assert.False(t, Exists("users", "1"))
@@ -27,7 +27,7 @@ func TestExists(t *testing.T) {
 
 func TestCount(t *testing.T) {
 	InitTestDB()
-	defer CloseDB()
+	defer CloseTestDB()
 
 	// Try to count a non-existing table.
 	count := Count("doesnotexist")

@@ -12,7 +12,6 @@ import (
 
 func TestCreateTopic(t *testing.T) {
 	InitTestDB()
-	defer CloseDB()
 
 	// There's nothing before.
 	var topic Topic
@@ -38,4 +37,6 @@ func TestCreateTopic(t *testing.T) {
 	// We can't create a topic with an existing name.
 	err = CreateTopic("t1")
 	assert.NotNil(t, err)
+
+	CloseTestDB()
 }

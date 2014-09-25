@@ -13,7 +13,6 @@ import (
 
 func TestCreateUser(t *testing.T) {
 	InitTestDB()
-	defer CloseDB()
 
 	// There's nothing before.
 	var u User
@@ -34,11 +33,12 @@ func TestCreateUser(t *testing.T) {
 	err = CreateUser("u2", "1234")
 	assert.NotNil(t, err)
 	assert.Equal(t, err.Error(), "Too many users!")
+
+	CloseTestDB()
 }
 
 func TestMatchPassword(t *testing.T) {
 	InitTestDB()
-	defer CloseDB()
 
 	// User does not exist.
 	u, err := MatchPassword("u", "1234")
@@ -55,4 +55,6 @@ func TestMatchPassword(t *testing.T) {
 	u, err = MatchPassword("u", "1111")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, u)
+
+	CloseTestDB()
 }

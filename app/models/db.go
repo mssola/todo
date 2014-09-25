@@ -45,6 +45,12 @@ func InitTestDB() {
 	Db.TruncateTables()
 }
 
+// Use this in the end of every unit test.
+func CloseTestDB() {
+	Db.TruncateTables()
+	CloseDB()
+}
+
 // Close the global DB connection.
 func CloseDB() {
 	Db.Db.Close()
