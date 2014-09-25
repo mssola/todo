@@ -10,7 +10,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/mssola/todo/app/config"
+	"github.com/mssola/todo/app/lib"
 	"github.com/mssola/todo/app/models"
 	"github.com/stretchr/testify/assert"
 )
@@ -22,45 +22,14 @@ func login(res http.ResponseWriter, req *http.Request) {
 		panic("There are no users...")
 	}
 
-	s := config.GetStore(req)
+	s := lib.GetStore(req)
 	s.Values["userId"] = user.Id
 	s.Save(req, res)
 }
 
-func TestUserLogged(t *testing.T) {
-	InitTest()
-	defer config.CloseDB()
-
-	req, err := http.NewRequest("GET", "/", nil)
-	assert.Nil(t, err)
-
-	assert.False(t, config.UserLogged(req, nil))
-
-	s := config.GetStore(req)
-	assert.Nil(t, err)
-	s.Values["userId"] = "1"
-	w := httptest.NewRecorder()
-	s.Save(req, w)
-
-	assert.False(t, config.UserLogged(req, nil))
-
-	createUser("user", "1234")
-	var user models.User
-	err = models.Db.SelectOne(&user, "select * from users")
-	assert.Nil(t, err)
-
-	s = config.GetStore(req)
-	assert.Nil(t, err)
-	s.Values["userId"] = user.Id
-	w = httptest.NewRecorder()
-	s.Save(req, w)
-
-	assert.True(t, config.UserLogged(req, nil))
-}
-
 func TestLogin(t *testing.T) {
 	InitTest()
-	defer config.CloseDB()
+	defer models.CloseDB()
 
 	// This guy will be re-used throughout this test.
 	param := make(url.Values)
@@ -76,7 +45,7 @@ func TestLogin(t *testing.T) {
 
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
-	s := config.GetStore(req)
+	s := lib.GetStore(req)
 	assert.Empty(t, s.Values["userId"])
 
 	// Wrong password.
@@ -89,7 +58,7 @@ func TestLogin(t *testing.T) {
 
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
-	s = config.GetStore(req)
+	s = lib.GetStore(req)
 	assert.Empty(t, s.Values["userId"])
 
 	// Ok.
@@ -102,7 +71,7 @@ func TestLogin(t *testing.T) {
 
 	assert.Equal(t, w.Code, 302)
 	assert.Equal(t, w.HeaderMap["Location"][0], "/")
-	s = config.GetStore(req)
+	s = lib.GetStore(req)
 	assert.NotEmpty(t, s.Values["userId"])
 	var user models.User
 	err = models.Db.SelectOne(&user, "select * from users")
@@ -112,7 +81,7 @@ func TestLogin(t *testing.T) {
 
 func TestLogout(t *testing.T) {
 	InitTest()
-	defer config.CloseDB()
+	defer models.CloseDB()
 
 	// Create the user and loggin it in.
 	createUser("user", "1111")
@@ -125,11 +94,11 @@ func TestLogout(t *testing.T) {
 	var user models.User
 	err = models.Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
-	s := config.GetStore(req)
+	s := lib.GetStore(req)
 	assert.Equal(t, s.Values["userId"], user.Id)
 
 	// Logout
 	Logout(w, req)
-	s = config.GetStore(req)
+	s = lib.GetStore(req)
 	assert.Empty(t, s.Values["userId"])
 }

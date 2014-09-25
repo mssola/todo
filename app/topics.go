@@ -7,13 +7,12 @@ package app
 import (
 	"net/http"
 
-	"github.com/mssola/todo/app/config"
 	"github.com/mssola/todo/app/lib"
 	"github.com/mssola/todo/app/models"
 )
 
 func TopicsIndex(res http.ResponseWriter, req *http.Request) {
-	o := &config.ViewData{}
+	o := &lib.ViewData{}
 	lib.Render(res, "topics/index", o)
 }
 

@@ -28,6 +28,21 @@ const (
 	viewsExt = "tpl"
 )
 
+// This struct holds all the data that can be passed to a view.
+type ViewData struct {
+	// The id of the current user.
+	Id string
+
+	// Set to true if the current user is logged in.
+	LoggedIn bool
+
+	// Set to true if the views has to include Javascript.
+	JS bool
+
+	// Set to true if an error has happenned.
+	Error bool
+}
+
 // Returns the path to be used to open the view with the given name.
 func view(name string) string {
 	return path.Join(ViewsDir, name+"."+viewsExt)

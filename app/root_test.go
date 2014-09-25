@@ -9,13 +9,13 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/mssola/todo/app/config"
+	"github.com/mssola/todo/app/models"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateUserPage(t *testing.T) {
 	InitTest()
-	defer config.CloseDB()
+	defer models.CloseDB()
 
 	req, err := http.NewRequest("GET", "/", nil)
 	assert.Nil(t, err)
@@ -28,7 +28,7 @@ func TestCreateUserPage(t *testing.T) {
 
 func TestLoginPage(t *testing.T) {
 	InitTest()
-	defer config.CloseDB()
+	defer models.CloseDB()
 
 	createUser("user", "1111")
 	req, err := http.NewRequest("GET", "/", nil)
@@ -42,7 +42,7 @@ func TestLoginPage(t *testing.T) {
 
 func TestTopicsRedirect(t *testing.T) {
 	InitTest()
-	defer config.CloseDB()
+	defer models.CloseDB()
 
 	createUser("user", "1111")
 	req, err := http.NewRequest("GET", "/", nil)
