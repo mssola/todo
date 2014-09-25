@@ -19,7 +19,7 @@ func userLogged(req *http.Request, rm *mux.RouteMatch) bool {
 	id := lib.GetCookie(req, "userId")
 
 	if value, ok := id.(string); ok {
-		return models.Logged(value)
+		return models.Exists("users", value)
 	}
 	return false
 }
