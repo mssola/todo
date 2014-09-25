@@ -15,3 +15,4 @@ before_script:
 install:
     - go get github.com/stretchr/testify/assert
     - go get -d ./... && go test -i ./... && go build -v ./...
+script: ./script/test
