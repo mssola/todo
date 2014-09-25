@@ -23,11 +23,7 @@ type Topic struct {
 
 // Given a name, try to create a new topic.
 func createTopic(name string) error {
-	uuid, err := uuid.NewV4()
-	if err != nil {
-		return err
-	}
-
+	uuid, _ := uuid.NewV4()
 	t := &Topic{
 		Id:   uuid.String(),
 		Name: name,

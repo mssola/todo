@@ -32,10 +32,7 @@ func createUser(name, password string) error {
 	}
 
 	// Create the user and redirect.
-	uuid, err := uuid.NewV4()
-	if err != nil {
-		return err
-	}
+	uuid, _ := uuid.NewV4()
 	u := &User{
 		Id:            uuid.String(),
 		Name:          name,
