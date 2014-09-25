@@ -39,7 +39,6 @@ func CreateUser(name, password string) error {
 		Id:            uuid.String(),
 		Name:          name,
 		Password_hash: password,
-		Created_at:    time.Now(),
 	}
 	return Db.Insert(u)
 }

@@ -14,6 +14,7 @@ import (
 type Topic struct {
 	Id         string
 	Name       string
+	Contents   string
 	Created_at time.Time
 }
 
@@ -25,9 +26,8 @@ func CreateTopic(name string) error {
 	}
 
 	t := &Topic{
-		Id:         uuid.String(),
-		Name:       name,
-		Created_at: time.Now(),
+		Id:   uuid.String(),
+		Name: name,
 	}
 	return Db.Insert(t)
 }
