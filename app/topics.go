@@ -9,8 +9,10 @@ import (
 	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/microcosm-cc/bluemonday"
 	"github.com/mssola/todo/lib"
 	"github.com/nu7hatch/gouuid"
+	"github.com/russross/blackfriday"
 )
 
 // A topic is my way to divide different "contexts" inside my To Do list.
@@ -19,6 +21,16 @@ type Topic struct {
 	Name       string
 	Contents   string
 	Created_at time.Time
+}
+
+type TopicData struct {
+	*lib.ViewData
+
+	Rendered string
+
+	Current *Topic
+
+	Topics []Topic
 }
 
 // Given a name, try to create a new topic.
@@ -32,7 +44,19 @@ func createTopic(name string) error {
 }
 
 func renderShow(res http.ResponseWriter, topic *Topic) {
-	o := &lib.ViewData{}
+	var topics []Topic
+	Db.Select(&topics, "select * from topics order by name")
+
+	// Render the contents
+	unsafe := blackfriday.MarkdownCommon([]byte(topic.Contents))
+	rs := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+
+	// And render the page.
+	o := &TopicData{
+		Rendered: string(rs),
+		Current:  topic,
+		Topics:   topics,
+	}
 	lib.Render(res, "topics/show", o)
 }
 
@@ -57,21 +81,17 @@ func TopicsShow(res http.ResponseWriter, req *http.Request) {
 }
 
 func TopicsUpdate(res http.ResponseWriter, req *http.Request) {
-	var t Topic
-
-	// Get the original.
 	p := mux.Vars(req)
-	Db.SelectOne(&t, "select * from topics where id=$1", p["id"])
 
 	// We can either rename, or change the contents, but not both things at the
 	// same time.
 	name := req.FormValue("name")
 	if name != "" {
-		t.Name = name
+		Db.Exec("update topics set name=$1 where id=$2", name, p["id"])
 	} else {
-		t.Contents = req.FormValue("contents")
+		cts := req.FormValue("contents")
+		Db.Exec("update topics set contents=$1 where id=$2", cts, p["id"])
 	}
-	Db.Update(&t)
 	http.Redirect(res, req, "/topics", http.StatusFound)
 }
 

@@ -7,10 +7,8 @@
     <link href="/stylesheets/{{ view }}.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-    <div id="content">
-      <div class="wrapper">
+    <article>
         {{ yield }}
-      </div>
-    </div>
+    </article>
 </body>
 </html>

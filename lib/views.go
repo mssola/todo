@@ -102,6 +102,9 @@ func viewHelpers() template.FuncMap {
 		"inc": func(n int) int {
 			return n + 1
 		},
+		"noescape": func(str string) template.HTML {
+			return template.HTML(str)
+		},
 	}
 }
 
