@@ -5,6 +5,13 @@
  */
 
 
+function cancelTextArea()
+{
+    var body = $('#contents .body');
+    body.find('.contents-edit').hide();
+    body.find('.contents-body').show();
+}
+
 jQuery(function() {
     $('#list button').click(function() {
         $(this).hide();
@@ -16,10 +23,7 @@ jQuery(function() {
 
     $('#contents .cancel-btn').click(function(e) {
         e.preventDefault();
-
-        var body = $('#contents .body');
-        body.find('.contents-edit').hide();
-        body.find('.contents-body').show();
+        cancelTextArea();
     });
 
     $('#contents .edit').click(function(e) {
@@ -28,6 +32,7 @@ jQuery(function() {
         var body = $('#contents .body');
         body.find('.contents-body').hide();
         body.find('.contents-edit').show();
+        $('textarea').focus();
     });
 
     $('#contents .rename').click(function(e) {
@@ -54,5 +59,7 @@ jQuery(function() {
         $('#contents .confirmation').hide();
         $('#contents .delete').css('display', 'inline');
     });
+
+    $('#contents textarea').focusout(cancelTextArea);
 });
 

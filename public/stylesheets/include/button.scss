@@ -3,6 +3,12 @@
 
 
 /*
+ * TODO:
+ * Can we simplify the yellow so all of them have the same base?
+ */
+
+
+/*
  * The base style for a button.
  */
 .btn {
@@ -31,33 +37,35 @@
     }
 }
 
-/*
- * Red buttons are used for canceling actions.
- */
+.green-btn {
+  text-align: center;
+  padding: 4px;
+  margin: 0;
+  background: none;
+  border: 1px solid #777;
+  border-radius: 3px;
+  opacity: .5;
+  font-weight: bold;
+  color: #29752F;
+
+  &:hover { opacity: .9; }
+}
+
 .red-btn {
-    @include linear-gradient-simple(#efefef, #fefefe);
+  color: #900;
+  border: 1px solid #D19898;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+  font-weight: bold;
 
-    color: #900;
-    border: 1px solid #d5d5d5;
-    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
-    font-weight: bold;
+  text-align: center;
+  padding: 4px;
+  margin: 0;
+  background: none;
+  border-radius: 3px;
+  opacity: .5;
+  font-weight: bold;
 
-    &:hover {
-        @include linear-gradient-simple(#b33630, #dc5f59);
-
-        color: #fff;
-        border: 1px solid #cd504a;
-        text-shadow: 0px -1px 0 rgba(0,0,0,0.3);
-    }
-
-    &:disabled {
-        @include linear-gradient-simple(#efefef, #fefefe);
-
-        color: #cb7f7f;
-        text-shadow: 0 1px 0 rgba(255,255,255,0.9);
-        border-color: #e1e1e1;
-        cursor: default;
-    }
+  &:hover { opacity: .9; }
 }
 
 .grey-btn {

@@ -87,9 +87,8 @@ $width: 130px;
             }
         }
 
-        .create {
-            padding: 5px;
-        }
+        .create, .logout { padding: 5px; }
+        .logout { margin-top: 20px; }
     }
 }
 
@@ -153,6 +152,12 @@ $width: 130px;
 
         .contents-edit {
             display: none;
+
+            textarea {
+                width: 800px;
+                height: 600px;
+                resize: none;
+            }
         }
     }
 

@@ -22,7 +22,12 @@
             <form action="/topics" method="POST" autocomplete="off" accept-charset="utf-8">
                 <input class="tiny-text" type="text" name="name" value="" autocomplete="off" tabindex="1" placeholder="name" />
                 <input class="btn grey-btn" type="submit" value="create" />
-                <div class="clearout"></div>
+            </form>
+        </li>
+
+        <li class="logout">
+            <form action="/logout" method="POST">
+                <input class="btn grey-btn" type="submit" value="logout" />
             </form>
         </li>
     </ul>
@@ -44,7 +49,6 @@
         <form action="/topics/{{.Current.Id}}" class="rename-form" method="POST" autocomplete="off" accept-charset="utf-8">
             <input class="tiny-text" type="text" name="name" value="" autocomplete="off" tabindex="1" placeholder="name" />
             <input class="btn grey-btn" type="submit" value="rename" />
-            <div class="clearout"></div>
         </form>
     </div>
 
@@ -55,9 +59,11 @@
 
         <div class="contents-edit">
             <form action="/topics/{{.Current.Id}}" method="POST" autocomplete="off" accept-charset="utf-8">
-                <textarea name="contents" autocomplete="off">{{.Current.Contents}}</textarea>
-                <input class="btn yellow-btn" type="submit" value="update" />
-                <button class="btn red-btn cancel-btn">cancel</button>
+                <textarea name="contents" autocomplete="off" spellcheck="off">{{.Current.Contents}}</textarea>
+                <div class="buttons">
+                    <input class="btn green-btn" type="submit" value="update" />
+                    <button class="btn red-btn cancel-btn">cancel</button>
+                </div>
             </form>
         </div>
     </div>
