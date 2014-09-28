@@ -1,29 +1,163 @@
 
 @import "include/base";
 
-$width: 250px;
+$width: 130px;
 
 #list {
+    float: left;
     position: absolute;
     top: 0px;
     left: 0;
     bottom: 0;
     width: $width;
-    padding-right: 14px;
     overflow: hidden;
-    background-color: #f7f3ed;
+    background-color: #f7f7f7;
+    font-size: small;
 
-    .hidden .text {
+    .create form {
         display: none;
+    }
+
+    h3 {
+      font-size: small;
+      font-weight: bold;
+      color: #777;
+      text-align: right;
+      padding: 4px;
+    }
+
+    ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+
+        li {
+            margin-left: 12px;
+            text-align: left;
+            margin-bottom: 3px;
+            background: #fff;
+            border: 1px solid #ccc;
+            border-bottom-width: 2px;
+            border-right: none;
+            border-top-left-radius: 5px;
+            border-bottom-left-radius: 5px;
+
+            -webkit-transition: all 0.15s ease 0s;
+            -moz-transition: all 0.15s ease 0s;
+            -o-transition: all 0.15s ease 0s;
+            -ms-transition: all 0.15s ease 0s;
+            transition: all 0.15s ease 0s;
+
+            a {
+                text-decoration: none;
+                color: #369;
+                font-size: 12px;
+                padding: .8em 5px;
+                padding-left: 10px;
+                display: block;
+                position: relative;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                margin-right: 5px;
+            }
+
+            &:hover { margin-left: 9px; }
+        }
+
+        .selected {
+            position: relative;
+            background: #e9f2fc;
+            border-color: #b3cce6;
+            margin-right: -8px;
+            padding-right: 8px;
+            box-shadow: -30px 0 30px -15px rgba(255,255,255,0.5) inset,0 2px 6px -1px rgba(0,0,0,0.2);
+            z-index: 35;
+            font-weight: bold;
+
+            &:before {
+                position: absolute;
+                top: 50%;
+                right: 5px;
+                margin-top: -5px;
+                display: block;
+                content: '';
+                border: 5px solid transparent;
+                border-style: solid solid outset;
+                border-left-color: #79a6d2;
+            }
+        }
+
+        .create {
+            padding: 5px;
+        }
     }
 }
 
 #contents {
+    display: inline;
     position: absolute;
     top: 0px;
     left: $width;
     bottom: 0;
+    padding: 10px 30px;
+
     border-left: 1px solid #ddd;
-    background-color: #f9f9f9;
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+    background-color: #fff;
+
+    // TODO: improve this with variables and shit.
+    width: calc(100% - 130px - 1px - 60px);
+    width: -moz-calc(100% - 130px - 1px - 60px);
+    width: -webkit-calc(100% - 130px - 1px - 60px);
+
+    .header {
+        h2 {
+            font-size: 16px;
+            display: inline;
+        }
+
+        ul {
+            display: inline;
+            list-style: none;
+            margin: 0;
+            margin-left: 5px;
+            padding: 0;
+
+            li {
+                margin-left: 5px;
+                display: inline;
+
+                span {
+                    color: red;
+                    font-size: small;
+                }
+
+                a {
+                    font-size: small;
+                    color: #888;
+                    font-weight: bold;
+                    padding: 0 1px;
+
+                    &:hover { text-decoration: underline; }
+                }
+            }
+
+            .confirmation { display: none; }
+        }
+    }
+
+    .body {
+        margin-top: 15px;
+        .contents-body {
+        }
+
+        .contents-edit {
+            display: none;
+        }
+    }
+
+    .rename-form {
+        display: none;
+    }
 }
 

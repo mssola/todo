@@ -10,7 +10,6 @@
 
     position: relative;
     cursor: pointer;
-    font-weight: bold;
 
     padding: .4em .75em .35em;
     white-space: nowrap;
@@ -24,6 +23,7 @@
     @include background-linear-gradient(#ffd343, #ffdf76);
     border: 1px solid #dca900;
     color: #4d4d4d!important;
+    font-weight: bold;
 
     &:hover {
         @include background-linear-gradient(#ffd343, #ffeba9);
@@ -40,6 +40,7 @@
     color: #900;
     border: 1px solid #d5d5d5;
     text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+    font-weight: bold;
 
     &:hover {
         @include linear-gradient-simple(#b33630, #dc5f59);
@@ -57,5 +58,17 @@
         border-color: #e1e1e1;
         cursor: default;
     }
+}
+
+.grey-btn {
+  text-align: center;
+  padding: 1px 4px;
+  margin: 0;
+  background: none;
+  border: 1px solid #777;
+  border-radius: 3px;
+  opacity: .5;
+
+  &:hover { opacity: .9; }
 }
 

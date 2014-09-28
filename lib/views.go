@@ -36,8 +36,8 @@ type ViewData struct {
 	// Set to true if the current user is logged in.
 	LoggedIn bool
 
-	// Set to true if the views has to include Javascript.
-	JS bool
+	// The name of the javascript file to be used.
+	JS string
 
 	// Set to true if an error has happenned.
 	Error bool

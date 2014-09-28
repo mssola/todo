@@ -24,7 +24,7 @@ type Topic struct {
 }
 
 type TopicData struct {
-	*lib.ViewData
+	lib.ViewData
 
 	Rendered string
 
@@ -57,6 +57,7 @@ func renderShow(res http.ResponseWriter, topic *Topic) {
 		Current:  topic,
 		Topics:   topics,
 	}
+	o.JS = "topics"
 	lib.Render(res, "topics/show", o)
 }
 
