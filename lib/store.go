@@ -31,14 +31,10 @@ func InitSession() {
 
 // Tries to get the cookie store for the given request. It panics if it fails.
 func GetStore(req *http.Request) *sessions.Session {
-	// Try to cache the session.
-	s, err := store.Get(req, sessionName)
-	if err != nil {
-		// Missed! Let's generate a new session. Moreover, Gorilla's
-		// documentation says that this method *never* fails on creating
-		// a new session, so it's safe to ignore the given error.
-		s, _ = store.New(req, sessionName)
-	}
+	// Let's generate a new session. Moreover, Gorilla's documentation
+	// says that this method *never* fails on creating a new session, so
+	// it's safe to ignore the given error.
+	s, _ := store.Get(req, sessionName)
 	return s
 }
 
