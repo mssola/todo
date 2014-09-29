@@ -30,17 +30,11 @@ const (
 
 // This struct holds all the data that can be passed to a view.
 type ViewData struct {
-	// The id of the current user.
-	Id string
-
-	// Set to true if the current user is logged in.
-	LoggedIn bool
-
 	// The name of the javascript file to be used.
 	JS string
 
-	// Set to true if an error has happenned.
-	Error bool
+	// The error message.
+	Error string
 }
 
 // Returns the path to be used to open the view with the given name.
