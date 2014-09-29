@@ -60,6 +60,7 @@ jQuery(function() {
         $('#contents .delete').css('display', 'inline');
     });
 
-    $('#contents textarea').focusout(cancelTextArea);
+    // TODO: proper fix.
+    //$('#contents textarea').focusout(cancelTextArea);
 });
 
