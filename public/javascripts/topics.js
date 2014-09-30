@@ -5,13 +5,6 @@
  */
 
 
-function cancelTextArea()
-{
-    var body = $('#contents .body');
-    body.find('.contents-edit').hide();
-    body.find('.contents-body').show();
-}
-
 jQuery(function() {
     $('#list button').click(function() {
         $(this).hide();
@@ -23,7 +16,9 @@ jQuery(function() {
 
     $('#contents .cancel-btn').click(function(e) {
         e.preventDefault();
-        cancelTextArea();
+        var body = $('#contents .body');
+        body.find('.contents-edit').hide();
+        body.find('.contents-body').show();
     });
 
     $('#contents .edit').click(function(e) {
@@ -59,8 +54,5 @@ jQuery(function() {
         $('#contents .confirmation').hide();
         $('#contents .delete').css('display', 'inline');
     });
-
-    // TODO: proper fix.
-    //$('#contents textarea').focusout(cancelTextArea);
 });
 
