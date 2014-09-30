@@ -1,0 +1,21 @@
+{
+    "development": {
+        "user": "postgres",
+        "dbname": "ontop",
+        "password": "",
+        "sslmode": "disable"
+    },
+    "production": {
+        "user": "postgres",
+        "dbname": "ontop",
+        "password": "",
+        "sslmode": "require"
+    },
+    "test": {
+        "user": "postgres",
+        "dbname": "ontop",
+        "password": "",
+        "sslmode": "disable"
+    }
+}
+

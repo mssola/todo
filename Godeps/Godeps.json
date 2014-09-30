@@ -1,0 +1,87 @@
+{
+	"ImportPath": "github.com/mssola/todo",
+	"GoVersion": "1.2.2",
+	"Deps": [
+		{
+			"ImportPath": "code.google.com/p/go.crypto/bcrypt",
+			"Comment": "null-185",
+			"Rev": "6478cc9340cbbe6c04511280c5007722269108e9"
+		},
+		{
+			"ImportPath": "code.google.com/p/go.crypto/blowfish",
+			"Comment": "null-185",
+			"Rev": "6478cc9340cbbe6c04511280c5007722269108e9"
+		},
+		{
+			"ImportPath": "code.google.com/p/go.net/html",
+			"Comment": "null-134",
+			"Rev": "9c0f9daaa74be0f25ccc12718bcb6b5d17802654"
+		},
+		{
+			"ImportPath": "github.com/codegangsta/negroni",
+			"Rev": "c18469c22a9a334acf9b168b6e56375d83364d23"
+		},
+		{
+			"ImportPath": "github.com/coopernurse/gorp",
+			"Comment": "v1.5",
+			"Rev": "242be3eec6e4d545d0eca24b5dc71236b71ac656"
+		},
+		{
+			"ImportPath": "github.com/gorilla/context",
+			"Rev": "a08edd30ad9e104612741163dc087a613829a23c"
+		},
+		{
+			"ImportPath": "github.com/gorilla/mux",
+			"Rev": "136d54f81f00414c45c3c68dd47e98cc97519c5e"
+		},
+		{
+			"ImportPath": "github.com/gorilla/securecookie",
+			"Rev": "972f32923fd3555b7f0ea39acdc4e3d4d5412ee8"
+		},
+		{
+			"ImportPath": "github.com/gorilla/sessions",
+			"Rev": "c9bf01c18818f7738e6b2670f1fd92f710ecb734"
+		},
+		{
+			"ImportPath": "github.com/lib/pq",
+			"Rev": "fda846c284b1b2935e5f977da866408de90e2a10"
+		},
+		{
+			"ImportPath": "github.com/microcosm-cc/bluemonday",
+			"Rev": "88042e4f846847061cda14afc081abe958946689"
+		},
+		{
+			"ImportPath": "github.com/mssola/go-utils/db",
+			"Comment": "v0.1-1-g1a535d2",
+			"Rev": "1a535d2239bdcc15033763b441ff9eaee157082b"
+		},
+		{
+			"ImportPath": "github.com/mssola/go-utils/misc",
+			"Comment": "v0.1-1-g1a535d2",
+			"Rev": "1a535d2239bdcc15033763b441ff9eaee157082b"
+		},
+		{
+			"ImportPath": "github.com/mssola/go-utils/path",
+			"Comment": "v0.1-1-g1a535d2",
+			"Rev": "1a535d2239bdcc15033763b441ff9eaee157082b"
+		},
+		{
+			"ImportPath": "github.com/mssola/go-utils/security",
+			"Comment": "v0.1-1-g1a535d2",
+			"Rev": "1a535d2239bdcc15033763b441ff9eaee157082b"
+		},
+		{
+			"ImportPath": "github.com/nu7hatch/gouuid",
+			"Rev": "179d4d0c4d8d407a32af483c2354df1d2c91e6c3"
+		},
+		{
+			"ImportPath": "github.com/russross/blackfriday",
+			"Comment": "v1.2-17-g05b8cef",
+			"Rev": "05b8cefd6a3cd87b81adb83479f5faadc0df2a67"
+		},
+		{
+			"ImportPath": "github.com/stretchr/testify/assert",
+			"Rev": "de7fcff264cd05cc0c90c509ea789a436a0dd206"
+		}
+	]
+}
