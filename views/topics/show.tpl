@@ -34,6 +34,7 @@
 </div>
 
 <div id="contents">
+{{if $c.Id}}
     <div class="header">
         <h2>{{$c.Name}}</h2>
         <ul class="options">
@@ -67,6 +68,7 @@
             </form>
         </div>
     </div>
+{{end}}
 </div>
 
 
