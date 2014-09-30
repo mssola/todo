@@ -1,16 +1,6 @@
 
 @import "mixins";
 
-
-/*
- * TODO:
- * Can we simplify the yellow so all of them have the same base?
- */
-
-
-/*
- * The base style for a button.
- */
 .btn {
     @include border-radius(2px);
 
@@ -21,10 +11,6 @@
     white-space: nowrap;
 }
 
-/*
- * Yellow buttons are used for any kind of button that is not related to
- * canceling an action.
- */
 .yellow-btn {
     @include background-linear-gradient(#ffd343, #ffdf76);
     border: 1px solid #dca900;
@@ -38,45 +24,45 @@
 }
 
 .green-btn {
-  text-align: center;
-  padding: 4px;
-  margin: 0;
-  background: none;
-  border: 1px solid #777;
-  border-radius: 3px;
-  opacity: .5;
-  font-weight: bold;
-  color: #29752F;
+    text-align: center;
+    padding: 4px;
+    margin: 0;
+    background: none;
+    border: 1px solid #777;
+    border-radius: 3px;
+    opacity: .5;
+    font-weight: bold;
+    color: #29752F;
 
-  &:hover { opacity: .9; }
+    &:hover { opacity: .9; }
 }
 
 .red-btn {
-  color: #900;
-  border: 1px solid #D19898;
-  text-shadow: 0 1px 0 rgba(255,255,255,0.9);
-  font-weight: bold;
+    color: #900;
+    border: 1px solid #D19898;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.9);
+    font-weight: bold;
 
-  text-align: center;
-  padding: 4px;
-  margin: 0;
-  background: none;
-  border-radius: 3px;
-  opacity: .5;
-  font-weight: bold;
+    text-align: center;
+    padding: 4px;
+    margin: 0;
+    background: none;
+    border-radius: 3px;
+    opacity: .5;
+    font-weight: bold;
 
-  &:hover { opacity: .9; }
+    &:hover { opacity: .9; }
 }
 
 .grey-btn {
-  text-align: center;
-  padding: 1px 4px;
-  margin: 0;
-  background: none;
-  border: 1px solid #777;
-  border-radius: 3px;
-  opacity: .5;
+    text-align: center;
+    padding: 1px 4px;
+    margin: 0;
+    background: none;
+    border: 1px solid #777;
+    border-radius: 3px;
+    opacity: .5;
 
-  &:hover { opacity: .9; }
+    &:hover { opacity: .9; }
 }
 
