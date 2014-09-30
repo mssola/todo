@@ -1,4 +1,12 @@
 
+/*
+ * Cross-browser font-smoothing. Only works on Gecko and Webkit based browsers.
+ */
+@mixin font-smoothing($str: subpixel-antialiased) {
+  -webkit-font-smoothing: $str !important;
+  -moz-font-smoothing: $str !important;
+}
+
 @mixin background-linear-gradient($one, $another) {
     background-color: $one;
     background-image: -webkit-gradient(linear,50% 0,50% 100%,color-stop(30%,$another),color-stop(95%,$one));

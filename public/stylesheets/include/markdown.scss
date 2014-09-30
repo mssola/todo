@@ -1,0 +1,103 @@
+
+/*
+ * Shared with items with a big padding.
+ */
+$padding-left: 16px;
+
+
+/*
+ * There can only be Markdown code inside this class.
+ */
+#contents .contents-body {
+    color: #333;
+    font-size: 16px;
+    font-style: normal;
+    width: 800px;
+
+    h1, h2, h3 {
+        @include box-sizing;
+
+        position: relative;
+        display: block;
+
+        font-weight: bold;
+
+        margin: 30px 0px 15px 0px;
+        padding-left: 2px;
+        border-bottom: 1px solid #eee;
+    }
+
+    h1 { font-size: 32px; }
+    h2 { font-size: 24px; }
+    h3 { font-size: 16px; }
+
+    ul {
+        padding: 0;
+        padding-left: $padding-left;
+        margin: 0;
+        list-style-type: disc;
+    }
+
+    pre {
+        @include box-sizing;
+        @include border-radius(3px);
+
+        font-size: 85%;
+        overflow: auto;
+
+        margin: 0;
+        margin-bottom: 16px;
+        padding: $padding-left;
+        background-color: #f7f7f7;
+
+        code {
+          font-size: 100%;
+          padding: 0;
+          margin: 0;
+          background-color: #f7f7f7;
+
+          &:before, &:after {
+            letter-spacing: 0em;
+            content: "";
+          }
+        }
+    }
+
+    code {
+        @include box-sizing;
+        @include border-radius(3px);
+
+        margin: 0;
+        padding: 0.2em 0;
+
+        font-size: 85%;
+        background-color: rgba(0,0,0,0.04);
+
+        &:before, &:after {
+            letter-spacing: -0.2em;
+            content: "\00a0";
+        }
+    }
+
+    table {
+        @include box-sizing;
+
+        display: block;
+        width: 100%;
+        overflow: auto;
+        word-break: normal;
+        border-collapse: collapse;
+        border-spacing: 0;
+
+        tr {
+            background-color: #fff;
+            border-top: 1px solid #ccc;
+
+            th, td {
+                padding: 6px 13px;
+                border: 1px solid #ddd;
+            }
+        }
+    }
+}
+

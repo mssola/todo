@@ -147,8 +147,6 @@ $width: 130px;
 
     .body {
         margin-top: 15px;
-        .contents-body {
-        }
 
         .contents-edit {
             display: none;
@@ -165,4 +163,6 @@ $width: 130px;
         display: none;
     }
 }
+
+@import "include/markdown";
 

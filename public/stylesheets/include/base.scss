@@ -2,16 +2,13 @@
 @import "include/normalize/normalize.css";
 @import "mixins";
 
-/*
-* TODO: ubuntu font.
- */
-
-
 html {
     height: 100%;
     margin: 0;
     padding: 0;
-    -webkit-font-smoothing: subpixel-antialiased;
+
+    @include font-smoothing(subpixel-antialiased);
+    text-rendering: optimizeLegibility !important;
 }
 
 body {
