@@ -1,0 +1,378 @@
+@import url(include/normalize/normalize.css);
+/*
+ * Cross-browser font-smoothing. Only works on Gecko and Webkit based browsers.
+ */
+html {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: subpixel-antialiased !important;
+  -moz-font-smoothing: subpixel-antialiased !important;
+  text-rendering: optimizeLegibility !important; }
+
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-family: helvetica, arial, freesans, clean, sans-serif;
+  *font-size: small;
+  font-size: 14px;
+  line-height: 1.4;
+  text-shadow: none;
+  background-color: white; }
+
+article {
+  clear: both;
+  width: 100%;
+  margin: 0px;
+  padding: 0px;
+  overflow: hidden;
+  background-color: #f9f9f9;
+  min-height: 100%;
+  height: auto !important;
+  height: 100%; }
+
+/*
+ * Basic tags.
+ */
+a:link, a:visited {
+  color: #27b;
+  text-decoration: none; }
+
+a, a:hover, a:active, a:focus {
+  /* Don't let Firefox's stupid outline dots to appear */
+  outline: 0;
+  cursor: pointer; }
+
+a:hover {
+  text-decoration: underline; }
+
+button::-moz-focus-inner {
+  /* Don't let Firefox's stupid outline dots to appear */
+  border: 0; }
+
+input::-moz-focus-inner {
+  /* Don't let Firefox's stupid outline dots to appear */
+  border: 0; }
+
+h1 {
+  padding: 0;
+  margin: 0;
+  font-size: 16px; }
+
+/*
+ * Handy classes.
+ */
+.clearout {
+  clear: both; }
+
+.text {
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  display: block;
+  font-size: 13px;
+  margin: 0;
+  margin-bottom: 5px;
+  width: 100%;
+  min-height: 34px;
+  padding-left: 10px;
+  outline: none;
+  vertical-align: middle;
+  color: #333;
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-position: right center;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.075); }
+  .text:hover {
+    border-color: #a0a0a0 #b9b9b9 #b9b9b9 #b9b9b9 !important; }
+
+.tiny-text {
+  margin: 0px;
+  padding: 0px;
+  background: white;
+  border: 1px solid #ccc;
+  padding: 2px 5px;
+  width: 95px;
+  margin-bottom: 3px; }
+
+/*
+ * Cross-browser font-smoothing. Only works on Gecko and Webkit based browsers.
+ */
+.btn {
+  -webkit-border-radius: 2px;
+  -moz-border-radius: 2px;
+  -ms-border-radius: 2px;
+  -o-border-radius: 2px;
+  border-radius: 2px;
+  position: relative;
+  cursor: pointer;
+  padding: .4em .75em .35em;
+  white-space: nowrap; }
+
+.yellow-btn {
+  background-color: #ffd343;
+  background-image: -webkit-gradient(linear, 50% 0, 50% 100%, color-stop(30%, #ffdf76), color-stop(95%, #ffd343));
+  background-image: -webkit-linear-gradient(#ffdf76 30%, #ffd343 95%);
+  background-image: -moz-linear-gradient(#ffdf76 30%, #ffd343 95%);
+  background-image: -o-linear-gradient(#ffdf76 30%, #ffd343 95%);
+  background-image: linear-gradient(#ffdf76 30%, #ffd343 95%);
+  background-repeat: repeat-x;
+  border: 1px solid #dca900;
+  color: #4d4d4d !important;
+  font-weight: bold; }
+  .yellow-btn:hover {
+    background-color: #ffd343;
+    background-image: -webkit-gradient(linear, 50% 0, 50% 100%, color-stop(30%, #ffeba9), color-stop(95%, #ffd343));
+    background-image: -webkit-linear-gradient(#ffeba9 30%, #ffd343 95%);
+    background-image: -moz-linear-gradient(#ffeba9 30%, #ffd343 95%);
+    background-image: -o-linear-gradient(#ffeba9 30%, #ffd343 95%);
+    background-image: linear-gradient(#ffeba9 30%, #ffd343 95%);
+    background-repeat: repeat-x;
+    color: #1a1a1a !important; }
+
+.green-btn {
+  text-align: center;
+  padding: 4px;
+  margin: 0;
+  background: none;
+  border: 1px solid #777;
+  border-radius: 3px;
+  opacity: .5;
+  font-weight: bold;
+  color: #29752F; }
+  .green-btn:hover {
+    opacity: .9; }
+
+.red-btn {
+  color: #900;
+  border: 1px solid #D19898;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+  font-weight: bold;
+  text-align: center;
+  padding: 4px;
+  margin: 0;
+  background: none;
+  border-radius: 3px;
+  opacity: .5;
+  font-weight: bold; }
+  .red-btn:hover {
+    opacity: .9; }
+
+.grey-btn {
+  text-align: center;
+  padding: 1px 4px;
+  margin: 0;
+  background: none;
+  border: 1px solid #777;
+  border-radius: 3px;
+  opacity: .5; }
+  .grey-btn:hover {
+    opacity: .9; }
+
+#list {
+  float: left;
+  position: absolute;
+  top: 0px;
+  left: 0;
+  bottom: 0;
+  width: 130px;
+  overflow: hidden;
+  background-color: #f7f7f7;
+  font-size: small; }
+  #list .create form {
+    display: none; }
+  #list h3 {
+    font-size: small;
+    font-weight: bold;
+    color: #777;
+    text-align: right;
+    padding: 4px; }
+  #list ul {
+    list-style: none;
+    margin: 0;
+    padding: 0; }
+    #list ul li {
+      margin-left: 12px;
+      text-align: left;
+      margin-bottom: 3px;
+      background: #fff;
+      border: 1px solid #ccc;
+      border-bottom-width: 2px;
+      border-right: none;
+      border-top-left-radius: 5px;
+      border-bottom-left-radius: 5px;
+      -webkit-transition: all 0.15s ease 0s;
+      -moz-transition: all 0.15s ease 0s;
+      -o-transition: all 0.15s ease 0s;
+      -ms-transition: all 0.15s ease 0s;
+      transition: all 0.15s ease 0s; }
+      #list ul li a {
+        text-decoration: none;
+        color: #369;
+        font-size: 12px;
+        padding: .8em 5px;
+        padding-left: 10px;
+        display: block;
+        position: relative;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-right: 5px; }
+      #list ul li:hover {
+        margin-left: 9px; }
+    #list ul .selected {
+      position: relative;
+      background: #e9f2fc;
+      border-color: #b3cce6;
+      margin-right: -8px;
+      padding-right: 8px;
+      box-shadow: -30px 0 30px -15px rgba(255, 255, 255, 0.5) inset, 0 2px 6px -1px rgba(0, 0, 0, 0.2);
+      z-index: 35;
+      font-weight: bold; }
+      #list ul .selected:before {
+        position: absolute;
+        top: 50%;
+        right: 5px;
+        margin-top: -5px;
+        display: block;
+        content: '';
+        border: 5px solid transparent;
+        border-style: solid solid outset;
+        border-left-color: #79a6d2; }
+    #list ul .create, #list ul .logout {
+      padding: 5px; }
+    #list ul .logout {
+      margin-top: 20px; }
+
+#contents {
+  display: inline;
+  position: absolute;
+  top: 0px;
+  left: 130px;
+  bottom: 0;
+  padding: 10px 30px;
+  border-left: 1px solid #ddd;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
+  background-color: #fff;
+  width: calc(100% - 130px - 1px - 60px);
+  width: -moz-calc(100% - 130px - 1px - 60px);
+  width: -webkit-calc(100% - 130px - 1px - 60px); }
+  #contents .header h2 {
+    font-size: 16px;
+    display: inline; }
+  #contents .header ul {
+    display: inline;
+    list-style: none;
+    margin: 0;
+    margin-left: 5px;
+    padding: 0; }
+    #contents .header ul li {
+      margin-left: 5px;
+      display: inline; }
+      #contents .header ul li span {
+        color: red;
+        font-size: small; }
+      #contents .header ul li a {
+        font-size: small;
+        color: #888;
+        font-weight: bold;
+        padding: 0 1px; }
+        #contents .header ul li a:hover {
+          text-decoration: underline; }
+    #contents .header ul .confirmation {
+      display: none; }
+  #contents .body {
+    margin-top: 15px; }
+    #contents .body .contents-edit {
+      display: none; }
+      #contents .body .contents-edit textarea {
+        width: 800px;
+        height: 600px;
+        resize: none; }
+  #contents .rename-form {
+    display: none; }
+
+/*
+ * Shared with items with a big padding.
+ */
+/*
+ * There can only be Markdown code inside this class.
+ */
+#contents .contents-body {
+  color: #333;
+  font-size: 16px;
+  font-style: normal;
+  width: 800px; }
+  #contents .contents-body h1, #contents .contents-body h2, #contents .contents-body h3 {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    position: relative;
+    display: block;
+    font-weight: bold;
+    margin: 30px 0px 15px 0px;
+    padding-left: 2px;
+    border-bottom: 1px solid #eee; }
+  #contents .contents-body h1 {
+    font-size: 32px; }
+  #contents .contents-body h2 {
+    font-size: 24px; }
+  #contents .contents-body h3 {
+    font-size: 16px; }
+  #contents .contents-body ul {
+    padding: 0;
+    padding-left: 16px;
+    margin: 0;
+    list-style-type: disc; }
+  #contents .contents-body pre {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+    font-size: 85%;
+    overflow: auto;
+    margin: 0;
+    margin-bottom: 16px;
+    padding: 16px;
+    background-color: #f7f7f7; }
+    #contents .contents-body pre code {
+      font-size: 100%;
+      padding: 0;
+      margin: 0;
+      background-color: #f7f7f7; }
+      #contents .contents-body pre code:before, #contents .contents-body pre code:after {
+        letter-spacing: 0em;
+        content: ""; }
+  #contents .contents-body code {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+    margin: 0;
+    padding: 0.2em 0;
+    font-size: 85%;
+    background-color: rgba(0, 0, 0, 0.04); }
+    #contents .contents-body code:before, #contents .contents-body code:after {
+      letter-spacing: -0.2em;
+      content: "\00a0"; }
+  #contents .contents-body table {
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    display: block;
+    width: 100%;
+    overflow: auto;
+    word-break: normal;
+    border-collapse: collapse;
+    border-spacing: 0; }
+    #contents .contents-body table tr {
+      background-color: #fff;
+      border-top: 1px solid #ccc; }
+      #contents .contents-body table tr th, #contents .contents-body table tr td {
+        padding: 6px 13px;
+        border: 1px solid #ddd; }
