@@ -65,7 +65,7 @@ func TestTopicsRename(t *testing.T) {
 	InitTestDB()
 	defer CloseTestDB()
 
-	err := createTopic("topic")
+	_, err := createTopic("topic")
 	assert.Nil(t, err)
 
 	var t1, t2 Topic
@@ -99,7 +99,7 @@ func TestUpdateContents(t *testing.T) {
 	InitTestDB()
 	defer CloseTestDB()
 
-	err := createTopic("topic")
+	_, err := createTopic("topic")
 	assert.Nil(t, err)
 
 	var t1, t2 Topic
@@ -135,7 +135,7 @@ func TestDestroy(t *testing.T) {
 	InitTestDB()
 	defer CloseTestDB()
 
-	err := createTopic("topic")
+	_, err := createTopic("topic")
 	assert.Nil(t, err)
 
 	var t1 Topic
