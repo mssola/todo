@@ -64,7 +64,11 @@ func renderShow(res http.ResponseWriter, topic *Topic) {
 func TopicsIndex(res http.ResponseWriter, req *http.Request) {
 	var t Topic
 
-	Db.SelectOne(&t, "select * from topics order by name limit 1")
+	if id := lib.GetCookie(req, "topic"); id != "" {
+		Db.SelectOne(&t, "select * from topics where id=$1", id)
+	} else {
+		Db.SelectOne(&t, "select * from topics order by name limit 1")
+	}
 	renderShow(res, &t)
 }
 
@@ -78,6 +82,9 @@ func TopicsShow(res http.ResponseWriter, req *http.Request) {
 
 	p := mux.Vars(req)
 	Db.SelectOne(&t, "select * from topics where id=$1", p["id"])
+	if t.Id != "" {
+		lib.SetCookie(res, req, "topic", t.Id)
+	}
 	renderShow(res, &t)
 }
 
