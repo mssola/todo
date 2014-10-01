@@ -29,5 +29,6 @@ func Login(res http.ResponseWriter, req *http.Request) {
 // Logout the current user.
 func Logout(res http.ResponseWriter, req *http.Request) {
 	lib.DeleteCookie(res, req, "userId")
+	lib.DeleteCookie(res, req, "topic")
 	http.Redirect(res, req, "/", http.StatusFound)
 }
