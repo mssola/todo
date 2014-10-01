@@ -15,10 +15,10 @@ import (
 
 // There can only be one user in this application.
 type User struct {
-	Id            string
-	Name          string
-	Password_hash string
-	Created_at    time.Time
+	Id            string    `json:"token"`
+	Name          string    `json:"-"`
+	Password_hash string    `json:"-"`
+	Created_at    time.Time `json:"-"`
 }
 
 // Create a new user with the given name and password. The given password is

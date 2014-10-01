@@ -5,25 +5,48 @@
 package app
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/mssola/todo/lib"
 )
 
+// Returns the name and the password parameters as given by the request. This
+// method abstracts away the origin of these values.
+// TODO: test
+func getNamePassword(req *http.Request) (string, string) {
+	if lib.JsonEncoding(req) {
+		decoder := json.NewDecoder(req.Body)
+
+		var t struct{ Name, Password string }
+		err := decoder.Decode(&t)
+		if err != nil {
+			return "", ""
+		}
+		return t.Name, t.Password
+	}
+	return req.FormValue("name"), req.FormValue("password")
+}
+
 // Login a user. It expects the "name" and "password" form values. Regardless
 // if it was successful or not, it will redirect the user to the root path.
 func Login(res http.ResponseWriter, req *http.Request) {
 	// Check if the user exists and that the password is spot on.
-	n, password := req.FormValue("name"), req.FormValue("password")
+	n, password := getNamePassword(req)
 	id, err := matchPassword(n, password)
-	if err != nil {
-		http.Redirect(res, req, "/", http.StatusFound)
+	if lib.CheckError(res, req, err) {
 		return
 	}
 
 	// It's ok to login this user.
-	lib.SetCookie(res, req, "userId", id)
-	http.Redirect(res, req, "/", http.StatusFound)
+	if lib.JsonEncoding(req) {
+		b, _ := json.Marshal(User{Id: id})
+		fmt.Fprint(res, string(b))
+	} else {
+		lib.SetCookie(res, req, "userId", id)
+		http.Redirect(res, req, "/", http.StatusFound)
+	}
 }
 
 // Logout the current user.

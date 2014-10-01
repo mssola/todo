@@ -5,6 +5,8 @@
 package app
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -17,10 +19,10 @@ import (
 
 // A topic is my way to divide different "contexts" inside my To Do list.
 type Topic struct {
-	Id         string
-	Name       string
-	Contents   string
-	Created_at time.Time
+	Id         string    `json:"id"`
+	Name       string    `json:"name"`
+	Contents   string    `json:"contents"`
+	Created_at time.Time `json:"created_at"`
 }
 
 type TopicData struct {
@@ -34,13 +36,13 @@ type TopicData struct {
 }
 
 // Given a name, try to create a new topic.
-func createTopic(name string) error {
+func createTopic(name string) (string, error) {
 	uuid, _ := uuid.NewV4()
 	t := &Topic{
 		Id:   uuid.String(),
 		Name: name,
 	}
-	return Db.Insert(t)
+	return t.Id, Db.Insert(t)
 }
 
 func renderShow(res http.ResponseWriter, topic *Topic) {
@@ -62,6 +64,21 @@ func renderShow(res http.ResponseWriter, topic *Topic) {
 }
 
 func TopicsIndex(res http.ResponseWriter, req *http.Request) {
+	if lib.JsonEncoding(req) {
+		var tr struct {
+			Topics []Topic `json:"topics"`
+		}
+		Db.Select(&tr.Topics, "select * from topics")
+		b, err := json.Marshal(tr)
+		if err != nil {
+			res.WriteHeader(http.StatusNotFound)
+			fmt.Fprint(res, lib.Response{Error: "Failed!"})
+		} else {
+			fmt.Fprint(res, string(b))
+		}
+		return
+	}
+
 	var t Topic
 
 	if id := lib.GetCookie(req, "topic"); id != "" {
@@ -72,16 +89,77 @@ func TopicsIndex(res http.ResponseWriter, req *http.Request) {
 	renderShow(res, &t)
 }
 
+func getValue(req *http.Request, name string) string {
+	if lib.JsonEncoding(req) {
+		decoder := json.NewDecoder(req.Body)
+
+		var t struct{ Value string }
+		err := decoder.Decode(&t)
+		if err != nil {
+			return ""
+		}
+		return t.Value
+	}
+	return req.FormValue(name)
+}
+
 func TopicsCreate(res http.ResponseWriter, req *http.Request) {
-	createTopic(req.FormValue("name"))
-	http.Redirect(res, req, "/topics", http.StatusFound)
+	id, err := createTopic(getValue(req, "name"))
+	if lib.JsonEncoding(req) {
+		if err != nil {
+			res.WriteHeader(http.StatusNotFound)
+			fmt.Fprint(res, lib.Response{Error: "Failed!"})
+		} else {
+			t := struct {
+				Id string `json:"id"`
+			}{Id: id}
+			b, err := json.Marshal(t)
+			if err != nil {
+				res.WriteHeader(http.StatusNotFound)
+				fmt.Fprint(res, lib.Response{Error: "Failed!"})
+			} else {
+				fmt.Fprint(res, string(b))
+			}
+		}
+	} else {
+		http.Redirect(res, req, "/topics", http.StatusFound)
+	}
+}
+
+type topicsShow struct {
+	Topic
+
+	Render string
 }
 
 func TopicsShow(res http.ResponseWriter, req *http.Request) {
 	var t Topic
 
 	p := mux.Vars(req)
-	Db.SelectOne(&t, "select * from topics where id=$1", p["id"])
+	err := Db.SelectOne(&t, "select * from topics where id=$1", p["id"])
+	if lib.JsonEncoding(req) {
+		if err != nil {
+			res.WriteHeader(http.StatusNotFound)
+			fmt.Fprint(res, lib.Response{Error: "Failed!"})
+			return
+		}
+
+		var ts topicsShow
+		ts.Contents = t.Contents
+		ts.Id, ts.Name, ts.Created_at = t.Id, t.Name, t.Created_at
+		unsafe := blackfriday.MarkdownCommon([]byte(t.Contents))
+		ts.Render = string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
+
+		b, err := json.Marshal(ts)
+		if err != nil {
+			res.WriteHeader(http.StatusNotFound)
+			fmt.Fprint(res, lib.Response{Error: "Failed!"})
+		} else {
+			fmt.Fprint(res, string(b))
+		}
+		return
+	}
+
 	if t.Id != "" {
 		lib.SetCookie(res, req, "topic", t.Id)
 	}
@@ -93,18 +171,58 @@ func TopicsUpdate(res http.ResponseWriter, req *http.Request) {
 
 	// We can either rename, or change the contents, but not both things at the
 	// same time.
-	name := req.FormValue("name")
+	name := getValue(req, "name")
+	update := false
+	var err error
+	var cts string
 	if name != "" {
-		Db.Exec("update topics set name=$1 where id=$2", name, p["id"])
+		_, err = Db.Exec("update topics set name=$1 where id=$2", name, p["id"])
 	} else {
-		cts := req.FormValue("contents")
-		Db.Exec("update topics set contents=$1 where id=$2", cts, p["id"])
+		update = true
+		cts = getValue(req, "contents")
+		_, err = Db.Exec("update topics set contents=$1 where id=$2", cts, p["id"])
 	}
-	http.Redirect(res, req, "/topics", http.StatusFound)
+
+	if lib.JsonEncoding(req) {
+		if err != nil {
+			res.WriteHeader(http.StatusNotFound)
+			fmt.Fprint(res, lib.Response{Error: "Failed!"})
+		} else {
+			if update {
+				var ts struct {
+					Render string `json:"contents"`
+				}
+				unsafe := blackfriday.MarkdownCommon([]byte(cts))
+				ts.Render = string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
+
+				b, err := json.Marshal(ts)
+				if err != nil {
+					res.WriteHeader(http.StatusNotFound)
+					fmt.Fprint(res, lib.Response{Error: "Failed!"})
+				} else {
+					fmt.Fprint(res, string(b))
+				}
+			} else {
+				fmt.Fprint(res, lib.Response{Message: "Ok"})
+			}
+		}
+	} else {
+		http.Redirect(res, req, "/topics", http.StatusFound)
+	}
 }
 
 func TopicsDestroy(res http.ResponseWriter, req *http.Request) {
 	p := mux.Vars(req)
-	Db.Exec("delete from topics where id=$1", p["id"])
-	http.Redirect(res, req, "/topics", http.StatusFound)
+	_, err := Db.Exec("delete from topics where id=$1", p["id"])
+
+	if lib.JsonEncoding(req) {
+		if err != nil {
+			res.WriteHeader(http.StatusNotFound)
+			fmt.Fprint(res, lib.Response{Error: "Failed!"})
+		} else {
+			fmt.Fprint(res, lib.Response{Message: "Ok"})
+		}
+	} else {
+		http.Redirect(res, req, "/topics", http.StatusFound)
+	}
 }
