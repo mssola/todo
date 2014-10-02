@@ -33,6 +33,8 @@ func (t *Topic) RenderMarkdown() {
 	t.Markdown = string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
 }
 
+// This is the data that will be assed to the renderShow function in order to
+// render the main page.
 type TopicData struct {
 	lib.ViewData
 
@@ -52,8 +54,8 @@ func createTopic(name string) (*Topic, error) {
 	return t, Db.Insert(t)
 }
 
-// Sends the HTML code with the given topic rendered in it as the current
-// topic.
+// Sends the main page with the given topic rendered in it as
+// the current one.
 func renderShow(res http.ResponseWriter, topic *Topic) {
 	var topics []Topic
 	Db.Select(&topics, "select * from topics order by name")
