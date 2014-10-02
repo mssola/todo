@@ -97,14 +97,14 @@ func TestTopicsIndexJson(t *testing.T) {
 	w := httptest.NewRecorder()
 	TopicsIndex(w, req)
 
-	var data map[string][]Topic
+	var topics []Topic
 	decoder := json.NewDecoder(w.Body)
-	err = decoder.Decode(&data)
+	err = decoder.Decode(&topics)
 	assert.Nil(t, err)
 
 	for i := 0; i < 2; i++ {
-		assert.Equal(t, data["topics"][i].Id, topicsDb[i].Id)
-		assert.Equal(t, data["topics"][i].Name, topicsDb[i].Name)
+		assert.Equal(t, topics[i].Id, topicsDb[i].Id)
+		assert.Equal(t, topics[i].Name, topicsDb[i].Name)
 	}
 }
 
@@ -171,15 +171,16 @@ func TestTopicsCreateJson(t *testing.T) {
 	m.HandleFunc("/topics", TopicsCreate)
 	m.ServeHTTP(w, req)
 
-	var u struct{ Id string }
+	var topic Topic
 	decoder := json.NewDecoder(w.Body)
-	err = decoder.Decode(&u)
+	err = decoder.Decode(&topic)
 	assert.Nil(t, err)
 
 	var t1 Topic
 	err = Db.SelectOne(&t1, "select * from topics")
 	assert.Nil(t, err)
-	assert.Equal(t, t1.Id, u.Id)
+	assert.Equal(t, t1.Id, topic.Id)
+	assert.Equal(t, t1.Name, topic.Name)
 
 	// Now let's try it with the same name.
 	reader2 := strings.NewReader(body)
@@ -197,6 +198,30 @@ func TestTopicsCreateJson(t *testing.T) {
 	err = decoder.Decode(&resp)
 	assert.Nil(t, err)
 	assert.Equal(t, resp.Error, "Failed!")
+}
+
+func TestTopicsCreateJsonMalformed(t *testing.T) {
+	InitTestDB()
+	defer CloseTestDB()
+
+	// We try to create a topic for the first time.
+	body := "{\"name\":\"mssola\""
+	reader := strings.NewReader(body)
+	req, err := http.NewRequest("POST", "/topics", reader)
+	assert.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	m := mux.NewRouter()
+	m.HandleFunc("/topics", TopicsCreate)
+	m.ServeHTTP(w, req)
+
+	var topic lib.Response
+	decoder := json.NewDecoder(w.Body)
+	err = decoder.Decode(&topic)
+	assert.Nil(t, err)
+	assert.Equal(t, topic.Error, "Failed!")
+	assert.Equal(t, w.Code, 404)
 }
 
 func TestTopicsShow(t *testing.T) {
@@ -256,10 +281,7 @@ func TestTopicsShowJson(t *testing.T) {
 	m.HandleFunc("/topics/{id}", TopicsShow)
 	m.ServeHTTP(w, req)
 
-	var topic struct {
-		Topic
-		Render string
-	}
+	var topic Topic
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&topic)
 	assert.Nil(t, err)
@@ -267,7 +289,7 @@ func TestTopicsShowJson(t *testing.T) {
 	assert.Equal(t, topicsDb[1].Id, topic.Id)
 	assert.Equal(t, topicsDb[1].Name, topic.Name)
 	assert.Equal(t, topicsDb[1].Contents, topic.Contents)
-	rendered := strings.TrimSpace(topic.Render)
+	rendered := strings.TrimSpace(topic.Markdown)
 	assert.Equal(t, "<p><strong>co</strong></p>", rendered)
 
 	// A non-existant topic.
@@ -285,6 +307,27 @@ func TestTopicsShowJson(t *testing.T) {
 
 	assert.Equal(t, response.Error, "Failed!")
 	assert.Empty(t, response.Message)
+}
+
+func TestTopicsShowJsonFail(t *testing.T) {
+	InitTestDB()
+	defer CloseTestDB()
+
+	req, err := http.NewRequest("GET", "/topics/1", nil)
+	assert.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	m := mux.NewRouter()
+	m.HandleFunc("/topics/{id}", TopicsShow)
+	m.ServeHTTP(w, req)
+
+	var resp lib.Response
+	decoder := json.NewDecoder(w.Body)
+	err = decoder.Decode(&resp)
+	assert.Nil(t, err)
+	assert.Equal(t, resp.Error, "Failed!")
+	assert.Equal(t, w.Code, 404)
 }
 
 func TestTopicsRename(t *testing.T) {
@@ -343,17 +386,78 @@ func TestTopicsRenameJson(t *testing.T) {
 	m.ServeHTTP(w, req)
 
 	// DB
+	var resp Topic
+	decoder := json.NewDecoder(w.Body)
+	err = decoder.Decode(&resp)
+	assert.Nil(t, err)
 	err = Db.SelectOne(&t2, "select * from topics")
 	assert.Nil(t, err)
 	assert.Equal(t, t2.Name, "topic1")
+	assert.Equal(t, t2.Name, resp.Name)
 	assert.Equal(t, t1.Id, t2.Id)
+	assert.Equal(t, t2.Id, resp.Id)
+}
 
-	// Response
+func TestTopicsRenameJsonMalformed(t *testing.T) {
+	InitTestDB()
+	defer CloseTestDB()
+
+	_, err := createTopic("topic")
+	assert.Nil(t, err)
+
+	var t1 Topic
+	err = Db.SelectOne(&t1, "select * from topics")
+	assert.Nil(t, err)
+
+	body := strings.NewReader("{\"name\":\"topic1\"")
+	req, err := http.NewRequest("POST", "/topics/"+t1.Id, body)
+	assert.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	m := mux.NewRouter()
+	m.HandleFunc("/topics/{id}", TopicsUpdate)
+	m.ServeHTTP(w, req)
+
+	// DB
 	var resp lib.Response
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&resp)
 	assert.Nil(t, err)
-	assert.Equal(t, resp.Message, "Ok")
+	assert.Equal(t, resp.Error, "Failed!")
+	assert.Equal(t, w.Code, 404)
+}
+
+func TestTopicsRenameJsonFail(t *testing.T) {
+	InitTestDB()
+	defer CloseTestDB()
+
+	_, err := createTopic("topic")
+	assert.Nil(t, err)
+	_, err = createTopic("topic1")
+	assert.Nil(t, err)
+
+	var t1 Topic
+	err = Db.SelectOne(&t1, "select * from topics where name=$1", "topic")
+	assert.Nil(t, err)
+
+	body := strings.NewReader("{\"name\":\"topic1\"}")
+	req, err := http.NewRequest("POST", "/topics/"+t1.Id, body)
+	assert.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	m := mux.NewRouter()
+	m.HandleFunc("/topics/{id}", TopicsUpdate)
+	m.ServeHTTP(w, req)
+
+	// DB
+	var resp lib.Response
+	decoder := json.NewDecoder(w.Body)
+	err = decoder.Decode(&resp)
+	assert.Nil(t, err)
+	assert.Equal(t, resp.Error, "Failed!")
+	assert.Equal(t, w.Code, 404)
 }
 
 func TestUpdateContents(t *testing.T) {
@@ -422,14 +526,71 @@ func TestUpdateJson(t *testing.T) {
 	assert.Equal(t, t2.Contents, "**contents**")
 
 	// Response
-	var st struct {
-		Contents string
-	}
+	var st Topic
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&st)
 	assert.Nil(t, err)
-	rendered := strings.TrimSpace(st.Contents)
+	rendered := strings.TrimSpace(st.Markdown)
 	assert.Equal(t, rendered, "<p><strong>contents</strong></p>")
+}
+
+func TestTopicsUpdateJsonMalformed(t *testing.T) {
+	InitTestDB()
+	defer CloseTestDB()
+
+	_, err := createTopic("topic")
+	assert.Nil(t, err)
+
+	var t1 Topic
+	err = Db.SelectOne(&t1, "select * from topics")
+	assert.Nil(t, err)
+
+	body := strings.NewReader("{\"contents\":\"topic1\"")
+	req, err := http.NewRequest("POST", "/topics/"+t1.Id, body)
+	assert.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	m := mux.NewRouter()
+	m.HandleFunc("/topics/{id}", TopicsUpdate)
+	m.ServeHTTP(w, req)
+
+	// DB
+	var resp lib.Response
+	decoder := json.NewDecoder(w.Body)
+	err = decoder.Decode(&resp)
+	assert.Nil(t, err)
+	assert.Equal(t, resp.Error, "Failed!")
+	assert.Equal(t, w.Code, 404)
+}
+
+func TestTopicsUpdateNoBody(t *testing.T) {
+	InitTestDB()
+	defer CloseTestDB()
+
+	_, err := createTopic("topic")
+	assert.Nil(t, err)
+
+	var t1 Topic
+	err = Db.SelectOne(&t1, "select * from topics")
+	assert.Nil(t, err)
+
+	req, err := http.NewRequest("POST", "/topics/"+t1.Id, nil)
+	assert.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	m := mux.NewRouter()
+	m.HandleFunc("/topics/{id}", TopicsUpdate)
+	m.ServeHTTP(w, req)
+
+	// DB
+	var resp lib.Response
+	decoder := json.NewDecoder(w.Body)
+	err = decoder.Decode(&resp)
+	assert.Nil(t, err)
+	assert.Equal(t, resp.Error, "Failed!")
+	assert.Equal(t, w.Code, 404)
 }
 
 func TestDestroy(t *testing.T) {

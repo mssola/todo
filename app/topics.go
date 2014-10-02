@@ -24,11 +24,19 @@ type Topic struct {
 	Name       string    `json:"name"`
 	Contents   string    `json:"contents"`
 	Created_at time.Time `json:"created_at"`
+	Markdown   string    `db:"-",json:"markdown"`
+}
+
+// TODO: document
+func (t *Topic) RenderMarkdown() {
+	unsafe := blackfriday.MarkdownCommon([]byte(t.Contents))
+	t.Markdown = string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
 }
 
 type TopicData struct {
 	lib.ViewData
 
+	// TODO: remove?
 	Rendered string
 
 	Current *Topic
@@ -37,26 +45,24 @@ type TopicData struct {
 }
 
 // Given a name, try to create a new topic.
-func createTopic(name string) (string, error) {
+func createTopic(name string) (*Topic, error) {
 	uuid, _ := uuid.NewV4()
 	t := &Topic{
-		Id:   uuid.String(),
-		Name: name,
+		Id:         uuid.String(),
+		Name:       name,
+		Created_at: time.Now(),
 	}
-	return t.Id, Db.Insert(t)
+	return t, Db.Insert(t)
 }
 
 func renderShow(res http.ResponseWriter, topic *Topic) {
 	var topics []Topic
 	Db.Select(&topics, "select * from topics order by name")
-
-	// Render the contents
-	unsafe := blackfriday.MarkdownCommon([]byte(topic.Contents))
-	rs := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+	topic.RenderMarkdown()
 
 	// And render the page.
 	o := &TopicData{
-		Rendered: string(rs),
+		Rendered: topic.Markdown,
 		Current:  topic,
 		Topics:   topics,
 	}
@@ -88,13 +94,6 @@ func TopicsCreate(res http.ResponseWriter, req *http.Request) {
 
 	createTopic(req.FormValue("name"))
 	http.Redirect(res, req, "/topics", http.StatusFound)
-}
-
-// TODO: deprecate?
-type topicsShow struct {
-	Topic
-
-	Render string
 }
 
 func TopicsShow(res http.ResponseWriter, req *http.Request) {

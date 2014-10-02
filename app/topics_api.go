@@ -11,120 +11,103 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
-	"github.com/microcosm-cc/bluemonday"
 	"github.com/mssola/todo/lib"
-	"github.com/russross/blackfriday"
 )
 
-// TODO: re-think this once we split the _api thingie.
-//          -> create a struct for JSON thingies with tags and shit ?
-
+// TODO: document
 func getName(req *http.Request) string {
+	var m struct{ Name string }
+
 	decoder := json.NewDecoder(req.Body)
-
-	var t struct{ Name string }
-	err := decoder.Decode(&t)
-	if err != nil {
+	if err := decoder.Decode(&m); err != nil {
 		return ""
 	}
-	return t.Name
+	return m.Name
 }
 
-func getNameFromBuffer(req *http.Request, buffer bytes.Buffer) string {
-	reader := bytes.NewReader(buffer.Bytes())
-	decoder := json.NewDecoder(reader)
+func getValue(req *http.Request, name string, bf bytes.Buffer) (string, error) {
 
-	var t struct{ Name string }
-	err := decoder.Decode(&t)
+	var m map[string]string
+	err := json.Unmarshal(bf.Bytes(), &m)
 	if err != nil {
-		return ""
+		return "", err
 	}
-	return t.Name
+	return m[name], nil
 }
 
-func getContents(req *http.Request, buffer bytes.Buffer) string {
-	reader := bytes.NewReader(buffer.Bytes())
-	decoder := json.NewDecoder(reader)
-
-	var t struct{ Contents string }
-	err := decoder.Decode(&t)
-	if err != nil {
-		return ""
+// TODO: document
+func renderJson(res http.ResponseWriter, topic *Topic, err error, md bool) {
+	// Try to render the given Topic.
+	if err == nil {
+		if md {
+			topic.RenderMarkdown()
+		}
+		if b, err := json.Marshal(topic); err == nil {
+			fmt.Fprint(res, string(b))
+			return
+		}
 	}
-	return t.Contents
-}
 
-// TODO: check json.Marshal always.
-// TODO: malformed JSON (+ tests)
+	// Render a generic error.
+	lib.JsonError(res)
+}
 
 func TopicsApiIndex(res http.ResponseWriter, req *http.Request) {
-	var tr struct {
-		Topics []Topic `json:"topics"`
+	var topics []Topic
+	Db.Select(&topics, "select * from topics")
+
+	if b, err := json.Marshal(topics); err != nil {
+		lib.JsonError(res)
+	} else {
+		fmt.Fprint(res, string(b))
 	}
-	Db.Select(&tr.Topics, "select * from topics")
-	b, _ := json.Marshal(tr)
-	fmt.Fprint(res, string(b))
 }
 
 func TopicsApiCreate(res http.ResponseWriter, req *http.Request) {
-	id, err := createTopic(getName(req))
-
-	if err != nil {
-		res.WriteHeader(http.StatusNotFound)
-		fmt.Fprint(res, lib.Response{Error: "Failed!"})
+	if name := getName(req); name == "" {
+		lib.JsonError(res)
 	} else {
-		t := struct {
-			Id string `json:"id"`
-		}{Id: id}
-		b, _ := json.Marshal(t)
-		fmt.Fprint(res, string(b))
+		t, err := createTopic(name)
+		renderJson(res, t, err, false)
 	}
 }
 
 func TopicsApiShow(res http.ResponseWriter, req *http.Request) {
 	var t Topic
-
 	p := mux.Vars(req)
 	err := Db.SelectOne(&t, "select * from topics where id=$1", p["id"])
-
-	if err != nil {
-		res.WriteHeader(http.StatusNotFound)
-		fmt.Fprint(res, lib.Response{Error: "Failed!"})
-		return
-	}
-
-	var ts topicsShow
-	ts.Contents = t.Contents
-	ts.Id, ts.Name, ts.Created_at = t.Id, t.Name, t.Created_at
-	unsafe := blackfriday.MarkdownCommon([]byte(t.Contents))
-	ts.Render = string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
-
-	b, _ := json.Marshal(ts)
-	fmt.Fprint(res, string(b))
+	renderJson(res, &t, err, true)
 }
 
 func TopicsApiUpdate(res http.ResponseWriter, req *http.Request) {
+	var err error
+	var str string
 	var buffer bytes.Buffer
-	p := mux.Vars(req)
 
-	// TODO: check if empty, check if couldn't read, check, check, ...
-	_, _ = buffer.ReadFrom(req.Body)
-
-	name := getNameFromBuffer(req, buffer)
-	if name != "" {
-		Db.Exec("update topics set name=$1 where id=$2", name, p["id"])
-		fmt.Fprint(res, lib.Response{Message: "Ok"})
-	} else {
-		cts := getContents(req, buffer)
-		Db.Exec("update topics set contents=$1 where id=$2", cts, p["id"])
-
-		var ts struct {
-			Render string `json:"contents"`
-		}
-		unsafe := blackfriday.MarkdownCommon([]byte(cts))
-		ts.Render = string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
-
-		b, _ := json.Marshal(ts)
-		fmt.Fprint(res, string(b))
+	// Keep the body of the request in a buffer so we can read it multiple
+	// times.
+	if req.Body == nil {
+		lib.JsonError(res)
+		return
 	}
+	if _, err := buffer.ReadFrom(req.Body); err != nil {
+		lib.JsonError(res)
+		return
+	}
+
+	// Execute the update query. Depending on the given parameters this will be
+	// just a plain rename, or a full update.
+	value, err := getValue(req, "name", buffer)
+	if value == "" && err == nil {
+		str = "contents"
+		value, err = getValue(req, "contents", buffer)
+	} else {
+		str = "name"
+	}
+
+	// And finally send the JSON response.
+	var t Topic
+	str = fmt.Sprintf("update topics set %v=$1 where id=$2 returning *", str)
+	err = Db.SelectOne(&t, str, value, mux.Vars(req)["id"])
+	renderJson(res, &t, err, true)
 }

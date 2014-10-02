@@ -27,6 +27,11 @@ func (r Response) String() string {
 	return string(b)
 }
 
+func JsonError(res http.ResponseWriter) {
+	res.WriteHeader(http.StatusNotFound)
+	fmt.Fprint(res, Response{Error: "Failed!"})
+}
+
 // TODO: not sure about this one.
 func CheckError(res http.ResponseWriter, req *http.Request, err error) bool {
 	if err == nil {
