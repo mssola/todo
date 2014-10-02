@@ -19,10 +19,7 @@ type Response struct {
 
 // Concatenate this response by marshalling it into JSON.
 func (r Response) String() string {
-	b, err := json.Marshal(r)
-	if err != nil {
-		return ""
-	}
+	b, _ := json.Marshal(r)
 	return string(b)
 }
 
