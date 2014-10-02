@@ -27,11 +27,12 @@ func userLogged(req *http.Request, rm *mux.RouteMatch) bool {
 	return app.Exists("users", rid)
 }
 
-// TODO
+// Returns true if this request should not let JSON requests pass.
 func private(req *http.Request, rm *mux.RouteMatch) bool {
 	return !lib.JsonEncoding(req)
 }
 
+// Returns the "Not found" response.
 func notFound(w http.ResponseWriter, req *http.Request) {
 	if lib.JsonEncoding(req) {
 		w.Header().Set("Content-Type", "application/json")
