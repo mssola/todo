@@ -65,13 +65,3 @@ func JsonEncoding(req *http.Request) bool {
 	}
 	return strings.HasSuffix(req.URL.Path, ".json")
 }
-
-func GetUserId(req *http.Request) string {
-	if JsonEncoding(req) {
-		return req.URL.Query().Get("userId")
-	}
-	if id, ok := GetCookie(req, "userId").(string); ok {
-		return id
-	}
-	return ""
-}

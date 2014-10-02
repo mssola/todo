@@ -16,8 +16,15 @@ import (
 // It returns true (thus, accepting the route) if the current user is
 // logged in, false otherwise.
 func userLogged(req *http.Request, rm *mux.RouteMatch) bool {
-	id := lib.GetUserId(req)
-	return app.Exists("users", id)
+	var rid string
+
+	if lib.JsonEncoding(req) {
+		rid = req.URL.Query().Get("userId")
+	}
+	if id, ok := lib.GetCookie(req, "userId").(string); ok {
+		rid = id
+	}
+	return app.Exists("users", rid)
 }
 
 // TODO
