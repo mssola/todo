@@ -14,7 +14,7 @@ import (
 	"github.com/mssola/todo/lib"
 )
 
-// TODO: document
+// Returns the name parameter as given by the body of the request.
 func getName(req *http.Request) string {
 	var m struct{ Name string }
 
@@ -25,8 +25,8 @@ func getName(req *http.Request) string {
 	return m.Name
 }
 
-func getValue(req *http.Request, name string, bf bytes.Buffer) (string, error) {
-
+// Returns the value of the given element inside the buffer.
+func getValue(name string, bf bytes.Buffer) (string, error) {
 	var m map[string]string
 	err := json.Unmarshal(bf.Bytes(), &m)
 	if err != nil {
@@ -35,7 +35,10 @@ func getValue(req *http.Request, name string, bf bytes.Buffer) (string, error) {
 	return m[name], nil
 }
 
-// TODO: document
+// Safely render and send a JSON response with the given topic. This function
+// should be called after performing some operation that might return an error.
+// This error from the previous operation is the third parameter. The fourth
+// parameter tells this function to generate the Markdown code for this topic.
 func renderJson(res http.ResponseWriter, topic *Topic, err error, md bool) {
 	// Try to render the given Topic.
 	if err == nil {
@@ -97,10 +100,10 @@ func TopicsApiUpdate(res http.ResponseWriter, req *http.Request) {
 
 	// Execute the update query. Depending on the given parameters this will be
 	// just a plain rename, or a full update.
-	value, err := getValue(req, "name", buffer)
+	value, err := getValue("name", buffer)
 	if value == "" && err == nil {
 		str = "contents"
-		value, err = getValue(req, "contents", buffer)
+		value, err = getValue("contents", buffer)
 	} else {
 		str = "name"
 	}

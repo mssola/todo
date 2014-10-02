@@ -16,9 +16,9 @@ import (
 	"github.com/russross/blackfriday"
 )
 
-// TODO: flashy errors.
-
 // A topic is my way to divide different "contexts" inside my To Do list.
+// Moreover this type also has the "Markdown" attribute. This attribute does
+// not match any column from the database, but it comes handy in the API layer.
 type Topic struct {
 	Id         string    `json:"id"`
 	Name       string    `json:"name"`
@@ -27,7 +27,7 @@ type Topic struct {
 	Markdown   string    `db:"-",json:"markdown"`
 }
 
-// TODO: document
+// Generate the Markdown code for the current contents of this topic.
 func (t *Topic) RenderMarkdown() {
 	unsafe := blackfriday.MarkdownCommon([]byte(t.Contents))
 	t.Markdown = string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
@@ -55,6 +55,8 @@ func createTopic(name string) (*Topic, error) {
 	return t, Db.Insert(t)
 }
 
+// Sends the HTML code with the given topic rendered in it as the current
+// topic.
 func renderShow(res http.ResponseWriter, topic *Topic) {
 	var topics []Topic
 	Db.Select(&topics, "select * from topics order by name")

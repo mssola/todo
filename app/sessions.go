@@ -12,8 +12,6 @@ import (
 	"github.com/mssola/todo/lib"
 )
 
-// TODO: flashy errors.
-
 // Returns the name and the password parameters as given by the request. This
 // method abstracts away the origin of these values.
 func getNamePassword(req *http.Request) (string, string) {
