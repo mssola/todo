@@ -121,15 +121,15 @@ func TestTopicsCreate(t *testing.T) {
 	w := httptest.NewRecorder()
 	TopicsCreate(w, req)
 
-	assert.Equal(t, w.Code, 302)
-	assert.Equal(t, w.HeaderMap["Location"][0], "/topics")
-
 	var topic Topic
 	err = Db.SelectOne(&topic, "select * from topics")
 	assert.Nil(t, err)
 	assert.NotEmpty(t, topic.Id)
 	assert.Equal(t, topic.Name, "user")
 	assert.NotEmpty(t, topic.Created_at)
+
+	assert.Equal(t, w.Code, 302)
+	assert.Equal(t, w.HeaderMap["Location"][0], "/topics/"+topic.Id)
 }
 
 func TestTopicsCreateNoName(t *testing.T) {

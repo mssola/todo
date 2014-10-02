@@ -92,8 +92,12 @@ func TopicsCreate(res http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	createTopic(req.FormValue("name"))
-	http.Redirect(res, req, "/topics", http.StatusFound)
+	t, err := createTopic(req.FormValue("name"))
+	if err != nil {
+		http.Redirect(res, req, "/topics", http.StatusFound)
+	} else {
+		http.Redirect(res, req, "/topics/"+t.Id, http.StatusFound)
+	}
 }
 
 func TopicsShow(res http.ResponseWriter, req *http.Request) {
