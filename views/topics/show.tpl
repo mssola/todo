@@ -7,7 +7,7 @@
     <h3>topics</h3>
     <ul>
         {{range .Topics}}
-            {{if eq .Id $c.Id}}
+            {{if eqString .Id $c.Id}}
                 <li class="selected"><a href="/topics/{{.Id}}">{{.Name}}</a></li>
             {{else}}
                 <li><a href="/topics/{{.Id}}">{{.Name}}</a></li>

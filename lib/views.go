@@ -99,6 +99,9 @@ func viewHelpers() template.FuncMap {
 		"noescape": func(str string) template.HTML {
 			return template.HTML(str)
 		},
+		"eqString": func(str1, str2 string) bool {
+			return str1 == str2
+		},
 	}
 }
 
