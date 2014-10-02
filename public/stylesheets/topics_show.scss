@@ -10,7 +10,8 @@ $width: 130px;
     left: 0;
     bottom: 0;
     width: $width;
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     background-color: #f7f7f7;
     font-size: small;
 
