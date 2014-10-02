@@ -8,9 +8,7 @@
     <ul>
         {{range .Topics}}
             {{if eq .Id $c.Id}}
-                <li class="selected">
-                    <a href="/topics/{{.Id}}">{{.Name}}</a>
-                </li>
+                <li class="selected"><a href="/topics/{{.Id}}">{{.Name}}</a></li>
             {{else}}
                 <li><a href="/topics/{{.Id}}">{{.Name}}</a></li>
             {{end}}

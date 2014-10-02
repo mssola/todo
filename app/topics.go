@@ -5,6 +5,7 @@
 package app
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -16,6 +17,8 @@ import (
 	"github.com/nu7hatch/gouuid"
 	"github.com/russross/blackfriday"
 )
+
+// TODO: check and test for malformed JSON requests.
 
 // A topic is my way to divide different "contexts" inside my To Do list.
 type Topic struct {
@@ -69,19 +72,14 @@ func TopicsIndex(res http.ResponseWriter, req *http.Request) {
 			Topics []Topic `json:"topics"`
 		}
 		Db.Select(&tr.Topics, "select * from topics")
-		b, err := json.Marshal(tr)
-		if err != nil {
-			res.WriteHeader(http.StatusNotFound)
-			fmt.Fprint(res, lib.Response{Error: "Failed!"})
-		} else {
-			fmt.Fprint(res, string(b))
-		}
+		b, _ := json.Marshal(tr)
+		fmt.Fprint(res, string(b))
 		return
 	}
 
 	var t Topic
 
-	if id := lib.GetCookie(req, "topic"); id != "" {
+	if id := lib.GetCookie(req, "topic"); id != "" && id != nil {
 		Db.SelectOne(&t, "select * from topics where id=$1", id)
 	} else {
 		Db.SelectOne(&t, "select * from topics order by name limit 1")
@@ -89,22 +87,55 @@ func TopicsIndex(res http.ResponseWriter, req *http.Request) {
 	renderShow(res, &t)
 }
 
-func getValue(req *http.Request, name string) string {
-	if lib.JsonEncoding(req) {
-		decoder := json.NewDecoder(req.Body)
+// TODO: re-think this once we split the _api thingie.
+//          -> create a struct for JSON thingies with tags and shit ?
 
-		var t struct{ Value string }
+func getContents(req *http.Request, buffer bytes.Buffer) string {
+	if lib.JsonEncoding(req) {
+		reader := bytes.NewReader(buffer.Bytes())
+		decoder := json.NewDecoder(reader)
+
+		var t struct{ Contents string }
 		err := decoder.Decode(&t)
 		if err != nil {
 			return ""
 		}
-		return t.Value
+		return t.Contents
 	}
-	return req.FormValue(name)
+	return req.FormValue("contents")
+}
+
+func getNameFromBuffer(req *http.Request, buffer bytes.Buffer) string {
+	if lib.JsonEncoding(req) {
+		reader := bytes.NewReader(buffer.Bytes())
+		decoder := json.NewDecoder(reader)
+
+		var t struct{ Name string }
+		err := decoder.Decode(&t)
+		if err != nil {
+			return ""
+		}
+		return t.Name
+	}
+	return req.FormValue("name")
+}
+
+func getName(req *http.Request) string {
+	if lib.JsonEncoding(req) {
+		decoder := json.NewDecoder(req.Body)
+
+		var t struct{ Name string }
+		err := decoder.Decode(&t)
+		if err != nil {
+			return ""
+		}
+		return t.Name
+	}
+	return req.FormValue("name")
 }
 
 func TopicsCreate(res http.ResponseWriter, req *http.Request) {
-	id, err := createTopic(getValue(req, "name"))
+	id, err := createTopic(getName(req))
 	if lib.JsonEncoding(req) {
 		if err != nil {
 			res.WriteHeader(http.StatusNotFound)
@@ -113,13 +144,8 @@ func TopicsCreate(res http.ResponseWriter, req *http.Request) {
 			t := struct {
 				Id string `json:"id"`
 			}{Id: id}
-			b, err := json.Marshal(t)
-			if err != nil {
-				res.WriteHeader(http.StatusNotFound)
-				fmt.Fprint(res, lib.Response{Error: "Failed!"})
-			} else {
-				fmt.Fprint(res, string(b))
-			}
+			b, _ := json.Marshal(t)
+			fmt.Fprint(res, string(b))
 		}
 	} else {
 		http.Redirect(res, req, "/topics", http.StatusFound)
@@ -150,13 +176,8 @@ func TopicsShow(res http.ResponseWriter, req *http.Request) {
 		unsafe := blackfriday.MarkdownCommon([]byte(t.Contents))
 		ts.Render = string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
 
-		b, err := json.Marshal(ts)
-		if err != nil {
-			res.WriteHeader(http.StatusNotFound)
-			fmt.Fprint(res, lib.Response{Error: "Failed!"})
-		} else {
-			fmt.Fprint(res, string(b))
-		}
+		b, _ := json.Marshal(ts)
+		fmt.Fprint(res, string(b))
 		return
 	}
 
@@ -169,42 +190,37 @@ func TopicsShow(res http.ResponseWriter, req *http.Request) {
 func TopicsUpdate(res http.ResponseWriter, req *http.Request) {
 	p := mux.Vars(req)
 
+	var buffer bytes.Buffer
+	if lib.JsonEncoding(req) {
+		// TODO: check if empty, check if couldn't read, check, check, ...
+		_, _ = buffer.ReadFrom(req.Body)
+	}
+
 	// We can either rename, or change the contents, but not both things at the
 	// same time.
-	name := getValue(req, "name")
+	name := getNameFromBuffer(req, buffer)
 	update := false
-	var err error
 	var cts string
 	if name != "" {
-		_, err = Db.Exec("update topics set name=$1 where id=$2", name, p["id"])
+		Db.Exec("update topics set name=$1 where id=$2", name, p["id"])
 	} else {
 		update = true
-		cts = getValue(req, "contents")
-		_, err = Db.Exec("update topics set contents=$1 where id=$2", cts, p["id"])
+		cts = getContents(req, buffer)
+		Db.Exec("update topics set contents=$1 where id=$2", cts, p["id"])
 	}
 
 	if lib.JsonEncoding(req) {
-		if err != nil {
-			res.WriteHeader(http.StatusNotFound)
-			fmt.Fprint(res, lib.Response{Error: "Failed!"})
-		} else {
-			if update {
-				var ts struct {
-					Render string `json:"contents"`
-				}
-				unsafe := blackfriday.MarkdownCommon([]byte(cts))
-				ts.Render = string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
-
-				b, err := json.Marshal(ts)
-				if err != nil {
-					res.WriteHeader(http.StatusNotFound)
-					fmt.Fprint(res, lib.Response{Error: "Failed!"})
-				} else {
-					fmt.Fprint(res, string(b))
-				}
-			} else {
-				fmt.Fprint(res, lib.Response{Message: "Ok"})
+		if update {
+			var ts struct {
+				Render string `json:"contents"`
 			}
+			unsafe := blackfriday.MarkdownCommon([]byte(cts))
+			ts.Render = string(bluemonday.UGCPolicy().SanitizeBytes(unsafe))
+
+			b, _ := json.Marshal(ts)
+			fmt.Fprint(res, string(b))
+		} else {
+			fmt.Fprint(res, lib.Response{Message: "Ok"})
 		}
 	} else {
 		http.Redirect(res, req, "/topics", http.StatusFound)
@@ -213,15 +229,10 @@ func TopicsUpdate(res http.ResponseWriter, req *http.Request) {
 
 func TopicsDestroy(res http.ResponseWriter, req *http.Request) {
 	p := mux.Vars(req)
-	_, err := Db.Exec("delete from topics where id=$1", p["id"])
+	Db.Exec("delete from topics where id=$1", p["id"])
 
 	if lib.JsonEncoding(req) {
-		if err != nil {
-			res.WriteHeader(http.StatusNotFound)
-			fmt.Fprint(res, lib.Response{Error: "Failed!"})
-		} else {
-			fmt.Fprint(res, lib.Response{Message: "Ok"})
-		}
+		fmt.Fprint(res, lib.Response{Message: "Ok"})
 	} else {
 		http.Redirect(res, req, "/topics", http.StatusFound)
 	}

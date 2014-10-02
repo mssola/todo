@@ -14,9 +14,12 @@ import (
 
 // Returns the name and the password parameters as given by the request. This
 // method abstracts away the origin of these values.
-// TODO: test
 func getNamePassword(req *http.Request) (string, string) {
 	if lib.JsonEncoding(req) {
+		if req.Body == nil {
+			return "", ""
+		}
+
 		decoder := json.NewDecoder(req.Body)
 
 		var t struct{ Name, Password string }

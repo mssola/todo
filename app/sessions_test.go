@@ -5,9 +5,11 @@
 package app
 
 import (
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strings"
 	"testing"
 
 	"github.com/mssola/go-utils/security"
@@ -73,6 +75,67 @@ func TestLogin(t *testing.T) {
 	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
 	assert.Equal(t, lib.GetCookie(req, "userId"), user.Id)
+}
+
+func TestLoginJson(t *testing.T) {
+	InitTestDB()
+	defer CloseTestDB()
+
+	// The body is nil.
+	req, err := http.NewRequest("POST", "/login", nil)
+	assert.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+	Login(w, req)
+
+	decoder := json.NewDecoder(w.Body)
+	var r lib.Response
+	err = decoder.Decode(&r)
+	assert.Nil(t, err)
+	assert.Equal(t, r.Error, "Failed!")
+
+	// The body is correct but there are no users.
+	body := "{\"name\":\"mssola\",\"password\":\"1234\"}"
+	req, err = http.NewRequest("POST", "/login", strings.NewReader(body))
+	assert.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	w = httptest.NewRecorder()
+	Login(w, req)
+
+	decoder = json.NewDecoder(w.Body)
+	err = decoder.Decode(&r)
+	assert.Nil(t, err)
+	assert.Equal(t, r.Error, "Failed!")
+
+	// Everything is fine.
+	err = createUser("mssola", security.PasswordSalt("1234"))
+	assert.Nil(t, err)
+	req, err = http.NewRequest("POST", "/login", strings.NewReader(body))
+	assert.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	w1 := httptest.NewRecorder()
+	Login(w1, req)
+
+	decoder = json.NewDecoder(w1.Body)
+	var u1, u2 User
+	err = decoder.Decode(&u1)
+	assert.Nil(t, err)
+	err = Db.SelectOne(&u2, "select * from users")
+	assert.Nil(t, err)
+	assert.Equal(t, u1.Id, u2.Id)
+
+	// Malformed JSON
+	body1 := "{\"password\":\"1234\""
+	req, err = http.NewRequest("POST", "/login", strings.NewReader(body1))
+	assert.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	w2 := httptest.NewRecorder()
+	Login(w2, req)
+
+	decoder = json.NewDecoder(w2.Body)
+	err = decoder.Decode(&r)
+	assert.Nil(t, err)
+	assert.Equal(t, r.Error, "Failed!")
 }
 
 func TestLogout(t *testing.T) {
