@@ -11,14 +11,13 @@ import (
 	"strings"
 )
 
-// TODO
-
+// The default response for short messages.
 type Response struct {
 	Message string `json:"msg,omitempty"`
 	Error   string `json:"error,omitempty"`
 }
 
-// TODO
+// Concatenate this response by marshalling it into JSON.
 func (r Response) String() string {
 	b, err := json.Marshal(r)
 	if err != nil {
@@ -27,6 +26,7 @@ func (r Response) String() string {
 	return string(b)
 }
 
+// Sends the standard error for this application.
 func JsonError(res http.ResponseWriter) {
 	res.WriteHeader(http.StatusNotFound)
 	fmt.Fprint(res, Response{Error: "Failed!"})
