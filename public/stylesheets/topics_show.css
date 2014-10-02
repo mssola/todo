@@ -178,7 +178,7 @@ h1 {
   left: 0;
   bottom: 0;
   width: 130px;
-  overflow: hidden;
+  overflow: auto;
   background-color: #f7f7f7;
   font-size: small; }
   #list .create form {
@@ -252,6 +252,7 @@ h1 {
   left: 130px;
   bottom: 0;
   padding: 10px 30px;
+  overflow: auto;
   border-left: 1px solid #ddd;
   box-shadow: 0 0 6px rgba(0, 0, 0, 0.2);
   background-color: #fff;

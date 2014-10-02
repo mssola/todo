@@ -10,7 +10,7 @@ $width: 130px;
     left: 0;
     bottom: 0;
     width: $width;
-    overflow: hidden;
+    overflow: auto;
     background-color: #f7f7f7;
     font-size: small;
 
@@ -99,6 +99,7 @@ $width: 130px;
     left: $width;
     bottom: 0;
     padding: 10px 30px;
+    overflow: auto;
 
     border-left: 1px solid #ddd;
     box-shadow: 0 0 6px rgba(0,0,0,0.2);
