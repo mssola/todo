@@ -53,7 +53,7 @@
 
     <div class="body">
         <div class="contents-body">
-            {{noescape .Rendered}}
+            {{noescape $c.Markdown}}
         </div>
 
         <div class="contents-edit">

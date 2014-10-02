@@ -36,9 +36,6 @@ func (t *Topic) RenderMarkdown() {
 type TopicData struct {
 	lib.ViewData
 
-	// TODO: remove?
-	Rendered string
-
 	Current *Topic
 
 	Topics []Topic
@@ -64,9 +61,8 @@ func renderShow(res http.ResponseWriter, topic *Topic) {
 
 	// And render the page.
 	o := &TopicData{
-		Rendered: topic.Markdown,
-		Current:  topic,
-		Topics:   topics,
+		Current: topic,
+		Topics:  topics,
 	}
 	o.JS = "topics"
 	lib.Render(res, "topics/show", o)
