@@ -58,30 +58,19 @@ func route() *mux.Router {
 	r.HandleFunc("/", app.RootIndex).Methods("GET").
 		MatcherFunc(private)
 	r.HandleFunc("/login", app.Login).Methods("POST")
-	r.HandleFunc("/login.json", app.Login).Methods("POST")
 	r.HandleFunc("/logout", app.Logout).Methods("POST").
 		MatcherFunc(userLogged).MatcherFunc(private)
 	r.HandleFunc("/users", app.UsersCreate).Methods("POST").
 		MatcherFunc(private)
 	r.HandleFunc("/topics", app.TopicsIndex).Methods("GET").
 		MatcherFunc(userLogged)
-	r.HandleFunc("/topics.json", app.TopicsIndex).Methods("GET").
-		MatcherFunc(userLogged)
 	r.HandleFunc("/topics", app.TopicsCreate).Methods("POST").
-		MatcherFunc(userLogged)
-	r.HandleFunc("/topics.json", app.TopicsCreate).Methods("POST").
 		MatcherFunc(userLogged)
 	r.HandleFunc("/topics/{id}", app.TopicsShow).Methods("GET").
 		MatcherFunc(userLogged)
-	r.HandleFunc("/topics/{id}.json", app.TopicsShow).Methods("GET").
-		MatcherFunc(userLogged)
 	r.HandleFunc("/topics/{id}", app.TopicsUpdate).Methods("POST").
 		MatcherFunc(userLogged)
-	r.HandleFunc("/topics/{id}.json", app.TopicsUpdate).Methods("POST").
-		MatcherFunc(userLogged)
 	r.HandleFunc("/topics/{id}/delete", app.TopicsDestroy).Methods("POST").
-		MatcherFunc(userLogged)
-	r.HandleFunc("/topics/{id}/delete.json", app.TopicsDestroy).Methods("POST").
 		MatcherFunc(userLogged)
 
 	return r

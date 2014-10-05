@@ -8,7 +8,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 )
 
 // The default response for short messages.
@@ -59,8 +58,5 @@ func JsonEncoding(req *http.Request) bool {
 	if checkHeader(req, "Content-Type") {
 		return true
 	}
-	if checkHeader(req, "Accept") {
-		return true
-	}
-	return strings.HasSuffix(req.URL.Path, ".json")
+	return checkHeader(req, "Accept")
 }

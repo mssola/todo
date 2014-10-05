@@ -81,10 +81,6 @@ func TestJsonEncoding(t *testing.T) {
 	r1, _ := http.NewRequest("GET", "/", nil)
 	assert.False(t, JsonEncoding(r1))
 
-	// Yes, because of the trailing .json.
-	r2, _ := http.NewRequest("GET", "/something.json", nil)
-	assert.True(t, JsonEncoding(r2))
-
 	// Yes, because of the "Content-Type" header.
 	r3, _ := http.NewRequest("GET", "/something", nil)
 	r3.Header.Set("Content-Type", "application/json")
