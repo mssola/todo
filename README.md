@@ -20,7 +20,60 @@ TODO
 
 ## The JSON API
 
-TODO
+This application also implements a JSON API. This API can be accessed by doing
+setting `application/json` in the `Content-Type` or the `Accept` header of the
+request. First of all, you have to login with the application. In order to do
+so, you have to perform a POST HTTP request with the following body:
+
+```json
+{
+  "name": "name-of-the-user",
+  "password": "password-for-this-user"
+}
+```
+
+If everything was ok, the response should only be a JSON object with the
+`userId` key. The value for this key has to be used on every request afterwards
+by adding it to the URL query part. With this in mind, we can now call any
+method of this simple API:
+
+|Method |           Path           | Parameters in the JSON body |       Response         |
+|:------|:-------------------------|:---------------------------:|:----------------------:|
+|GET    | /topics                  |              -              | Array of Topic objects |
+|POST   | /topics                  |            name             | Topic object           |
+|GET    | /topics/{topicId}        |              -              | Topic object           |
+|POST   | /topics/{topicId}        |       name or contents      | Topic object           |
+|POST   | /topics/{topicId}/delete |              -              | Topic object           |
+
+
+The fourth method is the update method. It can accept the name or the contents.
+We might want to pass the name when renaming a topic. We will pass the contents
+if we want to update the contents of a topic.
+
+Let's see a quick example (cURL with the `--trace-ascii` option):
+
+    0000: POST /topics?userId=6b6c0542-0891-4614-5dd8-92ce443dbcaf HTTP/1.
+    0040: 1
+    0043: User-Agent: curl/7.38.0
+    005c: Host: localhost:3000
+    0072: Accept: */*
+    007f: Content-Type: application/json
+    009f: Content-Length: 17
+    00b3:
+    => Send data, 17 bytes (0x11)
+    0000: {"name": "topic"}
+
+The create method will respond with the newly created Topic on success:
+
+```json
+{
+  "id":         "ec654b88-e227-47bb-6254-60b77329732e",
+  "name":       "topic",
+  "contents":   "",
+  "created_at": "2014-10-07T08:37:05.424276522+02:00",
+  "Markdown":   ""
+}
+```
 
 ## Getting this application up and running
 
