@@ -102,7 +102,7 @@ After this, you can install this like any other Go program and run it:
 Last but not least, this application can be deployed to Heroku. Here are some
 notes about it:
 
-* This application uses PostgreSQL, so in you have to setup PostgreSQL in
+* This application uses PostgreSQL, so you have to setup PostgreSQL in
   Heroku as well.
 * Even though this application uses Sass, it has the resulting compiled CSS
   files in it. This is done this way so we don't have to mess with Sass on
