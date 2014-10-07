@@ -100,5 +100,13 @@ $padding-left: 16px;
             }
         }
     }
+
+    blockquote {
+        font-size: 14px;
+        margin: 0px;
+        padding: 0 15px;
+        color: #777;
+        border-left: 4px solid #ddd;
+    }
 }
 

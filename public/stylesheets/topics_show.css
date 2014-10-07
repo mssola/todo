@@ -381,3 +381,9 @@ h1 {
       #contents .contents-body table tr th, #contents .contents-body table tr td {
         padding: 6px 13px;
         border: 1px solid #ddd; }
+  #contents .contents-body blockquote {
+    font-size: 14px;
+    margin: 0px;
+    padding: 0 15px;
+    color: #777;
+    border-left: 4px solid #ddd; }
