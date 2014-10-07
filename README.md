@@ -27,13 +27,13 @@ so, you have to perform a POST HTTP request with the following body:
 
 ```json
 {
-  "name": "name-of-the-user",
+  "name":     "name-of-the-user",
   "password": "password-for-this-user"
 }
 ```
 
 If everything was ok, the response should only be a JSON object with the
-`userId` key. The value for this key has to be used on every request afterwards
+`token` key. The value for this key has to be used on every request afterwards
 by adding it to the URL query part. With this in mind, we can now call any
 method of this simple API:
 
@@ -54,7 +54,7 @@ on error.
 
 Let's see a quick example (cURL with the `--trace-ascii` option):
 
-    0000: POST /topics?userId=6b6c0542-0891-4614-5dd8-92ce443dbcaf HTTP/1.
+    0000: POST /topics?token=6b6c0542-0891-4614-5dd8-92ce443dbcaf HTTP/1.
     0040: 1
     0043: User-Agent: curl/7.38.0
     005c: Host: localhost:3000
@@ -73,9 +73,14 @@ The create method will respond with the newly created Topic on success:
   "name":       "topic",
   "contents":   "",
   "created_at": "2014-10-07T08:37:05.424276522+02:00",
-  "Markdown":   ""
+  "markdown":   ""
 }
 ```
+
+So, let's explain the `Topic` object. The `id`, `name` and `created_at` columns
+are quite self-explanatory. The `contents` column exposes the raw data of this
+object. The `markdown` object contains the HTML code that has been produced
+after rendering the markdown of the `contents` column.
 
 ## Getting this application up and running
 
