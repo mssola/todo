@@ -24,7 +24,7 @@ type Topic struct {
 	Name       string    `json:"name"`
 	Contents   string    `json:"contents"`
 	Created_at time.Time `json:"created_at"`
-	Markdown   string    `db:"-",json:"markdown"`
+	Markdown   string    `db:"-" json:"markdown"`
 }
 
 // Generate the Markdown code for the current contents of this topic.
