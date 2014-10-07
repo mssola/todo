@@ -376,13 +376,13 @@ func TestTopicsRenameJson(t *testing.T) {
 	assert.Nil(t, err)
 
 	body := strings.NewReader("{\"name\":\"topic1\"}")
-	req, err := http.NewRequest("POST", "/topics/"+t1.Id, body)
+	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, body)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsUpdate)
+	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -410,13 +410,13 @@ func TestTopicsRenameJsonMalformed(t *testing.T) {
 	assert.Nil(t, err)
 
 	body := strings.NewReader("{\"name\":\"topic1\"")
-	req, err := http.NewRequest("POST", "/topics/"+t1.Id, body)
+	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, body)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsUpdate)
+	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -442,13 +442,13 @@ func TestTopicsRenameJsonFail(t *testing.T) {
 	assert.Nil(t, err)
 
 	body := strings.NewReader("{\"name\":\"topic1\"}")
-	req, err := http.NewRequest("POST", "/topics/"+t1.Id, body)
+	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, body)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsUpdate)
+	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -508,13 +508,13 @@ func TestUpdateJson(t *testing.T) {
 	assert.Nil(t, err)
 
 	body := strings.NewReader("{\"contents\":\"**contents**\"}")
-	req, err := http.NewRequest("POST", "/topics/"+t1.Id, body)
+	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, body)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsUpdate)
+	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -546,13 +546,13 @@ func TestTopicsUpdateJsonMalformed(t *testing.T) {
 	assert.Nil(t, err)
 
 	body := strings.NewReader("{\"contents\":\"topic1\"")
-	req, err := http.NewRequest("POST", "/topics/"+t1.Id, body)
+	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, body)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsUpdate)
+	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -575,13 +575,13 @@ func TestTopicsUpdateNoBody(t *testing.T) {
 	err = Db.SelectOne(&t1, "select * from topics")
 	assert.Nil(t, err)
 
-	req, err := http.NewRequest("POST", "/topics/"+t1.Id, nil)
+	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, nil)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsUpdate)
+	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
 	m.ServeHTTP(w, req)
 
 	// DB

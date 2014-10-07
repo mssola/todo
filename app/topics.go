@@ -117,11 +117,6 @@ func TopicsShow(res http.ResponseWriter, req *http.Request) {
 }
 
 func TopicsUpdate(res http.ResponseWriter, req *http.Request) {
-	if lib.JsonEncoding(req) {
-		TopicsApiUpdate(res, req)
-		return
-	}
-
 	p := mux.Vars(req)
 
 	// We can either rename, or change the contents, but not both things at the

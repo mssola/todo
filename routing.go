@@ -69,8 +69,12 @@ func route() *mux.Router {
 	r.HandleFunc("/topics/{id}", app.TopicsShow).Methods("GET").
 		MatcherFunc(userLogged)
 	r.HandleFunc("/topics/{id}", app.TopicsUpdate).Methods("POST").
+		MatcherFunc(userLogged).MatcherFunc(private)
+	r.HandleFunc("/topics/{id}", app.TopicsApiUpdate).Methods("PATCH", "PUT").
 		MatcherFunc(userLogged)
 	r.HandleFunc("/topics/{id}/delete", app.TopicsDestroy).Methods("POST").
+		MatcherFunc(userLogged).MatcherFunc(private)
+	r.HandleFunc("/topics/{id}", app.TopicsDestroy).Methods("DELETE").
 		MatcherFunc(userLogged)
 
 	return r

@@ -37,18 +37,20 @@ If everything was ok, the response should only be a JSON object with the
 by adding it to the URL query part. With this in mind, we can now call any
 method of this simple API:
 
-|Method |           Path           | Parameters in the JSON body |       Response         |
-|:------|:-------------------------|:---------------------------:|:----------------------:|
-|GET    | /topics                  |              -              | Array of Topic objects |
-|POST   | /topics                  |            name             | Topic object           |
-|GET    | /topics/{topicId}        |              -              | Topic object           |
-|POST   | /topics/{topicId}        |       name or contents      | Topic object           |
-|POST   | /topics/{topicId}/delete |              -              | Topic object           |
+|    Method   |        Path       | Parameters in the JSON body |       Response         |
+|:------------|:------------------|:---------------------------:|:----------------------:|
+|GET          | /topics           |              -              | Array of Topic objects |
+|POST         | /topics           |            name             | Topic object           |
+|GET          | /topics/{topicId} |              -              | Topic object           |
+|PUT or PATCH | /topics/{topicId} |       name or contents      | Topic object           |
+|DELETE       | /topics/{topicId} |              -              | Message                |
 
 
 The fourth method is the update method. It can accept the name or the contents.
 We might want to pass the name when renaming a topic. We will pass the contents
-if we want to update the contents of a topic.
+if we want to update the contents of a topic. Moreover, the last method is the
+delete method. This method responds with a message: "Ok" on success, "Failed!"
+on error.
 
 Let's see a quick example (cURL with the `--trace-ascii` option):
 
