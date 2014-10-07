@@ -31,12 +31,13 @@ $padding-left: 16px;
     h2 { font-size: 24px; }
     h3 { font-size: 16px; }
 
-    ul {
+    ul, ol {
         padding: 0;
         padding-left: $padding-left;
         margin: 0;
-        list-style-type: disc;
     }
+    ul { list-style-type: disc; }
+    ol { margin: 0px 5px; }
 
     pre {
         @include box-sizing;
