@@ -6,7 +6,6 @@ package lib
 
 import (
 	"net/http"
-	"time"
 
 	"github.com/gorilla/sessions"
 	"github.com/mssola/go-utils/security"
@@ -21,13 +20,13 @@ const (
 	sessionName = "todo"
 
 	// Max-Age of a whole year.
-	maxAge = time.Hour * 24 * 365
+	maxAge = 60 * 60 * 24 * 30 * 12
 )
 
 // Initialize the global cookie store.
 func InitSession() {
 	store = sessions.NewCookieStore([]byte(security.NewAuthToken()))
-	store.Options = &sessions.Options{Path: "/", MaxAge: int(maxAge)}
+	store.Options = &sessions.Options{Path: "/", MaxAge: maxAge}
 }
 
 // Tries to get the cookie store for the given request. It panics if it fails.
