@@ -16,7 +16,19 @@ This application implements two things: a web application and an API layer.
 
 ### The Web Application
 
-TODO
+The web application has a quite minimalistic design and it only consists of two
+different pages:
+
+1. The `login` page.
+2. The `topics` page. This is the main page and in it the user can create new
+   topics, read their contents, update them, etc.
+
+The style for this web application has been taken from Reddit's one (the list
+of topics in this application has the same style as the list of multireddits).
+The markdown being shown has a similar style as the one from Github. A
+snapshot:
+
+![The main page](public/images/snapshot.png)
 
 ### The JSON API
 
