@@ -18,7 +18,7 @@ This application implements two things: a web application and an API layer.
 
 TODO
 
-## The JSON API
+### The JSON API
 
 This application also implements a JSON API. This API can be accessed by doing
 setting `application/json` in the `Content-Type` or the `Accept` header of the
