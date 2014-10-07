@@ -19,7 +19,7 @@ func userLogged(req *http.Request, rm *mux.RouteMatch) bool {
 	var rid string
 
 	if lib.JsonEncoding(req) {
-		rid = req.URL.Query().Get("userId")
+		rid = req.URL.Query().Get("token")
 	} else if id, ok := lib.GetCookie(req, "userId").(string); ok {
 		rid = id
 	}
