@@ -48,10 +48,10 @@ method of this simple REST API:
 
 The fourth method is the update method. It accepts either the name or the
 contents, but not both parameters at the same time. We might want to pass the
-name when renaming a topic. We will pass the contents if we want to update
-the contents of a topic. Moreover, the last method is the delete method.
-This method responds with a `Message` object. A `Message` object contains
-the key `msg` on success, and the `error` key on error.
+`name` key when renaming a topic. We will pass the `contents` key if we
+want to update the contents of a topic. Moreover, the last method is the delete
+method. This method responds with a `Message` object. A `Message` object
+contains the key `msg` on success, and the `error` key on error.
 
 Let's see a quick example (cURL with the `--trace-ascii` option):
 
