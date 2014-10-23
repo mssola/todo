@@ -58,12 +58,8 @@ func renderJson(res http.ResponseWriter, topic *Topic, err error, md bool) {
 func TopicsApiIndex(res http.ResponseWriter, req *http.Request) {
 	var topics []Topic
 	Db.Select(&topics, "select * from topics")
-
-	if b, err := json.Marshal(topics); err != nil {
-		lib.JsonError(res)
-	} else {
-		fmt.Fprint(res, string(b))
-	}
+	b, _ := json.Marshal(topics)
+	fmt.Fprint(res, string(b))
 }
 
 func TopicsApiCreate(res http.ResponseWriter, req *http.Request) {
