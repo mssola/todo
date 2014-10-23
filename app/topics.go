@@ -5,7 +5,6 @@
 package app
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -134,10 +133,5 @@ func TopicsUpdate(res http.ResponseWriter, req *http.Request) {
 func TopicsDestroy(res http.ResponseWriter, req *http.Request) {
 	p := mux.Vars(req)
 	Db.Exec("delete from topics where id=$1", p["id"])
-
-	if lib.JsonEncoding(req) {
-		fmt.Fprint(res, lib.Response{Message: "Ok"})
-	} else {
-		http.Redirect(res, req, "/topics", http.StatusFound)
-	}
+	http.Redirect(res, req, "/topics", http.StatusFound)
 }

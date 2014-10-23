@@ -74,7 +74,7 @@ func route() *mux.Router {
 		MatcherFunc(userLogged)
 	r.HandleFunc("/topics/{id}/delete", app.TopicsDestroy).Methods("POST").
 		MatcherFunc(userLogged).MatcherFunc(private)
-	r.HandleFunc("/topics/{id}", app.TopicsDestroy).Methods("DELETE").
+	r.HandleFunc("/topics/{id}", app.TopicsApiDestroy).Methods("DELETE").
 		MatcherFunc(userLogged)
 
 	return r

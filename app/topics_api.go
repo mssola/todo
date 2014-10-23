@@ -100,6 +100,10 @@ func TopicsApiUpdate(res http.ResponseWriter, req *http.Request) {
 	if value == "" && err == nil {
 		str = "contents"
 		value, err = getValue("contents", buffer)
+		if err != nil || value == "" {
+			lib.JsonError(res)
+			return
+		}
 	} else {
 		str = "name"
 	}
@@ -109,4 +113,17 @@ func TopicsApiUpdate(res http.ResponseWriter, req *http.Request) {
 	str = fmt.Sprintf("update topics set %v=$1 where id=$2 returning *", str)
 	err = Db.SelectOne(&t, str, value, mux.Vars(req)["id"])
 	renderJson(res, &t, err, true)
+}
+
+func TopicsApiDestroy(res http.ResponseWriter, req *http.Request) {
+	p := mux.Vars(req)
+	results, err := Db.Exec("delete from topics where id=$1", p["id"])
+
+	if err != nil {
+		fmt.Fprint(res, lib.Response{Error: "Could not remove topic"})
+	} else if count, _ := results.RowsAffected(); count == 0 {
+		fmt.Fprint(res, lib.Response{Error: "Could not remove topic"})
+	} else {
+		fmt.Fprint(res, lib.Response{Message: "Ok"})
+	}
 }

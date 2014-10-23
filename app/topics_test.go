@@ -593,6 +593,36 @@ func TestTopicsUpdateNoBody(t *testing.T) {
 	assert.Equal(t, w.Code, 404)
 }
 
+func TestTopicsUpdateNoValidParametersGiven(t *testing.T) {
+	InitTestDB()
+	defer CloseTestDB()
+
+	_, err := createTopic("topic")
+	assert.Nil(t, err)
+
+	var t1 Topic
+	err = Db.SelectOne(&t1, "select * from topics")
+	assert.Nil(t, err)
+
+	body := strings.NewReader("{\"something\":\"**contents**\"}")
+	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, body)
+	assert.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	m := mux.NewRouter()
+	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
+	m.ServeHTTP(w, req)
+
+	// DB
+	var resp lib.Response
+	decoder := json.NewDecoder(w.Body)
+	err = decoder.Decode(&resp)
+	assert.Nil(t, err)
+	assert.Equal(t, resp.Error, "Failed!")
+	assert.Equal(t, w.Code, 404)
+}
+
 func TestDestroy(t *testing.T) {
 	InitTestDB()
 	defer CloseTestDB()
@@ -633,13 +663,13 @@ func TestDestroyJson(t *testing.T) {
 	err = Db.SelectOne(&t1, "select * from topics")
 	assert.Nil(t, err)
 
-	req, err := http.NewRequest("POST", "/topics/"+t1.Id+"/delete", nil)
+	req, err := http.NewRequest("DELETE", "/topics/"+t1.Id, nil)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}/delete", TopicsDestroy)
+	m.HandleFunc("/topics/{id}", TopicsApiDestroy)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -653,4 +683,57 @@ func TestDestroyJson(t *testing.T) {
 	err = decoder.Decode(&resp)
 	assert.Nil(t, err)
 	assert.Equal(t, resp.Message, "Ok")
+}
+
+func TestDestroyJsonError(t *testing.T) {
+	InitTestDB()
+	defer CloseTestDB()
+
+	req, err := http.NewRequest("DELETE",
+		"/topics/7a0a771a-cc11-4079-59ba-81df690a0588", nil)
+	assert.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	m := mux.NewRouter()
+	m.HandleFunc("/topics/{id}", TopicsApiDestroy)
+	m.ServeHTTP(w, req)
+
+	// DB
+	c, err := Db.SelectInt("select count(*) from topics")
+	assert.Nil(t, err)
+	assert.Equal(t, c, 0)
+
+	// HTTP
+	var resp lib.Response
+	decoder := json.NewDecoder(w.Body)
+	err = decoder.Decode(&resp)
+	assert.Nil(t, err)
+	assert.Equal(t, resp.Error, "Could not remove topic")
+}
+
+func TestWrongUuidFormatApi(t *testing.T) {
+	InitTestDB()
+	defer CloseTestDB()
+
+	req, err := http.NewRequest("DELETE", "/topics/1", nil)
+	assert.Nil(t, err)
+	req.Header.Set("Content-Type", "application/json")
+	w := httptest.NewRecorder()
+
+	m := mux.NewRouter()
+	m.HandleFunc("/topics/{id}", TopicsApiDestroy)
+	m.ServeHTTP(w, req)
+
+	// DB
+	c, err := Db.SelectInt("select count(*) from topics")
+	assert.Nil(t, err)
+	assert.Equal(t, c, 0)
+
+	// HTTP
+	var resp lib.Response
+	decoder := json.NewDecoder(w.Body)
+	err = decoder.Decode(&resp)
+	assert.Nil(t, err)
+	assert.Equal(t, resp.Error, "Could not remove topic")
 }
