@@ -5,7 +5,6 @@
 package app
 
 import (
-	"bytes"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -14,25 +13,26 @@ import (
 	"github.com/mssola/todo/lib"
 )
 
-// Returns the name parameter as given by the body of the request.
-func getName(req *http.Request) string {
-	var m struct{ Name string }
-
-	decoder := json.NewDecoder(req.Body)
-	if err := decoder.Decode(&m); err != nil {
-		return ""
-	}
-	return m.Name
+// The parameters that be given through a request body.
+type params struct {
+	Name     string
+	Contents string
 }
 
-// Returns the value of the given element inside the buffer.
-func getValue(name string, bf bytes.Buffer) (string, error) {
-	var m map[string]string
-	err := json.Unmarshal(bf.Bytes(), &m)
-	if err != nil {
-		return "", err
+// Get the possible parameters from the given request. Note that it will only
+// check for the "name" and "contents" parameters.
+func getFromBody(req *http.Request) *params {
+	var p params
+
+	if req.Body == nil {
+		return nil
 	}
-	return m[name], nil
+
+	decoder := json.NewDecoder(req.Body)
+	if err := decoder.Decode(&p); err != nil {
+		return nil
+	}
+	return &p
 }
 
 // Safely render and send a JSON response with the given topic. This function
@@ -63,10 +63,10 @@ func TopicsApiIndex(res http.ResponseWriter, req *http.Request) {
 }
 
 func TopicsApiCreate(res http.ResponseWriter, req *http.Request) {
-	if name := getName(req); name == "" {
+	if p := getFromBody(req); p == nil {
 		lib.JsonError(res)
 	} else {
-		t, err := createTopic(name)
+		t, err := createTopic(p.Name)
 		renderJson(res, t, err, false)
 	}
 }
@@ -79,28 +79,19 @@ func TopicsApiShow(res http.ResponseWriter, req *http.Request) {
 }
 
 func TopicsApiUpdate(res http.ResponseWriter, req *http.Request) {
-	var err error
-	var str string
-	var buffer bytes.Buffer
+	var str, value string
+	var p *params
 
-	// Keep the body of the request in a buffer so we can read it multiple
-	// times.
-	if req.Body == nil {
-		lib.JsonError(res)
-		return
-	}
-	if _, err := buffer.ReadFrom(req.Body); err != nil {
+	if p = getFromBody(req); p == nil {
 		lib.JsonError(res)
 		return
 	}
 
 	// Execute the update query. Depending on the given parameters this will be
 	// just a plain rename, or a full update.
-	value, err := getValue("name", buffer)
-	if value == "" && err == nil {
+	if value = p.Name; value == "" {
 		str = "contents"
-		value, err = getValue("contents", buffer)
-		if err != nil || value == "" {
+		if value = p.Contents; value == "" {
 			lib.JsonError(res)
 			return
 		}
@@ -111,7 +102,7 @@ func TopicsApiUpdate(res http.ResponseWriter, req *http.Request) {
 	// And finally send the JSON response.
 	var t Topic
 	str = fmt.Sprintf("update topics set %v=$1 where id=$2 returning *", str)
-	err = Db.SelectOne(&t, str, value, mux.Vars(req)["id"])
+	err := Db.SelectOne(&t, str, value, mux.Vars(req)["id"])
 	renderJson(res, &t, err, true)
 }
 
