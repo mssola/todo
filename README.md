@@ -32,7 +32,7 @@ snapshot:
 
 ### The JSON API
 
-This application also implements a JSON API. This API can be accessed by doing
+This application also implements a JSON API. This API can be accessed by
 setting `application/json` in the `Content-Type` or the `Accept` header of the
 request. First of all, you have to login with the application. In order to do
 so, you have to perform a POST HTTP request with the following body:
