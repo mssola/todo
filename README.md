@@ -137,7 +137,7 @@ And that's it, you've deployed this application to Heroku!
 
 ## License
 
-Copyright &copy; 2014 Miquel Sabaté Solà
+Copyright &copy; 2014-2015 Miquel Sabaté Solà
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
