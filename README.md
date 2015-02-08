@@ -103,13 +103,13 @@ for the database. You can install the dependencies manually and setup
 the db/database.json file by yourself, or you can just perform the
 following command:
 
-    ./script/kickstart
+    $ ./script/kickstart
 
 It will ask for a few DB-related things: the user, the dbname and the password.
 After this, you can install this like any other Go program and run it:
 
-    go install
-    todo
+    $ go install
+    $ todo
 
 Last but not least, this application can be deployed to Heroku. Here are some
 notes about it:
