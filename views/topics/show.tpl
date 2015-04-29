@@ -18,7 +18,7 @@
             <button class="btn grey-btn">create</button>
 
             <form action="/topics" method="POST" autocomplete="off" accept-charset="utf-8">
-                <input class="tiny-text" type="text" name="name" value="" autocomplete="off" tabindex="1" placeholder="name" />
+                <input class="tiny-text" type="text" name="name" value="" autocomplete="off" tabindex="1" placeholder="name" required />
                 <input class="btn grey-btn" type="submit" value="create" />
             </form>
         </li>
@@ -46,7 +46,7 @@
         </form>
 
         <form action="/topics/{{.Current.Id}}" class="rename-form" method="POST" autocomplete="off" accept-charset="utf-8">
-            <input class="tiny-text" type="text" name="name" value="" autocomplete="off" tabindex="1" placeholder="name" />
+            <input class="tiny-text" type="text" name="name" value="" autocomplete="off" tabindex="1" placeholder="name" required />
             <input class="btn grey-btn" type="submit" value="rename" />
         </form>
     </div>
