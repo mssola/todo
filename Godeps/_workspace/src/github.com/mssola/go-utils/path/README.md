@@ -1,5 +1,5 @@
 
-# Path
+## path [![GoDoc](https://godoc.org/github.com/mssola/go-utils/path?status.png)](http://godoc.org/github.com/mssola/go-utils/path)
 
 This package contains functions that deal with paths. Right now there's only
 the FindRoot function. An example:

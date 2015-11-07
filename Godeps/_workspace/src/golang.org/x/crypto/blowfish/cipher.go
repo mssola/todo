@@ -3,7 +3,7 @@
 // license that can be found in the LICENSE file.
 
 // Package blowfish implements Bruce Schneier's Blowfish encryption algorithm.
-package blowfish
+package blowfish // import "golang.org/x/crypto/blowfish"
 
 // The code is a port of Bruce Schneier's C implementation.
 // See http://www.schneier.com/blowfish.html.
@@ -26,14 +26,13 @@ func (k KeySizeError) Error() string {
 }
 
 // NewCipher creates and returns a Cipher.
-// The key argument should be the Blowfish key, 4 to 56 bytes.
+// The key argument should be the Blowfish key, from 1 to 56 bytes.
 func NewCipher(key []byte) (*Cipher, error) {
 	var result Cipher
-	k := len(key)
-	if k < 4 || k > 56 {
+	if k := len(key); k < 1 || k > 56 {
 		return nil, KeySizeError(k)
 	}
-	initCipher(key, &result)
+	initCipher(&result)
 	ExpandKey(key, &result)
 	return &result, nil
 }
@@ -41,14 +40,16 @@ func NewCipher(key []byte) (*Cipher, error) {
 // NewSaltedCipher creates a returns a Cipher that folds a salt into its key
 // schedule. For most purposes, NewCipher, instead of NewSaltedCipher, is
 // sufficient and desirable. For bcrypt compatiblity, the key can be over 56
-// bytes. Only the first 16 bytes of salt are used.
+// bytes.
 func NewSaltedCipher(key, salt []byte) (*Cipher, error) {
+	if len(salt) == 0 {
+		return NewCipher(key)
+	}
 	var result Cipher
-	k := len(key)
-	if k < 4 {
+	if k := len(key); k < 1 {
 		return nil, KeySizeError(k)
 	}
-	initCipher(key, &result)
+	initCipher(&result)
 	expandKeyWithSalt(key, salt, &result)
 	return &result, nil
 }
@@ -81,7 +82,7 @@ func (c *Cipher) Decrypt(dst, src []byte) {
 	dst[4], dst[5], dst[6], dst[7] = byte(r>>24), byte(r>>16), byte(r>>8), byte(r)
 }
 
-func initCipher(key []byte, c *Cipher) {
+func initCipher(c *Cipher) {
 	copy(c.p[0:], p[0:])
 	copy(c.s0[0:], s0[0:])
 	copy(c.s1[0:], s1[0:])

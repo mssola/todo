@@ -1,5 +1,5 @@
 
-# Security
+## security [![GoDoc](https://godoc.org/github.com/mssola/go-utils/security?status.png)](http://godoc.org/github.com/mssola/go-utils/security)
 
 This package implements a few functions regarding security.
 

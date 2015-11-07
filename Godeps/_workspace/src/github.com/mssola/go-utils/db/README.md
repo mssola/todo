@@ -1,5 +1,5 @@
 
-# DB
+## db [![GoDoc](https://godoc.org/github.com/mssola/go-utils/db?status.png)](http://godoc.org/github.com/mssola/go-utils/db)
 
 This package implements a way to open DB connections. Basically, this package
 opens DB connections by assuming that a JSON config file exists somewhere. This

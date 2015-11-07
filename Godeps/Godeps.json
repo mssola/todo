@@ -1,17 +1,7 @@
 {
 	"ImportPath": "github.com/mssola/todo",
-	"GoVersion": "go1.3.3",
+	"GoVersion": "devel +26074a6 Sat Oct 10 11:37:11 2015 +0000",
 	"Deps": [
-		{
-			"ImportPath": "code.google.com/p/go.crypto/bcrypt",
-			"Comment": "null-185",
-			"Rev": "6478cc9340cbbe6c04511280c5007722269108e9"
-		},
-		{
-			"ImportPath": "code.google.com/p/go.crypto/blowfish",
-			"Comment": "null-185",
-			"Rev": "6478cc9340cbbe6c04511280c5007722269108e9"
-		},
 		{
 			"ImportPath": "code.google.com/p/go.net/html",
 			"Comment": "null-134",
@@ -52,23 +42,23 @@
 		},
 		{
 			"ImportPath": "github.com/mssola/go-utils/db",
-			"Comment": "v0.1-1-g1a535d2",
-			"Rev": "1a535d2239bdcc15033763b441ff9eaee157082b"
+			"Comment": "v0.1-6-gaa2bb6c",
+			"Rev": "aa2bb6cd0360e34cb995f24a69e00861b6e50805"
 		},
 		{
 			"ImportPath": "github.com/mssola/go-utils/misc",
-			"Comment": "v0.1-1-g1a535d2",
-			"Rev": "1a535d2239bdcc15033763b441ff9eaee157082b"
+			"Comment": "v0.1-6-gaa2bb6c",
+			"Rev": "aa2bb6cd0360e34cb995f24a69e00861b6e50805"
 		},
 		{
 			"ImportPath": "github.com/mssola/go-utils/path",
-			"Comment": "v0.1-1-g1a535d2",
-			"Rev": "1a535d2239bdcc15033763b441ff9eaee157082b"
+			"Comment": "v0.1-6-gaa2bb6c",
+			"Rev": "aa2bb6cd0360e34cb995f24a69e00861b6e50805"
 		},
 		{
 			"ImportPath": "github.com/mssola/go-utils/security",
-			"Comment": "v0.1-1-g1a535d2",
-			"Rev": "1a535d2239bdcc15033763b441ff9eaee157082b"
+			"Comment": "v0.1-6-gaa2bb6c",
+			"Rev": "aa2bb6cd0360e34cb995f24a69e00861b6e50805"
 		},
 		{
 			"ImportPath": "github.com/nu7hatch/gouuid",
@@ -80,8 +70,12 @@
 			"Rev": "05b8cefd6a3cd87b81adb83479f5faadc0df2a67"
 		},
 		{
-			"ImportPath": "github.com/stretchr/testify/assert",
-			"Rev": "de7fcff264cd05cc0c90c509ea789a436a0dd206"
+			"ImportPath": "golang.org/x/crypto/bcrypt",
+			"Rev": "575fdbe86e5dd89229707ebec0575ce7d088a4a6"
+		},
+		{
+			"ImportPath": "golang.org/x/crypto/blowfish",
+			"Rev": "575fdbe86e5dd89229707ebec0575ce7d088a4a6"
 		}
 	]
 }

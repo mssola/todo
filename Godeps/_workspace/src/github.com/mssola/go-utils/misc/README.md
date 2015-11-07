@@ -1,5 +1,5 @@
 
-# Misc
+## misc [![GoDoc](https://godoc.org/github.com/mssola/go-utils/misc?status.png)](http://godoc.org/github.com/mssola/go-utils/misc)
 
 This package contains random functions that I didn't know where to put. By now
 there's only the EnvOrElse function. This function is similar to Python's get

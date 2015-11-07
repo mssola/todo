@@ -4,15 +4,15 @@
 
 // Package bcrypt implements Provos and Mazières's bcrypt adaptive hashing
 // algorithm. See http://www.usenix.org/event/usenix99/provos/provos.pdf
-package bcrypt
+package bcrypt // import "golang.org/x/crypto/bcrypt"
 
 // The code is a port of Provos and Mazières's C implementation.
 import (
-	"code.google.com/p/go.crypto/blowfish"
 	"crypto/rand"
 	"crypto/subtle"
 	"errors"
 	"fmt"
+	"golang.org/x/crypto/blowfish"
 	"io"
 	"strconv"
 )
