@@ -1,3 +1,5 @@
 db/database.json
 gin-bin
+public/stylesheets/*.css
 public/stylesheets/**/*.css
+public/stylesheets/**/*.css.map
