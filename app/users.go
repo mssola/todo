@@ -6,6 +6,7 @@ package app
 
 import (
 	"errors"
+	"log"
 	"net/http"
 	"time"
 
@@ -13,12 +14,12 @@ import (
 	"github.com/nu7hatch/gouuid"
 )
 
-// There can only be one user in this application.
+// User contains a user in this application.
 type User struct {
-	Id            string    `json:"token"`
-	Name          string    `json:"-"`
-	Password_hash string    `json:"-"`
-	Created_at    time.Time `json:"-"`
+	ID           string    `json:"token"`
+	Name         string    `json:"-"`
+	PasswordHash string    `json:"-" db:"password_hash"`
+	CreatedAt    time.Time `json:"-" db:"created_at"`
 }
 
 // Create a new user with the given name and password. The given password is
@@ -34,9 +35,9 @@ func createUser(name, password string) error {
 	// Create the user and redirect.
 	uuid, _ := uuid.NewV4()
 	u := &User{
-		Id:            uuid.String(),
-		Name:          name,
-		Password_hash: password,
+		ID:           uuid.String(),
+		Name:         name,
+		PasswordHash: password,
 	}
 	return Db.Insert(u)
 }
@@ -49,17 +50,22 @@ func matchPassword(name, password string) (string, error) {
 	if e != nil {
 		return "", e
 	}
-	if !security.PasswordMatch(u.Password_hash, password) {
+	if !security.PasswordMatch(u.PasswordHash, password) {
 		return "", errors.New("Wrong password!")
 	}
-	return u.Id, nil
+	return u.ID, nil
 }
 
-// Creates a user. It expects the "name" and the "password" form values to be
-// present. Moreover, only one user is allowed in this application.
+// UsersCreate responds to: POST /users. It expects the "name" and the
+// "password" form values to be present. Moreover, only one user is
+// allowed in this application.
 func UsersCreate(res http.ResponseWriter, req *http.Request) {
 	password := security.PasswordSalt(req.FormValue("password"))
 
-	createUser(req.FormValue("name"), password)
-	http.Redirect(res, req, "/", http.StatusFound)
+	if err := createUser(req.FormValue("name"), password); err != nil {
+		log.Printf("Could not create user: %v", err)
+		http.Redirect(res, req, "/", http.StatusForbidden)
+	} else {
+		http.Redirect(res, req, "/", http.StatusFound)
+	}
 }

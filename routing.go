@@ -18,7 +18,7 @@ import (
 func userLogged(req *http.Request, rm *mux.RouteMatch) bool {
 	var rid string
 
-	if lib.JsonEncoding(req) {
+	if lib.JSONEncoding(req) {
 		rid = req.URL.Query().Get("token")
 	} else if id, ok := lib.GetCookie(req, "userId").(string); ok {
 		rid = id
@@ -28,12 +28,12 @@ func userLogged(req *http.Request, rm *mux.RouteMatch) bool {
 
 // Returns true if this request should not let JSON requests pass.
 func private(req *http.Request, rm *mux.RouteMatch) bool {
-	return !lib.JsonEncoding(req)
+	return !lib.JSONEncoding(req)
 }
 
 // Returns the "Not found" response.
 func notFound(w http.ResponseWriter, req *http.Request) {
-	if lib.JsonEncoding(req) {
+	if lib.JSONEncoding(req) {
 		w.Header().Set("Content-Type", "application/json")
 		fmt.Fprint(w, lib.Response{Error: "Something wrong happened!"})
 	} else {
@@ -70,11 +70,11 @@ func route() *mux.Router {
 		MatcherFunc(userLogged)
 	r.HandleFunc("/topics/{id}", app.TopicsUpdate).Methods("POST").
 		MatcherFunc(userLogged).MatcherFunc(private)
-	r.HandleFunc("/topics/{id}", app.TopicsApiUpdate).Methods("PATCH", "PUT").
+	r.HandleFunc("/topics/{id}", app.TopicsUpdateJSON).Methods("PATCH", "PUT").
 		MatcherFunc(userLogged)
 	r.HandleFunc("/topics/{id}/delete", app.TopicsDestroy).Methods("POST").
 		MatcherFunc(userLogged).MatcherFunc(private)
-	r.HandleFunc("/topics/{id}", app.TopicsApiDestroy).Methods("DELETE").
+	r.HandleFunc("/topics/{id}", app.TopicsDestroyJSON).Methods("DELETE").
 		MatcherFunc(userLogged)
 
 	return r

@@ -14,8 +14,8 @@ import (
 )
 
 func TestCreateUserPage(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	req, err := http.NewRequest("GET", "/", nil)
 	assert.Nil(t, err)
@@ -27,8 +27,8 @@ func TestCreateUserPage(t *testing.T) {
 }
 
 func TestLoginPage(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	password := security.PasswordSalt("1111")
 	createUser("user", password)
@@ -43,8 +43,8 @@ func TestLoginPage(t *testing.T) {
 }
 
 func TestTopicsRedirect(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	password := security.PasswordSalt("1111")
 	createUser("user", password)

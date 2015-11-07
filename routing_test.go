@@ -7,6 +7,7 @@ package main
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"github.com/mssola/todo/app"
@@ -15,9 +16,26 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+// Initialize the database before running an unit test.
+func initTestDB() {
+	lib.InitSession()
+	lib.ViewsDir = "../views"
+
+	_ = os.Setenv("TODO_ENV", "test")
+	app.InitDB()
+
+	_ = app.Db.TruncateTables()
+}
+
+// Use this in the end of every unit test.
+func closeTestDB() {
+	_ = app.Db.TruncateTables()
+	app.CloseDB()
+}
+
 func TestUserLogged(t *testing.T) {
-	app.InitTestDB()
-	defer app.CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	req, err := http.NewRequest("GET", "/", nil)
 	assert.Nil(t, err)
@@ -31,9 +49,9 @@ func TestUserLogged(t *testing.T) {
 
 	uuid, _ := uuid.NewV4()
 	u := &app.User{
-		Id:            uuid.String(),
-		Name:          "user",
-		Password_hash: "1234",
+		ID:           uuid.String(),
+		Name:         "user",
+		PasswordHash: "1234",
 	}
 	app.Db.Insert(u)
 	var user app.User
@@ -41,7 +59,7 @@ func TestUserLogged(t *testing.T) {
 	assert.Nil(t, err)
 
 	w = httptest.NewRecorder()
-	lib.SetCookie(w, req, "userId", user.Id)
+	lib.SetCookie(w, req, "userId", user.ID)
 
 	assert.True(t, userLogged(req, nil))
 }

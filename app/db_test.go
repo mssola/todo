@@ -5,14 +5,33 @@
 package app
 
 import (
+	"os"
 	"testing"
 
+	"github.com/mssola/todo/lib"
 	"github.com/stretchr/testify/assert"
 )
 
+// Initialize the database before running an unit test.
+func initTestDB() {
+	lib.InitSession()
+	lib.ViewsDir = "../views"
+
+	_ = os.Setenv("TODO_ENV", "test")
+	InitDB()
+
+	_ = Db.TruncateTables()
+}
+
+// Use this in the end of every unit test.
+func closeTestDB() {
+	_ = Db.TruncateTables()
+	CloseDB()
+}
+
 func TestExists(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	// Does not exist.
 	assert.False(t, Exists("users", "1"))
@@ -22,12 +41,12 @@ func TestExists(t *testing.T) {
 	var u User
 	err := Db.SelectOne(&u, "select * from users")
 	assert.Nil(t, err)
-	assert.True(t, Exists("users", u.Id))
+	assert.True(t, Exists("users", u.ID))
 }
 
 func TestCount(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	// Try to count a non-existing table.
 	count := Count("doesnotexist")

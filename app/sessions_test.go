@@ -23,12 +23,12 @@ func login(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		panic("There are no users...")
 	}
-	lib.SetCookie(res, req, "userId", user.Id)
+	lib.SetCookie(res, req, "userId", user.ID)
 }
 
 func TestLogin(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	// This guy will be re-used throughout this test.
 	param := make(url.Values)
@@ -74,12 +74,12 @@ func TestLogin(t *testing.T) {
 	var user User
 	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
-	assert.Equal(t, lib.GetCookie(req, "userId"), user.Id)
+	assert.Equal(t, lib.GetCookie(req, "userId"), user.ID)
 }
 
 func TestLoginJson(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	// The body is nil.
 	req, err := http.NewRequest("POST", "/login", nil)
@@ -122,7 +122,7 @@ func TestLoginJson(t *testing.T) {
 	assert.Nil(t, err)
 	err = Db.SelectOne(&u2, "select * from users")
 	assert.Nil(t, err)
-	assert.Equal(t, u1.Id, u2.Id)
+	assert.Equal(t, u1.ID, u2.ID)
 
 	// Malformed JSON
 	body1 := "{\"password\":\"1234\""
@@ -139,8 +139,8 @@ func TestLoginJson(t *testing.T) {
 }
 
 func TestLogout(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	// Create the user and loggin it in.
 	password := security.PasswordSalt("1111")
@@ -155,7 +155,7 @@ func TestLogout(t *testing.T) {
 	var user User
 	err = Db.SelectOne(&user, "select * from users")
 	assert.Nil(t, err)
-	assert.Equal(t, lib.GetCookie(req, "userId"), user.Id)
+	assert.Equal(t, lib.GetCookie(req, "userId"), user.ID)
 
 	// Logout
 	Logout(w, req)

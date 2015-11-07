@@ -9,6 +9,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"path"
 	"strings"
@@ -16,7 +17,7 @@ import (
 )
 
 var (
-	// The directory where all the views are being stored.
+	// ViewsDir is the directory where all the views are being stored.
 	ViewsDir = "views"
 )
 
@@ -28,7 +29,7 @@ const (
 	viewsExt = "tpl"
 )
 
-// This struct holds all the data that can be passed to a view.
+// ViewData holds all the data that can be passed to a view.
 type ViewData struct {
 	// The name of the javascript file to be used.
 	JS string
@@ -53,7 +54,9 @@ func Render(res http.ResponseWriter, name string, data interface{}) {
 	if e != nil {
 		panic("Could not parse layout file!")
 	}
-	t.Execute(res, data)
+	if err := t.Execute(res, data); err != nil {
+		log.Printf("Could not render template %v: %v", name, err)
+	}
 }
 
 // Returns all the helpers used by the layout template. Right now only the
@@ -74,7 +77,9 @@ func layoutHelpers(name string, data interface{}) template.FuncMap {
 				r := fmt.Sprintf("Could not parse: %v => %v", name, e)
 				panic(r)
 			}
-			t.Execute(&buffer, data)
+			if err := t.Execute(&buffer, data); err != nil {
+				log.Printf("Could not yield template %v: %v", name, err)
+			}
 			return template.HTML(buffer.String())
 		},
 		"view": func() template.HTML {

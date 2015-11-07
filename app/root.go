@@ -10,7 +10,7 @@ import (
 	"github.com/mssola/todo/lib"
 )
 
-// Renders the root page. It has three different options:
+// RootIndex renders the root page. It has three different options:
 //
 //  1. If there's no user, it renders the "Create user" page.
 //  2. If the current user is not logged in, it render the "Login" page.

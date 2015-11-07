@@ -7,6 +7,7 @@ package app
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/mux"
@@ -39,7 +40,7 @@ func getFromBody(req *http.Request) *params {
 // should be called after performing some operation that might return an error.
 // This error from the previous operation is the third parameter. The fourth
 // parameter tells this function to generate the Markdown code for this topic.
-func renderJson(res http.ResponseWriter, topic *Topic, err error, md bool) {
+func renderJSON(res http.ResponseWriter, topic *Topic, err error, md bool) {
 	// Try to render the given Topic.
 	if err == nil {
 		if md {
@@ -52,38 +53,48 @@ func renderJson(res http.ResponseWriter, topic *Topic, err error, md bool) {
 	}
 
 	// Render a generic error.
-	lib.JsonError(res)
+	lib.JSONError(res)
 }
 
-func TopicsApiIndex(res http.ResponseWriter, req *http.Request) {
+// TopicsIndexJSON responds to: GET /topics. This will only be called when the
+// user requested a JSON response.
+func TopicsIndexJSON(res http.ResponseWriter, req *http.Request) {
 	var topics []Topic
-	Db.Select(&topics, "select * from topics")
+	if _, err := Db.Select(&topics, "select * from topics"); err != nil {
+		log.Printf("Could not fetch topics: %v", err)
+	}
 	b, _ := json.Marshal(topics)
 	fmt.Fprint(res, string(b))
 }
 
-func TopicsApiCreate(res http.ResponseWriter, req *http.Request) {
+// TopicsCreateJSON responds to: POST /topics. This will only be called when
+// the user requested a JSON response.
+func TopicsCreateJSON(res http.ResponseWriter, req *http.Request) {
 	if p := getFromBody(req); p == nil {
-		lib.JsonError(res)
+		lib.JSONError(res)
 	} else {
 		t, err := createTopic(p.Name)
-		renderJson(res, t, err, false)
+		renderJSON(res, t, err, false)
 	}
 }
 
-func TopicsApiShow(res http.ResponseWriter, req *http.Request) {
+// TopicsShowJSON responds to: GET /topics/:id. This will only be called when
+// the user requested a JSON response.
+func TopicsShowJSON(res http.ResponseWriter, req *http.Request) {
 	var t Topic
 	p := mux.Vars(req)
 	err := Db.SelectOne(&t, "select * from topics where id=$1", p["id"])
-	renderJson(res, &t, err, true)
+	renderJSON(res, &t, err, true)
 }
 
-func TopicsApiUpdate(res http.ResponseWriter, req *http.Request) {
+// TopicsUpdateJSON responds to: PUT/PATCH /topics/:id. This will only be
+// called when the user requested a JSON response.
+func TopicsUpdateJSON(res http.ResponseWriter, req *http.Request) {
 	var str, value string
 	var p *params
 
 	if p = getFromBody(req); p == nil {
-		lib.JsonError(res)
+		lib.JSONError(res)
 		return
 	}
 
@@ -92,7 +103,7 @@ func TopicsApiUpdate(res http.ResponseWriter, req *http.Request) {
 	if value = p.Name; value == "" {
 		str = "contents"
 		if value = p.Contents; value == "" {
-			lib.JsonError(res)
+			lib.JSONError(res)
 			return
 		}
 	} else {
@@ -103,10 +114,12 @@ func TopicsApiUpdate(res http.ResponseWriter, req *http.Request) {
 	var t Topic
 	str = fmt.Sprintf("update topics set %v=$1 where id=$2 returning *", str)
 	err := Db.SelectOne(&t, str, value, mux.Vars(req)["id"])
-	renderJson(res, &t, err, true)
+	renderJSON(res, &t, err, true)
 }
 
-func TopicsApiDestroy(res http.ResponseWriter, req *http.Request) {
+// TopicsDestroyJSON responds to: PUT/PATCH /topics/:id. This will only be
+// called when the user requested a JSON response.
+func TopicsDestroyJSON(res http.ResponseWriter, req *http.Request) {
 	p := mux.Vars(req)
 	results, err := Db.Exec("delete from topics where id=$1", p["id"])
 

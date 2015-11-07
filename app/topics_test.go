@@ -20,8 +20,8 @@ import (
 )
 
 func TestTopicsIndex(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic1")
 	assert.Nil(t, err)
@@ -43,13 +43,13 @@ func TestTopicsIndex(t *testing.T) {
 	s := string(str)
 	s1 := "<li class=\"selected\"><a href=\"/topics/%v\">topic1</a></li>"
 	s2 := "<li><a href=\"/topics/%v\">topic2</a></li>"
-	assert.True(t, strings.Contains(s, fmt.Sprintf(s1, t1.Id)))
-	assert.True(t, strings.Contains(s, fmt.Sprintf(s2, t2.Id)))
+	assert.True(t, strings.Contains(s, fmt.Sprintf(s1, t1.ID)))
+	assert.True(t, strings.Contains(s, fmt.Sprintf(s2, t2.ID)))
 }
 
 func TestTopicsIndexWithCookie(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic1")
 	assert.Nil(t, err)
@@ -65,20 +65,20 @@ func TestTopicsIndexWithCookie(t *testing.T) {
 	req, err := http.NewRequest("POST", "/", nil)
 	assert.Nil(t, err)
 	w := httptest.NewRecorder()
-	lib.SetCookie(w, req, "topic", t2.Id)
+	lib.SetCookie(w, req, "topic", t2.ID)
 	TopicsIndex(w, req)
 
 	str, _ := ioutil.ReadAll(w.Body)
 	s := string(str)
 	s1 := "<li><a href=\"/topics/%v\">topic1</a></li>"
 	s2 := "<li class=\"selected\"><a href=\"/topics/%v\">topic2</a></li>"
-	assert.True(t, strings.Contains(s, fmt.Sprintf(s1, t1.Id)))
-	assert.True(t, strings.Contains(s, fmt.Sprintf(s2, t2.Id)))
+	assert.True(t, strings.Contains(s, fmt.Sprintf(s1, t1.ID)))
+	assert.True(t, strings.Contains(s, fmt.Sprintf(s2, t2.ID)))
 }
 
 func TestTopicsIndexJson(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic1")
 	assert.Nil(t, err)
@@ -103,14 +103,14 @@ func TestTopicsIndexJson(t *testing.T) {
 	assert.Nil(t, err)
 
 	for i := 0; i < 2; i++ {
-		assert.Equal(t, topics[i].Id, topicsDb[i].Id)
+		assert.Equal(t, topics[i].ID, topicsDb[i].ID)
 		assert.Equal(t, topics[i].Name, topicsDb[i].Name)
 	}
 }
 
 func TestTopicsCreate(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	param := make(url.Values)
 	param["name"] = []string{"user"}
@@ -124,17 +124,17 @@ func TestTopicsCreate(t *testing.T) {
 	var topic Topic
 	err = Db.SelectOne(&topic, "select * from topics")
 	assert.Nil(t, err)
-	assert.NotEmpty(t, topic.Id)
+	assert.NotEmpty(t, topic.ID)
 	assert.Equal(t, topic.Name, "user")
-	assert.NotEmpty(t, topic.Created_at)
+	assert.NotEmpty(t, topic.CreatedAt)
 
 	assert.Equal(t, w.Code, 302)
-	assert.Equal(t, w.HeaderMap["Location"][0], "/topics/"+topic.Id)
+	assert.Equal(t, w.HeaderMap["Location"][0], "/topics/"+topic.ID)
 }
 
 func TestTopicsCreateNoName(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	param := make(url.Values)
 
@@ -149,15 +149,15 @@ func TestTopicsCreateNoName(t *testing.T) {
 
 	var topic Topic
 	err = Db.SelectOne(&topic, "select * from topics")
-	assert.Empty(t, topic.Id)
+	assert.Empty(t, topic.ID)
 	assert.NotNil(t, err)
 	count, err := Db.SelectInt("select count(*) from users")
 	assert.Equal(t, count, 0)
 }
 
 func TestTopicsCreateJson(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	// We try to create a topic for the first time.
 	body := "{\"name\":\"mssola\"}"
@@ -179,7 +179,7 @@ func TestTopicsCreateJson(t *testing.T) {
 	var t1 Topic
 	err = Db.SelectOne(&t1, "select * from topics")
 	assert.Nil(t, err)
-	assert.Equal(t, t1.Id, topic.Id)
+	assert.Equal(t, t1.ID, topic.ID)
 	assert.Equal(t, t1.Name, topic.Name)
 
 	// Now let's try it with the same name.
@@ -201,8 +201,8 @@ func TestTopicsCreateJson(t *testing.T) {
 }
 
 func TestTopicsCreateJsonMalformed(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	// We try to create a topic for the first time.
 	body := "{\"name\":\"mssola\""
@@ -225,8 +225,8 @@ func TestTopicsCreateJsonMalformed(t *testing.T) {
 }
 
 func TestTopicsShow(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic1")
 	assert.Nil(t, err)
@@ -239,7 +239,7 @@ func TestTopicsShow(t *testing.T) {
 	err = Db.SelectOne(&topicsDb[1], "select * from topics where name=$1", "topic2")
 	assert.Nil(t, err)
 
-	req, err := http.NewRequest("GET", "/topics/"+topicsDb[1].Id, nil)
+	req, err := http.NewRequest("GET", "/topics/"+topicsDb[1].ID, nil)
 	assert.Nil(t, err)
 	w := httptest.NewRecorder()
 
@@ -252,13 +252,13 @@ func TestTopicsShow(t *testing.T) {
 
 	s1 := "<li><a href=\"/topics/%v\">topic1</a></li>"
 	s2 := "<li class=\"selected\"><a href=\"/topics/%v\">topic2</a></li>"
-	assert.True(t, strings.Contains(s, fmt.Sprintf(s1, topicsDb[0].Id)))
-	assert.True(t, strings.Contains(s, fmt.Sprintf(s2, topicsDb[1].Id)))
+	assert.True(t, strings.Contains(s, fmt.Sprintf(s1, topicsDb[0].ID)))
+	assert.True(t, strings.Contains(s, fmt.Sprintf(s2, topicsDb[1].ID)))
 }
 
 func TestTopicsShowJson(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic1")
 	assert.Nil(t, err)
@@ -272,7 +272,7 @@ func TestTopicsShowJson(t *testing.T) {
 	err = Db.SelectOne(&topicsDb[1], "select * from topics where name=$1", "topic2")
 	assert.Nil(t, err)
 
-	req, err := http.NewRequest("GET", "/topics/"+topicsDb[1].Id, nil)
+	req, err := http.NewRequest("GET", "/topics/"+topicsDb[1].ID, nil)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
@@ -286,7 +286,7 @@ func TestTopicsShowJson(t *testing.T) {
 	err = decoder.Decode(&topic)
 	assert.Nil(t, err)
 
-	assert.Equal(t, topicsDb[1].Id, topic.Id)
+	assert.Equal(t, topicsDb[1].ID, topic.ID)
 	assert.Equal(t, topicsDb[1].Name, topic.Name)
 	assert.Equal(t, topicsDb[1].Contents, topic.Contents)
 	rendered := strings.TrimSpace(topic.Markdown)
@@ -310,8 +310,8 @@ func TestTopicsShowJson(t *testing.T) {
 }
 
 func TestTopicsShowJsonFail(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	req, err := http.NewRequest("GET", "/topics/1", nil)
 	assert.Nil(t, err)
@@ -331,8 +331,8 @@ func TestTopicsShowJsonFail(t *testing.T) {
 }
 
 func TestTopicsRename(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic")
 	assert.Nil(t, err)
@@ -343,7 +343,7 @@ func TestTopicsRename(t *testing.T) {
 
 	param := make(url.Values)
 
-	req, err := http.NewRequest("POST", "/topics/"+t1.Id, nil)
+	req, err := http.NewRequest("POST", "/topics/"+t1.ID, nil)
 	assert.Nil(t, err)
 	param["name"] = []string{"topic1"}
 	req.PostForm = param
@@ -357,7 +357,7 @@ func TestTopicsRename(t *testing.T) {
 	err = Db.SelectOne(&t2, "select * from topics")
 	assert.Nil(t, err)
 	assert.Equal(t, t2.Name, "topic1")
-	assert.Equal(t, t1.Id, t2.Id)
+	assert.Equal(t, t1.ID, t2.ID)
 
 	// HTTP
 	assert.Equal(t, w.Code, 302)
@@ -365,8 +365,8 @@ func TestTopicsRename(t *testing.T) {
 }
 
 func TestTopicsRenameJson(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic")
 	assert.Nil(t, err)
@@ -376,13 +376,13 @@ func TestTopicsRenameJson(t *testing.T) {
 	assert.Nil(t, err)
 
 	body := strings.NewReader("{\"name\":\"topic1\"}")
-	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, body)
+	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, body)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
+	m.HandleFunc("/topics/{id}", TopicsUpdateJSON)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -394,13 +394,13 @@ func TestTopicsRenameJson(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, t2.Name, "topic1")
 	assert.Equal(t, t2.Name, resp.Name)
-	assert.Equal(t, t1.Id, t2.Id)
-	assert.Equal(t, t2.Id, resp.Id)
+	assert.Equal(t, t1.ID, t2.ID)
+	assert.Equal(t, t2.ID, resp.ID)
 }
 
 func TestTopicsRenameJsonMalformed(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic")
 	assert.Nil(t, err)
@@ -410,13 +410,13 @@ func TestTopicsRenameJsonMalformed(t *testing.T) {
 	assert.Nil(t, err)
 
 	body := strings.NewReader("{\"name\":\"topic1\"")
-	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, body)
+	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, body)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
+	m.HandleFunc("/topics/{id}", TopicsUpdateJSON)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -429,8 +429,8 @@ func TestTopicsRenameJsonMalformed(t *testing.T) {
 }
 
 func TestTopicsRenameJsonFail(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic")
 	assert.Nil(t, err)
@@ -442,13 +442,13 @@ func TestTopicsRenameJsonFail(t *testing.T) {
 	assert.Nil(t, err)
 
 	body := strings.NewReader("{\"name\":\"topic1\"}")
-	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, body)
+	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, body)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
+	m.HandleFunc("/topics/{id}", TopicsUpdateJSON)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -461,8 +461,8 @@ func TestTopicsRenameJsonFail(t *testing.T) {
 }
 
 func TestUpdateContents(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic")
 	assert.Nil(t, err)
@@ -473,7 +473,7 @@ func TestUpdateContents(t *testing.T) {
 
 	param := make(url.Values)
 
-	req, err := http.NewRequest("POST", "/topics/"+t1.Id, nil)
+	req, err := http.NewRequest("POST", "/topics/"+t1.ID, nil)
 	assert.Nil(t, err)
 	param["contents"] = []string{"**bold**"}
 	req.PostForm = param
@@ -487,7 +487,7 @@ func TestUpdateContents(t *testing.T) {
 	err = Db.SelectOne(&t2, "select * from topics")
 	assert.Nil(t, err)
 	assert.Equal(t, t1.Name, t2.Name)
-	assert.Equal(t, t1.Id, t2.Id)
+	assert.Equal(t, t1.ID, t2.ID)
 	assert.NotEqual(t, t1.Contents, t2.Contents)
 	assert.Equal(t, t2.Contents, "**bold**")
 
@@ -497,8 +497,8 @@ func TestUpdateContents(t *testing.T) {
 }
 
 func TestUpdateJson(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic")
 	assert.Nil(t, err)
@@ -508,20 +508,20 @@ func TestUpdateJson(t *testing.T) {
 	assert.Nil(t, err)
 
 	body := strings.NewReader("{\"contents\":\"**contents**\"}")
-	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, body)
+	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, body)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
+	m.HandleFunc("/topics/{id}", TopicsUpdateJSON)
 	m.ServeHTTP(w, req)
 
 	// DB
 	err = Db.SelectOne(&t2, "select * from topics")
 	assert.Nil(t, err)
 	assert.Equal(t, t1.Name, t2.Name)
-	assert.Equal(t, t1.Id, t2.Id)
+	assert.Equal(t, t1.ID, t2.ID)
 	assert.NotEqual(t, t1.Contents, t2.Contents)
 	assert.Equal(t, t2.Contents, "**contents**")
 
@@ -535,8 +535,8 @@ func TestUpdateJson(t *testing.T) {
 }
 
 func TestTopicsUpdateJsonMalformed(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic")
 	assert.Nil(t, err)
@@ -546,13 +546,13 @@ func TestTopicsUpdateJsonMalformed(t *testing.T) {
 	assert.Nil(t, err)
 
 	body := strings.NewReader("{\"contents\":\"topic1\"")
-	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, body)
+	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, body)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
+	m.HandleFunc("/topics/{id}", TopicsUpdateJSON)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -565,8 +565,8 @@ func TestTopicsUpdateJsonMalformed(t *testing.T) {
 }
 
 func TestTopicsUpdateNoBody(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic")
 	assert.Nil(t, err)
@@ -575,13 +575,13 @@ func TestTopicsUpdateNoBody(t *testing.T) {
 	err = Db.SelectOne(&t1, "select * from topics")
 	assert.Nil(t, err)
 
-	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, nil)
+	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, nil)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
+	m.HandleFunc("/topics/{id}", TopicsUpdateJSON)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -594,8 +594,8 @@ func TestTopicsUpdateNoBody(t *testing.T) {
 }
 
 func TestTopicsUpdateNoValidParametersGiven(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic")
 	assert.Nil(t, err)
@@ -605,13 +605,13 @@ func TestTopicsUpdateNoValidParametersGiven(t *testing.T) {
 	assert.Nil(t, err)
 
 	body := strings.NewReader("{\"something\":\"**contents**\"}")
-	req, err := http.NewRequest("PUT", "/topics/"+t1.Id, body)
+	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, body)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsApiUpdate)
+	m.HandleFunc("/topics/{id}", TopicsUpdateJSON)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -624,8 +624,8 @@ func TestTopicsUpdateNoValidParametersGiven(t *testing.T) {
 }
 
 func TestDestroy(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic")
 	assert.Nil(t, err)
@@ -634,7 +634,7 @@ func TestDestroy(t *testing.T) {
 	err = Db.SelectOne(&t1, "select * from topics")
 	assert.Nil(t, err)
 
-	req, err := http.NewRequest("POST", "/topics/"+t1.Id+"/delete", nil)
+	req, err := http.NewRequest("POST", "/topics/"+t1.ID+"/delete", nil)
 	assert.Nil(t, err)
 	w := httptest.NewRecorder()
 
@@ -653,8 +653,8 @@ func TestDestroy(t *testing.T) {
 }
 
 func TestDestroyJson(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	_, err := createTopic("topic")
 	assert.Nil(t, err)
@@ -663,13 +663,13 @@ func TestDestroyJson(t *testing.T) {
 	err = Db.SelectOne(&t1, "select * from topics")
 	assert.Nil(t, err)
 
-	req, err := http.NewRequest("DELETE", "/topics/"+t1.Id, nil)
+	req, err := http.NewRequest("DELETE", "/topics/"+t1.ID, nil)
 	assert.Nil(t, err)
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsApiDestroy)
+	m.HandleFunc("/topics/{id}", TopicsDestroyJSON)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -686,8 +686,8 @@ func TestDestroyJson(t *testing.T) {
 }
 
 func TestDestroyJsonError(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	req, err := http.NewRequest("DELETE",
 		"/topics/7a0a771a-cc11-4079-59ba-81df690a0588", nil)
@@ -696,7 +696,7 @@ func TestDestroyJsonError(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsApiDestroy)
+	m.HandleFunc("/topics/{id}", TopicsDestroyJSON)
 	m.ServeHTTP(w, req)
 
 	// DB
@@ -713,8 +713,8 @@ func TestDestroyJsonError(t *testing.T) {
 }
 
 func TestWrongUuidFormatApi(t *testing.T) {
-	InitTestDB()
-	defer CloseTestDB()
+	initTestDB()
+	defer closeTestDB()
 
 	req, err := http.NewRequest("DELETE", "/topics/1", nil)
 	assert.Nil(t, err)
@@ -722,7 +722,7 @@ func TestWrongUuidFormatApi(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
-	m.HandleFunc("/topics/{id}", TopicsApiDestroy)
+	m.HandleFunc("/topics/{id}", TopicsDestroyJSON)
 	m.ServeHTTP(w, req)
 
 	// DB

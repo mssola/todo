@@ -10,7 +10,7 @@ import (
 	"net/http"
 )
 
-// The default response for short messages.
+// Response for short messages.
 type Response struct {
 	Message string `json:"msg,omitempty"`
 	Error   string `json:"error,omitempty"`
@@ -22,20 +22,20 @@ func (r Response) String() string {
 	return string(b)
 }
 
-// Sends the standard error for this application.
-func JsonError(res http.ResponseWriter) {
+// JSONError sends the standard error for this application.
+func JSONError(res http.ResponseWriter) {
 	res.WriteHeader(http.StatusNotFound)
 	fmt.Fprint(res, Response{Error: "Failed!"})
 }
 
-// Returns true and sends the proper response if the given error is not nil. If
-// the error is nil, then it just returns false and does nothing.
+// CheckError returns true and sends the proper response if the given error is
+// not nil. If the error is nil, then it just returns false and does nothing.
 func CheckError(res http.ResponseWriter, req *http.Request, err error) bool {
 	if err == nil {
 		return false
 	}
 
-	if JsonEncoding(req) {
+	if JSONEncoding(req) {
 		res.WriteHeader(http.StatusNotFound)
 		fmt.Fprint(res, Response{Error: "Failed!"})
 	} else {
@@ -53,8 +53,9 @@ func checkHeader(req *http.Request, name string) bool {
 	return ct[0] == "application/json"
 }
 
-// Returns true if we can assume that this is a JSON request, false otherwise.
-func JsonEncoding(req *http.Request) bool {
+// JSONEncoding returns true if we can assume that this is a JSON request,
+// false otherwise.
+func JSONEncoding(req *http.Request) bool {
 	if checkHeader(req, "Content-Type") {
 		return true
 	}

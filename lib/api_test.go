@@ -41,7 +41,7 @@ func TestResponse(t *testing.T) {
 
 func TestJsonError(t *testing.T) {
 	w := httptest.NewRecorder()
-	JsonError(w)
+	JSONError(w)
 	assert.Equal(t, w.Code, http.StatusNotFound)
 
 	var r Response
@@ -79,15 +79,15 @@ func TestCheckError(t *testing.T) {
 func TestJsonEncoding(t *testing.T) {
 	// Nope.
 	r1, _ := http.NewRequest("GET", "/", nil)
-	assert.False(t, JsonEncoding(r1))
+	assert.False(t, JSONEncoding(r1))
 
 	// Yes, because of the "Content-Type" header.
 	r3, _ := http.NewRequest("GET", "/something", nil)
 	r3.Header.Set("Content-Type", "application/json")
-	assert.True(t, JsonEncoding(r3))
+	assert.True(t, JSONEncoding(r3))
 
 	// Yes, because of the "Accept" header.
 	r4, _ := http.NewRequest("GET", "/something", nil)
 	r4.Header.Set("Accept", "application/json")
-	assert.True(t, JsonEncoding(r4))
+	assert.True(t, JSONEncoding(r4))
 }

@@ -15,7 +15,7 @@ import (
 // Returns the name and the password parameters as given by the request. This
 // method abstracts away the origin of these values.
 func getNamePassword(req *http.Request) (string, string) {
-	if lib.JsonEncoding(req) {
+	if lib.JSONEncoding(req) {
 		if req.Body == nil {
 			return "", ""
 		}
@@ -43,8 +43,8 @@ func Login(res http.ResponseWriter, req *http.Request) {
 	}
 
 	// It's ok to login this user.
-	if lib.JsonEncoding(req) {
-		b, _ := json.Marshal(User{Id: id})
+	if lib.JSONEncoding(req) {
+		b, _ := json.Marshal(User{ID: id})
 		fmt.Fprint(res, string(b))
 	} else {
 		lib.SetCookie(res, req, "userId", id)

@@ -5,6 +5,7 @@
 package lib
 
 import (
+	"log"
 	"net/http"
 
 	"github.com/gorilla/sessions"
@@ -23,13 +24,14 @@ const (
 	maxAge = 60 * 60 * 24 * 30 * 12
 )
 
-// Initialize the global cookie store.
+// InitSession initializes the global cookie store.
 func InitSession() {
 	store = sessions.NewCookieStore([]byte(security.NewAuthToken()))
 	store.Options = &sessions.Options{Path: "/", MaxAge: maxAge}
 }
 
-// Tries to get the cookie store for the given request. It panics if it fails.
+// GetStore tries to get the cookie store for the given request. It panics if
+// it fails.
 func GetStore(req *http.Request) *sessions.Session {
 	// Let's generate a new session. Moreover, Gorilla's documentation
 	// says that this method *never* fails on creating a new session, so
@@ -38,23 +40,27 @@ func GetStore(req *http.Request) *sessions.Session {
 	return s
 }
 
-// Returns the value for the specified cookie. If the cookie does not exist,
-// then an empty interface{} gets returned.
+// GetCookie returns the value for the specified cookie. If the cookie does
+// not exist, then an empty interface{} gets returned.
 func GetCookie(req *http.Request, name string) interface{} {
 	s := GetStore(req)
 	return s.Values[name]
 }
 
-// Sets the given value to the specified cookie.
+// SetCookie sets the given value to the specified cookie.
 func SetCookie(res http.ResponseWriter, req *http.Request, key, value string) {
 	s := GetStore(req)
 	s.Values[key] = value
-	s.Save(req, res)
+	if err := s.Save(req, res); err != nil {
+		log.Printf("Could not save cookie: %v", err)
+	}
 }
 
-// Deletes the specified cookie.
+// DeleteCookie deletes the specified cookie.
 func DeleteCookie(res http.ResponseWriter, req *http.Request, key string) {
 	s := GetStore(req)
 	delete(s.Values, key)
-	s.Save(req, res)
+	if err := s.Save(req, res); err != nil {
+		log.Printf("Could not save cookie: %v", err)
+	}
 }

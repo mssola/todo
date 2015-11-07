@@ -5,14 +5,15 @@ package app
 
 import (
 	"fmt"
-	"os"
+	"log"
 
 	"github.com/coopernurse/gorp"
+
+	// Blank import because we are using postgresql
 	_ "github.com/lib/pq"
 	"github.com/mssola/go-utils/db"
 	"github.com/mssola/go-utils/misc"
 	"github.com/mssola/go-utils/path"
-	"github.com/mssola/todo/lib"
 )
 
 // Global instance that holds a connection to the DB. It gets initialized after
@@ -20,44 +21,28 @@ import (
 // connection.
 var Db gorp.DbMap
 
-// Initialize the global DB connection.
+// InitDB initializes the global DB connection.
 func InitDB() {
 	c := db.Open(db.Options{
 		Base:        path.FindRoot("todo", "."),
 		Relative:    "/db/database.json",
 		Environment: misc.EnvOrElse("TODO_ENV", "development"),
 		DBMS:        "postgres",
-		Heroku:      true,
 	})
 	Db = gorp.DbMap{Db: c, Dialect: gorp.PostgresDialect{}}
 	Db.AddTableWithName(User{}, "users")
 	Db.AddTableWithName(Topic{}, "topics")
 }
 
-// Initialize the database before running an unit test.
-func InitTestDB() {
-	lib.InitSession()
-	lib.ViewsDir = "../views"
-
-	os.Setenv("TODO_ENV", "test")
-	InitDB()
-
-	Db.TruncateTables()
-}
-
-// Use this in the end of every unit test.
-func CloseTestDB() {
-	Db.TruncateTables()
-	CloseDB()
-}
-
-// Close the global DB connection.
+// CloseDB close the global DB connection.
 func CloseDB() {
-	Db.Db.Close()
+	if err := Db.Db.Close(); err != nil {
+		log.Printf("Could not close database: %v", err)
+	}
 }
 
-// Returns true if there is a row in the given table that matches the given id.
-// It returns false otherwise.
+// Exists returns true if there is a row in the given table that matches the
+// given id. It returns false otherwise.
 func Exists(name, id string) bool {
 	q := fmt.Sprintf("select count(*) from %v where id=$1", name)
 	c, err := Db.SelectInt(q, id)
