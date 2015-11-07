@@ -48,6 +48,7 @@ func renderJSON(res http.ResponseWriter, topic *Topic, err error, md bool) {
 		}
 		if b, err := json.Marshal(topic); err == nil {
 			fmt.Fprint(res, string(b))
+			res.Header().Set("Content-Type", "application/json")
 			return
 		}
 	}
@@ -64,6 +65,7 @@ func TopicsIndexJSON(res http.ResponseWriter, req *http.Request) {
 		log.Printf("Could not fetch topics: %v", err)
 	}
 	b, _ := json.Marshal(topics)
+	res.Header().Set("Content-Type", "application/json")
 	fmt.Fprint(res, string(b))
 }
 
@@ -123,6 +125,7 @@ func TopicsDestroyJSON(res http.ResponseWriter, req *http.Request) {
 	p := mux.Vars(req)
 	results, err := Db.Exec("delete from topics where id=$1", p["id"])
 
+	res.Header().Set("Content-Type", "application/json")
 	if err != nil {
 		fmt.Fprint(res, lib.Response{Error: "Could not remove topic"})
 	} else if count, _ := results.RowsAffected(); count == 0 {
