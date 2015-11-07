@@ -11,7 +11,6 @@ import (
 	"testing"
 
 	"github.com/mssola/go-utils/security"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateUser(t *testing.T) {
@@ -20,22 +19,37 @@ func TestCreateUser(t *testing.T) {
 	// There's nothing before.
 	var u User
 	err := Db.SelectOne(&u, "select * from users")
-	assert.NotNil(t, err)
-	assert.Empty(t, u.ID)
+	if err == nil {
+		t.Fatalf("Should be not nil")
+	}
+	if u.ID != "" {
+		t.Fatalf("Expected to be empty")
+	}
 
 	// Now we create a user.
 	err = createUser("u1", "1234")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	err = Db.SelectOne(&u, "select * from users")
-	assert.NotEmpty(t, u.ID)
-	assert.Equal(t, u.Name, "u1")
-	assert.NotEmpty(t, u.PasswordHash)
-	assert.NotEmpty(t, u.CreatedAt)
+	if u.ID == "" {
+		t.Fatalf("Expected to not be empty")
+	}
+	if u.Name != "u1" {
+		t.Fatalf("Got %v; Expected: %v", u.Name, "u1")
+	}
+	if u.PasswordHash == "" {
+		t.Fatalf("Expected to not be empty")
+	}
 
 	// We cannot create another user.
 	err = createUser("u2", "1234")
-	assert.NotNil(t, err)
-	assert.Equal(t, err.Error(), "Too many users!")
+	if err == nil {
+		t.Fatalf("Should be not nil")
+	}
+	if err.Error() != "Too many users!" {
+		t.Fatalf("Got %v; Expected: %v", err.Error(), "Too many users!")
+	}
 
 	closeTestDB()
 }
@@ -45,19 +59,29 @@ func TestMatchPassword(t *testing.T) {
 
 	// User does not exist.
 	u, err := matchPassword("u", "1234")
-	assert.NotNil(t, err)
+	if err == nil {
+		t.Fatalf("Should be not nil")
+	}
 
 	// User exists but has a different password.
 	password := security.PasswordSalt("1111")
 	err = createUser("u", password)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	u, err = matchPassword("u", "1234")
-	assert.NotNil(t, err)
+	if err == nil {
+		t.Fatalf("Should be not nil")
+	}
 
 	// User exists and has this password.
 	u, err = matchPassword("u", "1111")
-	assert.Nil(t, err)
-	assert.NotEmpty(t, u)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if u == "" {
+		t.Fatalf("Expected to not be empty")
+	}
 
 	closeTestDB()
 }
@@ -71,21 +95,34 @@ func TestUsersCreate(t *testing.T) {
 	param["password"] = []string{"1234"}
 
 	req, err := http.NewRequest("POST", "/users", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.PostForm = param
 	w := httptest.NewRecorder()
 	UsersCreate(w, req)
 
-	assert.Equal(t, w.Code, 302)
-	assert.Equal(t, w.HeaderMap["Location"][0], "/")
+	if w.Code != 302 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 302)
+	}
+	if w.HeaderMap["Location"][0] != "/" {
+		t.Fatalf("Got %v; Expected: %v", w.HeaderMap["Location"][0], "/")
+	}
 
 	var user User
 	err = Db.SelectOne(&user, "select * from users")
-	assert.Nil(t, err)
-	assert.NotEmpty(t, user.ID)
-	assert.Equal(t, user.Name, "user")
-	assert.NotEmpty(t, user.PasswordHash)
-	assert.NotEmpty(t, user.CreatedAt)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if user.ID == "" {
+		t.Fatalf("Expected to not be empty")
+	}
+	if user.Name != "user" {
+		t.Fatalf("Got %v; Expected: %v", user.Name, "user")
+	}
+	if user.PasswordHash == "" {
+		t.Fatalf("Expected to not be empty")
+	}
 }
 
 func TestUserCreateAlreadyExists(t *testing.T) {
@@ -100,19 +137,32 @@ func TestUserCreateAlreadyExists(t *testing.T) {
 	param["password"] = []string{"1234"}
 
 	req, err := http.NewRequest("POST", "/", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.PostForm = param
 	w := httptest.NewRecorder()
 	UsersCreate(w, req)
 
-	assert.Equal(t, w.Code, 403)
-	assert.Equal(t, w.HeaderMap["Location"][0], "/")
+	if w.Code != 403 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 403)
+	}
+	if w.HeaderMap["Location"][0] != "/" {
+		t.Fatalf("Got %v; Expected: %v", w.HeaderMap["Location"][0], "/")
+	}
 
 	var user User
 	err = Db.SelectOne(&user, "select * from users")
-	assert.Nil(t, err)
-	assert.NotEmpty(t, user.ID)
-	assert.Equal(t, user.Name, "user")
-	assert.NotEmpty(t, user.PasswordHash)
-	assert.NotEmpty(t, user.CreatedAt)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if user.ID == "" {
+		t.Fatalf("Expected to not be empty")
+	}
+	if user.Name != "user" {
+		t.Fatalf("Got %v; Expected: %v", user.Name, "user")
+	}
+	if user.PasswordHash == "" {
+		t.Fatalf("Expected to not be empty")
+	}
 }

@@ -10,8 +10,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestResponse(t *testing.T) {
@@ -20,35 +18,48 @@ func TestResponse(t *testing.T) {
 		Error:   "error",
 	}
 	str := "{\"msg\":\"message\",\"error\":\"error\"}"
-	assert.Equal(t, r.String(), str)
+	if s := r.String(); s != str {
+		t.Fatalf("Got: %v, Expecting: %v", s, str)
+	}
 
 	r1 := Response{
 		Error: "error",
 	}
 	str = "{\"error\":\"error\"}"
-	assert.Equal(t, r1.String(), str)
+	if s := r1.String(); s != str {
+		t.Fatalf("Got: %v, Expecting: %v", s, str)
+	}
 
 	r2 := Response{
 		Message: "message",
 	}
 	str = "{\"msg\":\"message\"}"
-	assert.Equal(t, r2.String(), str)
+	if s := r2.String(); s != str {
+		t.Fatalf("Got: %v, Expecting: %v", s, str)
+	}
 
 	r3 := Response{}
 	str = "{}"
-	assert.Equal(t, r3.String(), str)
+	if s := r3.String(); s != str {
+		t.Fatalf("Got: %v, Expecting: %v", s, str)
+	}
 }
 
 func TestJsonError(t *testing.T) {
 	w := httptest.NewRecorder()
 	JSONError(w)
-	assert.Equal(t, w.Code, http.StatusNotFound)
+	if w.Code != http.StatusNotFound {
+		t.Fatalf("Wrong code. Got: %v, expected 404", w.Code)
+	}
 
 	var r Response
 	decoder := json.NewDecoder(w.Body)
-	err := decoder.Decode(&r)
-	assert.Nil(t, err)
-	assert.Equal(t, r.Error, "Failed!")
+	if err := decoder.Decode(&r); err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if err := r.Error; err != "Failed!" {
+		t.Fatalf("Expected to be 'Failed!': %v", err)
+	}
 }
 
 func TestCheckError(t *testing.T) {
@@ -56,38 +67,55 @@ func TestCheckError(t *testing.T) {
 	w := httptest.NewRecorder()
 
 	// Base case.
-	assert.False(t, CheckError(w, request, nil))
+	if r := CheckError(w, request, nil); r {
+		t.Fatalf("Expected to be false!")
+	}
 
 	// Regular HTML
-	b := CheckError(w, request, errors.New("Something"))
-	assert.True(t, b)
-	assert.Equal(t, w.Code, http.StatusFound)
+	if b := CheckError(w, request, errors.New("Something")); !b {
+		t.Fatalf("Expected to be true!")
+	}
+	if w.Code != http.StatusFound {
+		t.Fatalf("Wrong code. Got: %v, expected 200", w.Code)
+	}
 
 	// JSON
 	r1, _ := http.NewRequest("GET", "/", nil)
 	r1.Header.Set("Content-Type", "application/json")
 	w1 := httptest.NewRecorder()
-	b = CheckError(w1, r1, errors.New("Something"))
+	if b := CheckError(w1, r1, errors.New("Something")); !b {
+		t.Fatalf("Expected to be true!")
+	}
 
 	var r Response
 	decoder := json.NewDecoder(w1.Body)
 	err := decoder.Decode(&r)
-	assert.Nil(t, err)
-	assert.Equal(t, r.Error, "Failed!")
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if err := r.Error; err != "Failed!" {
+		t.Fatalf("Expected to be 'Failed!': %v", err)
+	}
 }
 
 func TestJsonEncoding(t *testing.T) {
 	// Nope.
 	r1, _ := http.NewRequest("GET", "/", nil)
-	assert.False(t, JSONEncoding(r1))
+	if res := JSONEncoding(r1); res {
+		t.Fatalf("Expected to be false")
+	}
 
 	// Yes, because of the "Content-Type" header.
 	r3, _ := http.NewRequest("GET", "/something", nil)
 	r3.Header.Set("Content-Type", "application/json")
-	assert.True(t, JSONEncoding(r3))
+	if res := JSONEncoding(r3); !res {
+		t.Fatalf("Expected to be true")
+	}
 
 	// Yes, because of the "Accept" header.
 	r4, _ := http.NewRequest("GET", "/something", nil)
 	r4.Header.Set("Accept", "application/json")
-	assert.True(t, JSONEncoding(r4))
+	if res := JSONEncoding(r4); !res {
+		t.Fatalf("Expected to be true")
+	}
 }

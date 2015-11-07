@@ -4,6 +4,7 @@ go:
     - 1.2
     - 1.3
     - 1.4
+    - 1.5
     - tip
 matrix:
     allow_failures:
@@ -14,5 +15,4 @@ before_script:
     - psql -c 'create database todo;' -U postgres
     - ./mssola/db -e test < db/tables.sql
 install:
-    - go get github.com/stretchr/testify/assert
     - go get -d ./... && go test -i ./... && go build -v ./...

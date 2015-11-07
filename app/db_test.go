@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/mssola/todo/lib"
-	"github.com/stretchr/testify/assert"
 )
 
 // Initialize the database before running an unit test.
@@ -34,14 +33,20 @@ func TestExists(t *testing.T) {
 	defer closeTestDB()
 
 	// Does not exist.
-	assert.False(t, Exists("users", "1"))
+	if Exists("users", "1") {
+		t.Fatal("Expected to be false")
+	}
 
 	// Exists!
 	createUser("u", "1234")
 	var u User
 	err := Db.SelectOne(&u, "select * from users")
-	assert.Nil(t, err)
-	assert.True(t, Exists("users", u.ID))
+	if err != nil {
+		t.Fatalf("Should've executed correctly, but: %v", err)
+	}
+	if !Exists("users", u.ID) {
+		t.Fatal("Expected to be true")
+	}
 }
 
 func TestCount(t *testing.T) {
@@ -50,15 +55,23 @@ func TestCount(t *testing.T) {
 
 	// Try to count a non-existing table.
 	count := Count("doesnotexist")
-	assert.Equal(t, count, 0)
+	if count != 0 {
+		t.Fatalf("Wrong count: %v; expected: %v", count, 0)
+	}
 
 	// Counting.
 	count = Count("topics")
-	assert.Equal(t, count, 0)
+	if count != 0 {
+		t.Fatalf("Wrong count: %v; expected: %v", count, 0)
+	}
 	createTopic("t1")
 	createTopic("t2")
 	count = Count("topics")
-	assert.Equal(t, count, 2)
+	if count != 2 {
+		t.Fatalf("Wrong count: %v; expected: %v", count, 2)
+	}
 	count = Count("users")
-	assert.Equal(t, count, 0)
+	if count != 0 {
+		t.Fatalf("Wrong count: %v; expected: %v", count, 0)
+	}
 }

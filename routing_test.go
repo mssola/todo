@@ -13,7 +13,6 @@ import (
 	"github.com/mssola/todo/app"
 	"github.com/mssola/todo/lib"
 	"github.com/nu7hatch/gouuid"
-	"github.com/stretchr/testify/assert"
 )
 
 // Initialize the database before running an unit test.
@@ -38,14 +37,20 @@ func TestUserLogged(t *testing.T) {
 	defer closeTestDB()
 
 	req, err := http.NewRequest("GET", "/", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Request was not successful: %v", err)
+	}
 
-	assert.False(t, userLogged(req, nil))
+	if val := userLogged(req, nil); val {
+		t.Fatalf("Expected to be false: %v", val)
+	}
 
 	w := httptest.NewRecorder()
 	lib.SetCookie(w, req, "userId", "1")
 
-	assert.False(t, userLogged(req, nil))
+	if val := userLogged(req, nil); val {
+		t.Fatalf("Expected to be false: %v", val)
+	}
 
 	uuid, _ := uuid.NewV4()
 	u := &app.User{
@@ -55,11 +60,14 @@ func TestUserLogged(t *testing.T) {
 	}
 	app.Db.Insert(u)
 	var user app.User
-	err = app.Db.SelectOne(&user, "select * from users")
-	assert.Nil(t, err)
+	if err := app.Db.SelectOne(&user, "select * from users"); err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	w = httptest.NewRecorder()
 	lib.SetCookie(w, req, "userId", user.ID)
 
-	assert.True(t, userLogged(req, nil))
+	if val := userLogged(req, nil); !val {
+		t.Fatalf("Expected to be true: %v", val)
+	}
 }

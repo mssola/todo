@@ -7,10 +7,10 @@ package app
 import (
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"github.com/mssola/go-utils/security"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestCreateUserPage(t *testing.T) {
@@ -18,12 +18,18 @@ func TestCreateUserPage(t *testing.T) {
 	defer closeTestDB()
 
 	req, err := http.NewRequest("GET", "/", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	w := httptest.NewRecorder()
 	RootIndex(w, req)
 
-	assert.Equal(t, w.Code, 200)
-	assert.Contains(t, w.Body.String(), "<h1>Create user</h1>")
+	if w.Code != 200 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 200)
+	}
+	if strings.Contains("<h1>Create user</h1>", w.Body.String()) {
+		t.Fatalf("Body should've contained '<h1>Create user</h1>'")
+	}
 }
 
 func TestLoginPage(t *testing.T) {
@@ -34,12 +40,18 @@ func TestLoginPage(t *testing.T) {
 	createUser("user", password)
 
 	req, err := http.NewRequest("GET", "/", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	w := httptest.NewRecorder()
 	RootIndex(w, req)
 
-	assert.Equal(t, w.Code, 200)
-	assert.Contains(t, w.Body.String(), "<h1>Login</h1>")
+	if w.Code != 200 {
+		t.Fatalf("Got %v, Expected: %v", w.Code, 200)
+	}
+	if strings.Contains("<h1>Login</h1>", w.Body.String()) {
+		t.Fatalf("Body should've contained '<h1>Login</h1>'")
+	}
 }
 
 func TestTopicsRedirect(t *testing.T) {
@@ -50,11 +62,17 @@ func TestTopicsRedirect(t *testing.T) {
 	createUser("user", password)
 
 	req, err := http.NewRequest("GET", "/", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	w := httptest.NewRecorder()
 	login(w, req)
 	RootIndex(w, req)
 
-	assert.Equal(t, w.Code, 302)
-	assert.Equal(t, w.HeaderMap["Location"][0], "/topics")
+	if w.Code != 302 {
+		t.Fatalf("Got %v, Expected: %v", w.Code, 302)
+	}
+	if w.HeaderMap["Location"][0] != "/topics" {
+		t.Fatalf("Got %v, Expected: %v", w.HeaderMap["Location"][0], "/topics")
+	}
 }

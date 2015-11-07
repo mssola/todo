@@ -7,24 +7,33 @@ package lib
 import (
 	"testing"
 	"time"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestView(t *testing.T) {
 	ViewsDir = "views"
-	assert.Equal(t, view("path"), "views/path.tpl")
-	assert.Equal(t, view("path/sub"), "views/path/sub.tpl")
-	assert.Equal(t, view("/path/sub"), "views/path/sub.tpl")
+
+	if view("path") != "views/path.tpl" {
+		t.Fatal("Wrong path value expected: views/path.tpl")
+	}
+	if view("path/sub") != "views/path/sub.tpl" {
+		t.Fatal("Wrong path value expected: views/path/sub.tpl")
+	}
+	if view("/path/sub") != "views/path/sub.tpl" {
+		t.Fatal("Wrong path value expected: views/path/sub.tpl")
+	}
 }
 
 func TestHelpers(t *testing.T) {
 	// fmtDate
 	date := viewHelpers()["fmtDate"].(func(time.Time) string)
 	d := time.Date(2014, time.March, 12, 12, 59, 12, 123, time.UTC)
-	assert.Equal(t, date(d), "12/03/2014")
+	if dt := date(d); dt != "12/03/2014" {
+		t.Fatalf("Wrong value %v, expected 12/03/2014", dt)
+	}
 
 	// inc
 	inc := viewHelpers()["inc"].(func(int) int)
-	assert.Equal(t, inc(0), 1)
+	if i := inc(0); i != 1 {
+		t.Fatalf("Wrong value %v, expected 1", i)
+	}
 }

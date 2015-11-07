@@ -8,33 +8,47 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestSession(t *testing.T) {
 	// Make sure that the InitSession function does something.
-	assert.Nil(t, store)
+	if store != nil {
+		t.Fatal("could not initalize test")
+	}
 	InitSession()
-	assert.NotNil(t, store)
+	if store == nil {
+		t.Fatal("could not initalize test")
+	}
 
 	// GetStore gets the proper store.
 	req, _ := http.NewRequest("POST", "/", nil)
 	s := GetStore(req)
-	assert.Empty(t, s.Values)
+	if len(s.Values) != 0 {
+		t.Fatalf("Expected to be empty, but: %v", s.Values)
+	}
 
 	// GetCookie & SetCookie
-	assert.Empty(t, GetCookie(req, "hello"))
+	if ck := GetCookie(req, "hello"); ck != nil {
+		t.Fatalf("Expected to be empty: %v", ck)
+	}
 	w := httptest.NewRecorder()
 	SetCookie(w, req, "hello", "world")
-	assert.Equal(t, GetCookie(req, "hello"), "world")
+	if ck := GetCookie(req, "hello"); ck != "world" {
+		t.Fatalf("Expected to be 'world': %v", ck)
+	}
 
 	// DeleteCookie
 	SetCookie(w, req, "another", "anotherworld")
 	SetCookie(w, req, "yetanother", "yetanotherworld")
 	DeleteCookie(w, req, "another")
 	s = GetStore(req)
-	assert.Equal(t, len(s.Values), 2)
-	assert.Equal(t, GetCookie(req, "hello"), "world")
-	assert.Equal(t, GetCookie(req, "yetanother"), "yetanotherworld")
+	if len(s.Values) != 2 {
+		t.Fatalf("Wrong number of cookies: %v", len(s.Values))
+	}
+	if ck := GetCookie(req, "hello"); ck != "world" {
+		t.Fatalf("Expected to be 'world': %v", ck)
+	}
+	if ck := GetCookie(req, "yetanother"); ck != "yetanotherworld" {
+		t.Fatalf("Expected to be 'yetanotherworld': %v", ck)
+	}
 }

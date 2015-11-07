@@ -16,7 +16,6 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/mssola/todo/lib"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestTopicsIndex(t *testing.T) {
@@ -24,18 +23,28 @@ func TestTopicsIndex(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic1")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	_, err = createTopic("topic2")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1, t2 Topic
 	err = Db.SelectOne(&t1, "select * from topics where name=$1", "topic1")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	err = Db.SelectOne(&t2, "select * from topics where name=$1", "topic2")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	req, err := http.NewRequest("POST", "/", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	w := httptest.NewRecorder()
 	TopicsIndex(w, req)
 
@@ -43,8 +52,12 @@ func TestTopicsIndex(t *testing.T) {
 	s := string(str)
 	s1 := "<li class=\"selected\"><a href=\"/topics/%v\">topic1</a></li>"
 	s2 := "<li><a href=\"/topics/%v\">topic2</a></li>"
-	assert.True(t, strings.Contains(s, fmt.Sprintf(s1, t1.ID)))
-	assert.True(t, strings.Contains(s, fmt.Sprintf(s2, t2.ID)))
+	if !strings.Contains(s, fmt.Sprintf(s1, t1.ID)) {
+		t.Fatalf("S: %v; Should've containerd: %v", s, fmt.Sprintf(s1, t1.ID))
+	}
+	if !strings.Contains(s, fmt.Sprintf(s2, t2.ID)) {
+		t.Fatalf("S: %v; Should've containerd: %v", s, fmt.Sprintf(s2, t2.ID))
+	}
 }
 
 func TestTopicsIndexWithCookie(t *testing.T) {
@@ -52,18 +65,28 @@ func TestTopicsIndexWithCookie(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic1")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	_, err = createTopic("topic2")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1, t2 Topic
 	err = Db.SelectOne(&t1, "select * from topics where name=$1", "topic1")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	err = Db.SelectOne(&t2, "select * from topics where name=$1", "topic2")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	req, err := http.NewRequest("POST", "/", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	w := httptest.NewRecorder()
 	lib.SetCookie(w, req, "topic", t2.ID)
 	TopicsIndex(w, req)
@@ -72,8 +95,12 @@ func TestTopicsIndexWithCookie(t *testing.T) {
 	s := string(str)
 	s1 := "<li><a href=\"/topics/%v\">topic1</a></li>"
 	s2 := "<li class=\"selected\"><a href=\"/topics/%v\">topic2</a></li>"
-	assert.True(t, strings.Contains(s, fmt.Sprintf(s1, t1.ID)))
-	assert.True(t, strings.Contains(s, fmt.Sprintf(s2, t2.ID)))
+	if !strings.Contains(s, fmt.Sprintf(s1, t1.ID)) {
+		t.Fatalf("S: %v; Should've containerd: %v", s, fmt.Sprintf(s1, t1.ID))
+	}
+	if !strings.Contains(s, fmt.Sprintf(s2, t2.ID)) {
+		t.Fatalf("S: %v; Should've containerd: %v", s, fmt.Sprintf(s2, t2.ID))
+	}
 }
 
 func TestTopicsIndexJson(t *testing.T) {
@@ -81,18 +108,28 @@ func TestTopicsIndexJson(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic1")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	_, err = createTopic("topic2")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var topicsDb [2]Topic
 	err = Db.SelectOne(&topicsDb[0], "select * from topics where name=$1", "topic1")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	err = Db.SelectOne(&topicsDb[1], "select * from topics where name=$1", "topic2")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	req, err := http.NewRequest("POST", "/", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 	TopicsIndex(w, req)
@@ -100,11 +137,17 @@ func TestTopicsIndexJson(t *testing.T) {
 	var topics []Topic
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&topics)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	for i := 0; i < 2; i++ {
-		assert.Equal(t, topics[i].ID, topicsDb[i].ID)
-		assert.Equal(t, topics[i].Name, topicsDb[i].Name)
+		if topics[i].ID != topicsDb[i].ID {
+			t.Fatalf("Got %v, Expected: %v", topics[i].ID, topicsDb[i].ID)
+		}
+		if topics[i].Name != topicsDb[i].Name {
+			t.Fatalf("Got %v, Expected: %v", topics[i].Name, topicsDb[i].Name)
+		}
 	}
 }
 
@@ -116,20 +159,31 @@ func TestTopicsCreate(t *testing.T) {
 	param["name"] = []string{"user"}
 
 	req, err := http.NewRequest("POST", "/", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.PostForm = param
 	w := httptest.NewRecorder()
 	TopicsCreate(w, req)
 
 	var topic Topic
 	err = Db.SelectOne(&topic, "select * from topics")
-	assert.Nil(t, err)
-	assert.NotEmpty(t, topic.ID)
-	assert.Equal(t, topic.Name, "user")
-	assert.NotEmpty(t, topic.CreatedAt)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if topic.ID == "" {
+		t.Fatalf("Expected to not be empty")
+	}
+	if topic.Name != "user" {
+		t.Fatalf("Got %v, Expected: %v", topic.Name, "user")
+	}
 
-	assert.Equal(t, w.Code, 302)
-	assert.Equal(t, w.HeaderMap["Location"][0], "/topics/"+topic.ID)
+	if w.Code != 302 {
+		t.Fatalf("Got %v, Expected: %v", w.Code, 302)
+	}
+	if w.HeaderMap["Location"][0] != "/topics/"+topic.ID {
+		t.Fatalf("Got %v, Expected: %v", w.HeaderMap["Location"][0], "/topics/"+topic.ID)
+	}
 }
 
 func TestTopicsCreateNoName(t *testing.T) {
@@ -139,20 +193,32 @@ func TestTopicsCreateNoName(t *testing.T) {
 	param := make(url.Values)
 
 	req, err := http.NewRequest("POST", "/", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.PostForm = param
 	w := httptest.NewRecorder()
 	TopicsCreate(w, req)
 
-	assert.Equal(t, w.Code, 302)
-	assert.Equal(t, w.HeaderMap["Location"][0], "/topics")
+	if w.Code != 302 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 302)
+	}
+	if w.HeaderMap["Location"][0] != "/topics" {
+		t.Fatalf("Got %v; Expected: %v", w.HeaderMap["Location"][0], "/topics")
+	}
 
 	var topic Topic
 	err = Db.SelectOne(&topic, "select * from topics")
-	assert.Empty(t, topic.ID)
-	assert.NotNil(t, err)
+	if topic.ID != "" {
+		t.Fatalf("Should be empty")
+	}
+	if err == nil {
+		t.Fatalf("Expected to not be nil")
+	}
 	count, err := Db.SelectInt("select count(*) from users")
-	assert.Equal(t, count, 0)
+	if count != 0 {
+		t.Fatalf("Got %v; Expected: %v", count, 0)
+	}
 }
 
 func TestTopicsCreateJson(t *testing.T) {
@@ -163,7 +229,9 @@ func TestTopicsCreateJson(t *testing.T) {
 	body := "{\"name\":\"mssola\"}"
 	reader := strings.NewReader(body)
 	req, err := http.NewRequest("POST", "/topics", reader)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -174,18 +242,28 @@ func TestTopicsCreateJson(t *testing.T) {
 	var topic Topic
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&topic)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1 Topic
 	err = Db.SelectOne(&t1, "select * from topics")
-	assert.Nil(t, err)
-	assert.Equal(t, t1.ID, topic.ID)
-	assert.Equal(t, t1.Name, topic.Name)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if t1.ID != topic.ID {
+		t.Fatalf("Got %v; Expected: %v", t1.ID, topic.ID)
+	}
+	if t1.Name != topic.Name {
+		t.Fatalf("Got %v; Expected: %v", t1.Name, topic.Name)
+	}
 
 	// Now let's try it with the same name.
 	reader2 := strings.NewReader(body)
 	req, err = http.NewRequest("POST", "/topics", reader2)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w1 := httptest.NewRecorder()
 
@@ -196,8 +274,12 @@ func TestTopicsCreateJson(t *testing.T) {
 	var resp lib.Response
 	decoder = json.NewDecoder(w1.Body)
 	err = decoder.Decode(&resp)
-	assert.Nil(t, err)
-	assert.Equal(t, resp.Error, "Failed!")
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if resp.Error != "Failed!" {
+		t.Fatalf("Got %v; Expected: %v", resp.Error, "Failed!")
+	}
 }
 
 func TestTopicsCreateJsonMalformed(t *testing.T) {
@@ -208,7 +290,9 @@ func TestTopicsCreateJsonMalformed(t *testing.T) {
 	body := "{\"name\":\"mssola\""
 	reader := strings.NewReader(body)
 	req, err := http.NewRequest("POST", "/topics", reader)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -219,9 +303,15 @@ func TestTopicsCreateJsonMalformed(t *testing.T) {
 	var topic lib.Response
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&topic)
-	assert.Nil(t, err)
-	assert.Equal(t, topic.Error, "Failed!")
-	assert.Equal(t, w.Code, 404)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if topic.Error != "Failed!" {
+		t.Fatalf("Got %v; Expected: %v", topic.Error, "Failed!")
+	}
+	if w.Code != 404 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 404)
+	}
 }
 
 func TestTopicsShow(t *testing.T) {
@@ -229,18 +319,28 @@ func TestTopicsShow(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic1")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	_, err = createTopic("topic2")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var topicsDb [2]Topic
 	err = Db.SelectOne(&topicsDb[0], "select * from topics where name=$1", "topic1")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	err = Db.SelectOne(&topicsDb[1], "select * from topics where name=$1", "topic2")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	req, err := http.NewRequest("GET", "/topics/"+topicsDb[1].ID, nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
@@ -252,8 +352,12 @@ func TestTopicsShow(t *testing.T) {
 
 	s1 := "<li><a href=\"/topics/%v\">topic1</a></li>"
 	s2 := "<li class=\"selected\"><a href=\"/topics/%v\">topic2</a></li>"
-	assert.True(t, strings.Contains(s, fmt.Sprintf(s1, topicsDb[0].ID)))
-	assert.True(t, strings.Contains(s, fmt.Sprintf(s2, topicsDb[1].ID)))
+	if !strings.Contains(s, fmt.Sprintf(s1, topicsDb[0].ID)) {
+		t.Fatalf("S: %v; Should've containerd: %v", s, fmt.Sprintf(s1, topicsDb[0].ID))
+	}
+	if !strings.Contains(s, fmt.Sprintf(s2, topicsDb[1].ID)) {
+		t.Fatalf("S: %v; Should've containerd: %v", s, fmt.Sprintf(s2, topicsDb[1].ID))
+	}
 }
 
 func TestTopicsShowJson(t *testing.T) {
@@ -261,19 +365,29 @@ func TestTopicsShowJson(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic1")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	_, err = createTopic("topic2")
 	Db.Exec("update topics set contents=$1 where name=$2", "**co**", "topic2")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var topicsDb [2]Topic
 	err = Db.SelectOne(&topicsDb[0], "select * from topics where name=$1", "topic1")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	err = Db.SelectOne(&topicsDb[1], "select * from topics where name=$1", "topic2")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	req, err := http.NewRequest("GET", "/topics/"+topicsDb[1].ID, nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -284,17 +398,29 @@ func TestTopicsShowJson(t *testing.T) {
 	var topic Topic
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&topic)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
-	assert.Equal(t, topicsDb[1].ID, topic.ID)
-	assert.Equal(t, topicsDb[1].Name, topic.Name)
-	assert.Equal(t, topicsDb[1].Contents, topic.Contents)
+	if topicsDb[1].ID != topic.ID {
+		t.Fatalf("Got %v; Expected: %v", topicsDb[1].ID, topic.ID)
+	}
+	if topicsDb[1].Name != topic.Name {
+		t.Fatalf("Got %v; Expected: %v", topicsDb[1].Name, topic.Name)
+	}
+	if topicsDb[1].Contents != topic.Contents {
+		t.Fatalf("Got %v; Expected: %v", topicsDb[1].Contents, topic.Contents)
+	}
 	rendered := strings.TrimSpace(topic.Markdown)
-	assert.Equal(t, "<p><strong>co</strong></p>", rendered)
+	if "<p><strong>co</strong></p>" != rendered {
+		t.Fatalf("Got %v; Expected: %v", "<p><strong>co</strong></p>", rendered)
+	}
 
 	// A non-existant topic.
 	req, err = http.NewRequest("GET", "/topics/1", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w1 := httptest.NewRecorder()
 
@@ -303,10 +429,16 @@ func TestTopicsShowJson(t *testing.T) {
 	var response lib.Response
 	decoder = json.NewDecoder(w1.Body)
 	err = decoder.Decode(&response)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
-	assert.Equal(t, response.Error, "Failed!")
-	assert.Empty(t, response.Message)
+	if response.Error != "Failed!" {
+		t.Fatalf("Got %v; Expected: %v", response.Error, "Failed!")
+	}
+	if response.Message != "" {
+		t.Fatal("Should not be empty")
+	}
 }
 
 func TestTopicsShowJsonFail(t *testing.T) {
@@ -314,7 +446,9 @@ func TestTopicsShowJsonFail(t *testing.T) {
 	defer closeTestDB()
 
 	req, err := http.NewRequest("GET", "/topics/1", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -325,9 +459,15 @@ func TestTopicsShowJsonFail(t *testing.T) {
 	var resp lib.Response
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&resp)
-	assert.Nil(t, err)
-	assert.Equal(t, resp.Error, "Failed!")
-	assert.Equal(t, w.Code, 404)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if resp.Error != "Failed!" {
+		t.Fatalf("Got %v; Expected: %v", resp.Error, "Failed!")
+	}
+	if w.Code != 404 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 404)
+	}
 }
 
 func TestTopicsRename(t *testing.T) {
@@ -335,16 +475,22 @@ func TestTopicsRename(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1, t2 Topic
 	err = Db.SelectOne(&t1, "select * from topics")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	param := make(url.Values)
 
 	req, err := http.NewRequest("POST", "/topics/"+t1.ID, nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	param["name"] = []string{"topic1"}
 	req.PostForm = param
 	w := httptest.NewRecorder()
@@ -355,13 +501,23 @@ func TestTopicsRename(t *testing.T) {
 
 	// DB
 	err = Db.SelectOne(&t2, "select * from topics")
-	assert.Nil(t, err)
-	assert.Equal(t, t2.Name, "topic1")
-	assert.Equal(t, t1.ID, t2.ID)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if t2.Name != "topic1" {
+		t.Fatalf("Got %v; Expected: %v", t2.Name, "topic1")
+	}
+	if t1.ID != t2.ID {
+		t.Fatalf("Got %v; Expected: %v", t1.ID, t2.ID)
+	}
 
 	// HTTP
-	assert.Equal(t, w.Code, 302)
-	assert.Equal(t, w.HeaderMap["Location"][0], "/topics")
+	if w.Code != 302 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 302)
+	}
+	if w.HeaderMap["Location"][0] != "/topics" {
+		t.Fatalf("Got %v; Expected: %v", w.HeaderMap["Location"][0], "/topics")
+	}
 }
 
 func TestTopicsRenameJson(t *testing.T) {
@@ -369,15 +525,21 @@ func TestTopicsRenameJson(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1, t2 Topic
 	err = Db.SelectOne(&t1, "select * from topics")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	body := strings.NewReader("{\"name\":\"topic1\"}")
 	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, body)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -389,13 +551,25 @@ func TestTopicsRenameJson(t *testing.T) {
 	var resp Topic
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&resp)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	err = Db.SelectOne(&t2, "select * from topics")
-	assert.Nil(t, err)
-	assert.Equal(t, t2.Name, "topic1")
-	assert.Equal(t, t2.Name, resp.Name)
-	assert.Equal(t, t1.ID, t2.ID)
-	assert.Equal(t, t2.ID, resp.ID)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if t2.Name != "topic1" {
+		t.Fatalf("Got %v; Expected: %v", t2.Name, "topic1")
+	}
+	if t2.Name != resp.Name {
+		t.Fatalf("Got %v; Expected: %v", t2.Name, resp.Name)
+	}
+	if t1.ID != t2.ID {
+		t.Fatalf("Got %v; Expected: %v", t1.ID, t2.ID)
+	}
+	if t2.ID != resp.ID {
+		t.Fatalf("Got %v; Expected: %v", t2.ID, resp.ID)
+	}
 }
 
 func TestTopicsRenameJsonMalformed(t *testing.T) {
@@ -403,15 +577,21 @@ func TestTopicsRenameJsonMalformed(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1 Topic
 	err = Db.SelectOne(&t1, "select * from topics")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	body := strings.NewReader("{\"name\":\"topic1\"")
 	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, body)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -423,9 +603,15 @@ func TestTopicsRenameJsonMalformed(t *testing.T) {
 	var resp lib.Response
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&resp)
-	assert.Nil(t, err)
-	assert.Equal(t, resp.Error, "Failed!")
-	assert.Equal(t, w.Code, 404)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if resp.Error != "Failed!" {
+		t.Fatalf("Got %v; Expected: %v", resp.Error, "Failed!")
+	}
+	if w.Code != 404 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 404)
+	}
 }
 
 func TestTopicsRenameJsonFail(t *testing.T) {
@@ -433,17 +619,25 @@ func TestTopicsRenameJsonFail(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	_, err = createTopic("topic1")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1 Topic
 	err = Db.SelectOne(&t1, "select * from topics where name=$1", "topic")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	body := strings.NewReader("{\"name\":\"topic1\"}")
 	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, body)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -455,9 +649,15 @@ func TestTopicsRenameJsonFail(t *testing.T) {
 	var resp lib.Response
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&resp)
-	assert.Nil(t, err)
-	assert.Equal(t, resp.Error, "Failed!")
-	assert.Equal(t, w.Code, 404)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if resp.Error != "Failed!" {
+		t.Fatalf("Got %v; Expected: %v", resp.Error, "Failed!")
+	}
+	if w.Code != 404 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 404)
+	}
 }
 
 func TestUpdateContents(t *testing.T) {
@@ -465,16 +665,22 @@ func TestUpdateContents(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1, t2 Topic
 	err = Db.SelectOne(&t1, "select * from topics")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	param := make(url.Values)
 
 	req, err := http.NewRequest("POST", "/topics/"+t1.ID, nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	param["contents"] = []string{"**bold**"}
 	req.PostForm = param
 	w := httptest.NewRecorder()
@@ -485,15 +691,29 @@ func TestUpdateContents(t *testing.T) {
 
 	// DB
 	err = Db.SelectOne(&t2, "select * from topics")
-	assert.Nil(t, err)
-	assert.Equal(t, t1.Name, t2.Name)
-	assert.Equal(t, t1.ID, t2.ID)
-	assert.NotEqual(t, t1.Contents, t2.Contents)
-	assert.Equal(t, t2.Contents, "**bold**")
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if t1.Name != t2.Name {
+		t.Fatalf("Got %v; Expected: %v", t1.Name, t2.Name)
+	}
+	if t1.ID != t2.ID {
+		t.Fatalf("Got %v; Expected: %v", t1.ID, t2.ID)
+	}
+	if t1.Contents == t2.Contents {
+		t.Fatalf("%v -- %v;; should be different", t1.Contents, t2.Contents)
+	}
+	if t2.Contents != "**bold**" {
+		t.Fatalf("Got %v; Expected: %v", t2.Contents, "**bold**")
+	}
 
 	// HTTP
-	assert.Equal(t, w.Code, 302)
-	assert.Equal(t, w.HeaderMap["Location"][0], "/topics")
+	if w.Code != 302 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 302)
+	}
+	if w.HeaderMap["Location"][0] != "/topics" {
+		t.Fatalf("Got %v; Expected: %v", w.HeaderMap["Location"][0], "/topics")
+	}
 }
 
 func TestUpdateJson(t *testing.T) {
@@ -501,15 +721,21 @@ func TestUpdateJson(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1, t2 Topic
 	err = Db.SelectOne(&t1, "select * from topics")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	body := strings.NewReader("{\"contents\":\"**contents**\"}")
 	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, body)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -519,19 +745,33 @@ func TestUpdateJson(t *testing.T) {
 
 	// DB
 	err = Db.SelectOne(&t2, "select * from topics")
-	assert.Nil(t, err)
-	assert.Equal(t, t1.Name, t2.Name)
-	assert.Equal(t, t1.ID, t2.ID)
-	assert.NotEqual(t, t1.Contents, t2.Contents)
-	assert.Equal(t, t2.Contents, "**contents**")
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if t1.Name != t2.Name {
+		t.Fatalf("Got %v; Expected: %v", t1.Name, t2.Name)
+	}
+	if t1.ID != t2.ID {
+		t.Fatalf("Got %v; Expected: %v", t1.ID, t2.ID)
+	}
+	if t1.Contents == t2.Contents {
+		t.Fatalf("%v -- %v;; should be different", t1.Contents, t2.Contents)
+	}
+	if t2.Contents != "**contents**" {
+		t.Fatalf("Got %v; Expected: %v", t2.Contents, "**contents**")
+	}
 
 	// Response
 	var st Topic
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&st)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	rendered := strings.TrimSpace(st.Markdown)
-	assert.Equal(t, rendered, "<p><strong>contents</strong></p>")
+	if rendered != "<p><strong>contents</strong></p>" {
+		t.Fatalf("Got %v; Expected: %v", rendered, "<p><strong>contents</strong></p>")
+	}
 }
 
 func TestTopicsUpdateJsonMalformed(t *testing.T) {
@@ -539,15 +779,21 @@ func TestTopicsUpdateJsonMalformed(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1 Topic
 	err = Db.SelectOne(&t1, "select * from topics")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	body := strings.NewReader("{\"contents\":\"topic1\"")
 	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, body)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -559,9 +805,15 @@ func TestTopicsUpdateJsonMalformed(t *testing.T) {
 	var resp lib.Response
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&resp)
-	assert.Nil(t, err)
-	assert.Equal(t, resp.Error, "Failed!")
-	assert.Equal(t, w.Code, 404)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if resp.Error != "Failed!" {
+		t.Fatalf("Got %v; Expected: %v", resp.Error, "Failed!")
+	}
+	if w.Code != 404 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 404)
+	}
 }
 
 func TestTopicsUpdateNoBody(t *testing.T) {
@@ -569,14 +821,20 @@ func TestTopicsUpdateNoBody(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1 Topic
 	err = Db.SelectOne(&t1, "select * from topics")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -588,9 +846,15 @@ func TestTopicsUpdateNoBody(t *testing.T) {
 	var resp lib.Response
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&resp)
-	assert.Nil(t, err)
-	assert.Equal(t, resp.Error, "Failed!")
-	assert.Equal(t, w.Code, 404)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if resp.Error != "Failed!" {
+		t.Fatalf("Got %v; Expected: %v", resp.Error, "Failed!")
+	}
+	if w.Code != 404 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 404)
+	}
 }
 
 func TestTopicsUpdateNoValidParametersGiven(t *testing.T) {
@@ -598,15 +862,21 @@ func TestTopicsUpdateNoValidParametersGiven(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1 Topic
 	err = Db.SelectOne(&t1, "select * from topics")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	body := strings.NewReader("{\"something\":\"**contents**\"}")
 	req, err := http.NewRequest("PUT", "/topics/"+t1.ID, body)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -618,9 +888,15 @@ func TestTopicsUpdateNoValidParametersGiven(t *testing.T) {
 	var resp lib.Response
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&resp)
-	assert.Nil(t, err)
-	assert.Equal(t, resp.Error, "Failed!")
-	assert.Equal(t, w.Code, 404)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if resp.Error != "Failed!" {
+		t.Fatalf("Got %v; Expected: %v", resp.Error, "Failed!")
+	}
+	if w.Code != 404 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 404)
+	}
 }
 
 func TestDestroy(t *testing.T) {
@@ -628,14 +904,20 @@ func TestDestroy(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1 Topic
 	err = Db.SelectOne(&t1, "select * from topics")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	req, err := http.NewRequest("POST", "/topics/"+t1.ID+"/delete", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	w := httptest.NewRecorder()
 
 	m := mux.NewRouter()
@@ -644,12 +926,20 @@ func TestDestroy(t *testing.T) {
 
 	// DB
 	c, err := Db.SelectInt("select count(*) from topics")
-	assert.Nil(t, err)
-	assert.Equal(t, c, 0)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if c != 0 {
+		t.Fatalf("Got %v; Expected: %v", c, 0)
+	}
 
 	// HTTP
-	assert.Equal(t, w.Code, 302)
-	assert.Equal(t, w.HeaderMap["Location"][0], "/topics")
+	if w.Code != 302 {
+		t.Fatalf("Got %v; Expected: %v", w.Code, 302)
+	}
+	if w.HeaderMap["Location"][0] != "/topics" {
+		t.Fatalf("Got %v; Expected: %v", w.HeaderMap["Location"][0], "/topics")
+	}
 }
 
 func TestDestroyJson(t *testing.T) {
@@ -657,14 +947,20 @@ func TestDestroyJson(t *testing.T) {
 	defer closeTestDB()
 
 	_, err := createTopic("topic")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	var t1 Topic
 	err = Db.SelectOne(&t1, "select * from topics")
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 
 	req, err := http.NewRequest("DELETE", "/topics/"+t1.ID, nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -674,15 +970,23 @@ func TestDestroyJson(t *testing.T) {
 
 	// DB
 	c, err := Db.SelectInt("select count(*) from topics")
-	assert.Nil(t, err)
-	assert.Equal(t, c, 0)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if c != 0 {
+		t.Fatalf("Got %v; Expected: %v", c, 0)
+	}
 
 	// HTTP
 	var resp lib.Response
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&resp)
-	assert.Nil(t, err)
-	assert.Equal(t, resp.Message, "Ok")
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if resp.Message != "Ok" {
+		t.Fatalf("Got %v; Expected: %v", resp.Message, "Ok")
+	}
 }
 
 func TestDestroyJsonError(t *testing.T) {
@@ -691,7 +995,9 @@ func TestDestroyJsonError(t *testing.T) {
 
 	req, err := http.NewRequest("DELETE",
 		"/topics/7a0a771a-cc11-4079-59ba-81df690a0588", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -701,15 +1007,23 @@ func TestDestroyJsonError(t *testing.T) {
 
 	// DB
 	c, err := Db.SelectInt("select count(*) from topics")
-	assert.Nil(t, err)
-	assert.Equal(t, c, 0)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if c != 0 {
+		t.Fatalf("Got %v; Expected: %v", c, 0)
+	}
 
 	// HTTP
 	var resp lib.Response
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&resp)
-	assert.Nil(t, err)
-	assert.Equal(t, resp.Error, "Could not remove topic")
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if resp.Error != "Could not remove topic" {
+		t.Fatalf("Got %v; Expected: %v", resp.Error, "Could not remove topic")
+	}
 }
 
 func TestWrongUuidFormatApi(t *testing.T) {
@@ -717,7 +1031,9 @@ func TestWrongUuidFormatApi(t *testing.T) {
 	defer closeTestDB()
 
 	req, err := http.NewRequest("DELETE", "/topics/1", nil)
-	assert.Nil(t, err)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
 	req.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -727,13 +1043,21 @@ func TestWrongUuidFormatApi(t *testing.T) {
 
 	// DB
 	c, err := Db.SelectInt("select count(*) from topics")
-	assert.Nil(t, err)
-	assert.Equal(t, c, 0)
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if c != 0 {
+		t.Fatalf("Got %v; Expected: %v", c, 0)
+	}
 
 	// HTTP
 	var resp lib.Response
 	decoder := json.NewDecoder(w.Body)
 	err = decoder.Decode(&resp)
-	assert.Nil(t, err)
-	assert.Equal(t, resp.Error, "Could not remove topic")
+	if err != nil {
+		t.Fatalf("Expected to be nil: %v", err)
+	}
+	if resp.Error != "Could not remove topic" {
+		t.Fatalf("Got %v; Expected: %v", resp.Error, "Could not remove topic")
+	}
 }
