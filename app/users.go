@@ -29,6 +29,7 @@ func createUser(name, password string) error {
 	// Only one user is allowed in this application.
 	count, err := Db.SelectInt("select count(*) from users")
 	if err != nil || count > 0 {
+		log.Printf("Given error: %v", err)
 		return errors.New("Too many users!")
 	}
 
