@@ -1,4 +1,4 @@
-# ToDo [![Build Status](https://travis-ci.org/mssola/todo.svg?branch=master)](https://travis-ci.org/mssola/todo)
+# ToDo [![Build Status](https://travis-ci.org/mssola/todo.svg?branch=master)](https://travis-ci.org/mssola/todo) [![GoDoc](https://godoc.org/github.com/mssola/todo?status.png)](http://godoc.org/github.com/mssola/todo)
 
 ## About this application
 
