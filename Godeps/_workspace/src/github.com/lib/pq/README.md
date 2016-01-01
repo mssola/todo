@@ -37,10 +37,10 @@ Optionally, a benchmark suite can be run as part of the tests:
 * pq.ParseURL for converting urls to connection strings for sql.Open.
 * Many libpq compatible environment variables
 * Unix socket support
+* Notifications: `LISTEN`/`NOTIFY`
 
 ## Future / Things you can help with
 
-* Notifications: `LISTEN`/`NOTIFY` (see #156)
 * Better COPY FROM / COPY TO (see discussion in #181)
 
 ## Thank you (alphabetical)
@@ -50,25 +50,39 @@ code still exists in here.
 
 * Andy Balholm (andybalholm)
 * Ben Berkert (benburkert)
+* Benjamin Heatwole (bheatwole)
 * Bill Mill (llimllib)
 * Bjørn Madsen (aeons)
 * Blake Gentry (bgentry)
 * Brad Fitzpatrick (bradfitz)
+* Charlie Melbye (cmelbye)
+* Chris Bandy (cbandy)
+* Chris Gilling (cgilling)
 * Chris Walsh (cwds)
+* Dan Sosedoff (sosedoff)
 * Daniel Farina (fdr)
+* Eric Chlebek (echlebek)
+* Eric Garrido (minusnine)
+* Eric Urban (hydrogen18)
 * Everyone at The Go Team
 * Evan Shaw (edsrzf)
 * Ewan Chou (coocood)
 * Federico Romero (federomero)
+* Fumin (fumin)
 * Gary Burd (garyburd)
 * Heroku (heroku)
+* James Pozdena (jpoz)
 * Jason McVetta (jmcvetta)
 * Jeremy Jay (pbnjay)
 * Joakim Sernbrant (serbaut)
 * John Gallagher (jgallagher)
+* Jonathan Rudenberg (titanous)
+* Joël Stemmer (jstemmer)
 * Kamil Kisiel (kisielk)
 * Kelly Dunn (kellydunn)
 * Keith Rarick (kr)
+* Kir Shatrov (kirs)
+* Lann Martin (lann)
 * Maciek Sakrejda (deafbybeheading)
 * Marc Brinkmann (mbr)
 * Marko Tiikkaja (johto)
@@ -78,7 +92,12 @@ code still exists in here.
 * Mike Lewis (mikelikespie)
 * Nicolas Patry (Narsil)
 * Oliver Tonnhofer (olt)
+* Patrick Hayes (phayes)
 * Paul Hammond (paulhammond)
 * Ryan Smith (ryandotsmith)
 * Samuel Stauffer (samuel)
+* Timothée Peignier (cyberdelia)
+* Travis Cline (tmc)
+* TruongSinh Tran-Nguyen (truongsinh)
+* Yaismel Miranda (ympons)
 * notedit (notedit)

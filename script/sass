@@ -3,10 +3,19 @@
 # This file is licensed under the MIT license.
 # See the LICENSE file.
 
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cssdir="$dir/../public/stylesheets"
+
+# On deploy, execute once and exit.
+if [ "$TODO_DEPLOY" = "1" ]; then
+    set -e
+    sass --update "$cssdir"
+    exit 0
+fi
+
 # Launch a background job that deal with Sass.
 
 # Get pidfile.
-dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 todo="/tmp/todo"
 mkdir -p $todo
 pidfile="$todo/assets.pid"
@@ -26,7 +35,6 @@ if [[ $1 == "stop" ]]; then
 fi
 
 # SASS
-cssdir="$dir/../public/stylesheets"
 csslog="$todo/sass.log"
 sass --watch "$cssdir" > $csslog 2>&1 &
 echo $! >> $pidfile

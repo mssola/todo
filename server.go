@@ -8,7 +8,6 @@ import (
 	"fmt"
 
 	"github.com/codegangsta/negroni"
-	"github.com/mssola/go-utils/misc"
 	"github.com/mssola/todo/app"
 	"github.com/mssola/todo/lib"
 )
@@ -29,6 +28,6 @@ func main() {
 	n.UseHandler(r)
 
 	// Run, Forrest, run!
-	port := fmt.Sprintf(":%v", misc.EnvOrElse("PORT", "3000"))
+	port := fmt.Sprintf(":%v", app.EnvOrElse("PORT", "3000"))
 	n.Run(port)
 }

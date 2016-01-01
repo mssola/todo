@@ -1,59 +1,46 @@
 {
 	"ImportPath": "github.com/mssola/todo",
-	"GoVersion": "devel +26074a6 Sat Oct 10 11:37:11 2015 +0000",
+	"GoVersion": "devel",
 	"Deps": [
 		{
-			"ImportPath": "code.google.com/p/go.net/html",
-			"Comment": "null-134",
-			"Rev": "9c0f9daaa74be0f25ccc12718bcb6b5d17802654"
-		},
-		{
 			"ImportPath": "github.com/codegangsta/negroni",
-			"Rev": "c18469c22a9a334acf9b168b6e56375d83364d23"
+			"Comment": "v0.1-70-gc7477ad",
+			"Rev": "c7477ad8e330bef55bf1ebe300cf8aa67c492d1b"
 		},
 		{
 			"ImportPath": "github.com/coopernurse/gorp",
-			"Comment": "v1.5",
-			"Rev": "242be3eec6e4d545d0eca24b5dc71236b71ac656"
+			"Comment": "v1.7-1-g236e138",
+			"Rev": "236e1383df4c6b402e251d3fe2dcea50dab1faf1"
+		},
+		{
+			"ImportPath": "github.com/docker/distribution/uuid",
+			"Comment": "v2.2.0-39-gb66bb12",
+			"Rev": "b66bb1287c49c3ca6649447a968a7df7aa62cc68"
 		},
 		{
 			"ImportPath": "github.com/gorilla/context",
-			"Rev": "a08edd30ad9e104612741163dc087a613829a23c"
+			"Rev": "1c83b3eabd45b6d76072b66b746c20815fb2872d"
 		},
 		{
 			"ImportPath": "github.com/gorilla/mux",
-			"Rev": "136d54f81f00414c45c3c68dd47e98cc97519c5e"
+			"Rev": "ba336c9cfb43552c90de6cb2ceedd3271c747558"
 		},
 		{
 			"ImportPath": "github.com/gorilla/securecookie",
-			"Rev": "972f32923fd3555b7f0ea39acdc4e3d4d5412ee8"
+			"Rev": "e95799a481bbcc3d01c2ad5178524cb8bec9f370"
 		},
 		{
 			"ImportPath": "github.com/gorilla/sessions",
-			"Rev": "c9bf01c18818f7738e6b2670f1fd92f710ecb734"
+			"Rev": "f7261893ca3ea922c30eabe742c036d2c1de6e0a"
 		},
 		{
 			"ImportPath": "github.com/lib/pq",
-			"Rev": "fda846c284b1b2935e5f977da866408de90e2a10"
+			"Comment": "go1.0-cutoff-63-g11fc39a",
+			"Rev": "11fc39a580a008f1f39bb3d11d984fb34ed778d9"
 		},
 		{
 			"ImportPath": "github.com/microcosm-cc/bluemonday",
-			"Rev": "88042e4f846847061cda14afc081abe958946689"
-		},
-		{
-			"ImportPath": "github.com/mssola/go-utils/db",
-			"Comment": "v0.1-6-gaa2bb6c",
-			"Rev": "aa2bb6cd0360e34cb995f24a69e00861b6e50805"
-		},
-		{
-			"ImportPath": "github.com/mssola/go-utils/misc",
-			"Comment": "v0.1-6-gaa2bb6c",
-			"Rev": "aa2bb6cd0360e34cb995f24a69e00861b6e50805"
-		},
-		{
-			"ImportPath": "github.com/mssola/go-utils/path",
-			"Comment": "v0.1-6-gaa2bb6c",
-			"Rev": "aa2bb6cd0360e34cb995f24a69e00861b6e50805"
+			"Rev": "4ac6f27528d0a3f2a59e0b0a6f6b3ff0bb89fe20"
 		},
 		{
 			"ImportPath": "github.com/mssola/go-utils/security",
@@ -61,21 +48,25 @@
 			"Rev": "aa2bb6cd0360e34cb995f24a69e00861b6e50805"
 		},
 		{
-			"ImportPath": "github.com/nu7hatch/gouuid",
-			"Rev": "179d4d0c4d8d407a32af483c2354df1d2c91e6c3"
+			"ImportPath": "github.com/russross/blackfriday",
+			"Comment": "v1.3",
+			"Rev": "8cec3a854e68dba10faabbe31c089abf4a3e57a6"
 		},
 		{
-			"ImportPath": "github.com/russross/blackfriday",
-			"Comment": "v1.2-17-g05b8cef",
-			"Rev": "05b8cefd6a3cd87b81adb83479f5faadc0df2a67"
+			"ImportPath": "github.com/shurcooL/sanitized_anchor_name",
+			"Rev": "244f5ac324cb97e1987ef901a0081a77bfd8e845"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/bcrypt",
-			"Rev": "575fdbe86e5dd89229707ebec0575ce7d088a4a6"
+			"Rev": "f18420efc3b4f8e9f3d51f6bd2476e92c46260e9"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/blowfish",
-			"Rev": "575fdbe86e5dd89229707ebec0575ce7d088a4a6"
+			"Rev": "f18420efc3b4f8e9f3d51f6bd2476e92c46260e9"
+		},
+		{
+			"ImportPath": "golang.org/x/net/html",
+			"Rev": "28273ec927bee3bea305f112fc28ceee575ea893"
 		}
 	]
 }

@@ -10,8 +10,8 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/docker/distribution/uuid"
 	"github.com/mssola/go-utils/security"
-	"github.com/nu7hatch/gouuid"
 )
 
 // User contains a user in this application.
@@ -27,20 +27,15 @@ type User struct {
 // function.
 func createUser(name, password string) error {
 	// Only one user is allowed in this application.
-	count, err := Db.SelectInt("select count(*) from users")
-	if err != nil || count > 0 {
-		log.Printf("Given error: %v", err)
-		return errors.New("Too many users!")
+	if count, err := Db.SelectInt("select count(*) from users"); err != nil {
+		return err
+	} else if count > 0 {
+		return errors.New("too many users")
 	}
 
 	// Create the user and redirect.
-	uuid, _ := uuid.NewV4()
-	u := &User{
-		ID:           uuid.String(),
-		Name:         name,
-		PasswordHash: password,
-	}
-	return Db.Insert(u)
+	id := uuid.Generate().String()
+	return Db.Insert(&User{ID: id, Name: name, PasswordHash: password})
 }
 
 // Match the user with the given name and password and its id.

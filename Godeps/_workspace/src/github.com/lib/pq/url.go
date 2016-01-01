@@ -34,14 +34,15 @@ func ParseURL(url string) (string, error) {
 		return "", err
 	}
 
-	if u.Scheme != "postgres" {
+	if u.Scheme != "postgres" && u.Scheme != "postgresql" {
 		return "", fmt.Errorf("invalid connection protocol: %s", u.Scheme)
 	}
 
 	var kvs []string
+	escaper := strings.NewReplacer(` `, `\ `, `'`, `\'`, `\`, `\\`)
 	accrue := func(k, v string) {
 		if v != "" {
-			kvs = append(kvs, k+"="+v)
+			kvs = append(kvs, k+"="+escaper.Replace(v))
 		}
 	}
 

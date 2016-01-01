@@ -1,5 +1,5 @@
-db/database.json
 gin-bin
+todo
 public/stylesheets/*.css
 public/stylesheets/**/*.css
 public/stylesheets/**/*.css.map

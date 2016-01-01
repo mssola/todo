@@ -10,9 +10,9 @@ import (
 	"os"
 	"testing"
 
+	"github.com/docker/distribution/uuid"
 	"github.com/mssola/todo/app"
 	"github.com/mssola/todo/lib"
-	"github.com/nu7hatch/gouuid"
 )
 
 // Initialize the database before running an unit test.
@@ -52,13 +52,9 @@ func TestUserLogged(t *testing.T) {
 		t.Fatalf("Expected to be false: %v", val)
 	}
 
-	uuid, _ := uuid.NewV4()
-	u := &app.User{
-		ID:           uuid.String(),
-		Name:         "user",
-		PasswordHash: "1234",
-	}
+	u := &app.User{ID: uuid.Generate().String(), Name: "user", PasswordHash: "1234"}
 	app.Db.Insert(u)
+
 	var user app.User
 	if err := app.Db.SelectOne(&user, "select * from users"); err != nil {
 		t.Fatalf("Expected to be nil: %v", err)

@@ -9,10 +9,10 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/docker/distribution/uuid"
 	"github.com/gorilla/mux"
 	"github.com/microcosm-cc/bluemonday"
 	"github.com/mssola/todo/lib"
-	"github.com/nu7hatch/gouuid"
 	"github.com/russross/blackfriday"
 )
 
@@ -46,12 +46,8 @@ type TopicData struct {
 
 // Given a name, try to create a new topic.
 func createTopic(name string) (*Topic, error) {
-	uuid, _ := uuid.NewV4()
-	t := &Topic{
-		ID:        uuid.String(),
-		Name:      name,
-		CreatedAt: time.Now(),
-	}
+	id := uuid.Generate().String()
+	t := &Topic{ID: id, Name: name, CreatedAt: time.Now()}
 	return t, Db.Insert(t)
 }
 

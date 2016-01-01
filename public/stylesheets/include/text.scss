@@ -1,4 +1,6 @@
 
+@import "include/mixins";
+
 .text {
     @include box-sizing;
 

@@ -1,0 +1,18 @@
+web:
+  image: mssola/todo:latest
+  volumes:
+    - .:/go/src/github.com/mssola/todo
+  ports:
+    - 3000:3000
+  environment:
+    TODO_DB_NAME: todo-dev
+    TODO_DB_HOST: todo_db_1
+  links:
+    - db
+
+db:
+  image: library/postgres:9.4
+  volumes:
+    - ./db:/tmp/db
+  environment:
+    POSTGRES_DB: todo-dev
