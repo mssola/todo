@@ -99,17 +99,28 @@ after rendering the markdown of the `contents` column.
 
 This application uses the Go programming language and some awesome packages
 like negroni, gorilla/mux, blackfriday, etc. Moreover, it uses PostgreSQL
-for the database. You can install the dependencies manually and setup
-the db/database.json file by yourself, or you can just perform the
-following command:
+for the database. In order to configure the database, you can use the following
+environment variables:
 
-    $ ./script/kickstart
+- `TODO_DB_USER`, defaults to "postgres".
+- `TODO_DB_NAME`, defaults to "todo-dev".
+- `TODO_DB_PASSWORD`, defaults to "".
+- `TODO_DB_HOST`, defaults to "localhost".
+- `TODO_DB_SSLMODE`, defaults to "disable".
 
-It will ask for a few DB-related things: the user, the dbname and the password.
-After this, you can install this like any other Go program and run it:
+You might want to use the given **docker compose** setup as given in the
+`docker-compose.yml` file. Note that it will create two nodes: `web` and `db`.
+The `db` node uses the [official Postgres](https://hub.docker.com/_/postgres/)
+image. Make sure to understand how it works. The `db` node has to be
+initialized with the given command inside of the container:
 
-    $ go install
-    $ todo
+    $ psql -U postgres < /tmp/db/tables.sql
+
+There is also a `Dockerfile` providing an up-to-date image of the application
+(`mssola/todo:latest` on the Docker Hub). However, if you want to build this
+manually, you can type:
+
+    $ godep go build && ./todo
 
 ## License
 
