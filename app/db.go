@@ -21,9 +21,9 @@ import (
 //const maxConnectionTries = 10
 const maxConnectionTries = 5
 
-// Global instance that holds a connection to the DB. It gets initialized after
-// calling the InitDB function. You have to call CloseDB in order to close the
-// connection.
+// Db is a global instance that holds a connection to the DB. It gets
+// initialized after calling the InitDB function. You have to call CloseDB in
+// order to close the connection.
 var Db gorp.DbMap
 
 // EnvOrElse returns the value of the given environment variable. If this
