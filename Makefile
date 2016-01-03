@@ -16,13 +16,8 @@ lint:
 	@echo "+ $@"
 		@test -z "$$(golint ./... | grep -v Godeps/_workspace/src/ | tee /dev/stderr)"
 
-climate:
-	@echo "+ $@"
-		@(echo -n "lib: " && ./script/climate -o -a lib && \
-			echo -n "app: " && ./script/climate -o -a app)
-
 unit_test ::
 	@echo "+ godep go test"
 		@godep go test -v ./...
 
-checks :: vet fmt lint climate
+checks :: vet fmt lint

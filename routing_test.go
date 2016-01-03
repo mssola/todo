@@ -5,9 +5,9 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"net/http/httptest"
-	"os"
 	"testing"
 
 	"github.com/docker/distribution/uuid"
@@ -20,10 +20,11 @@ func initTestDB() {
 	lib.InitSession()
 	lib.ViewsDir = "../views"
 
-	_ = os.Setenv("TODO_ENV", "test")
 	app.InitDB()
 
-	_ = app.Db.TruncateTables()
+	if err := app.Db.TruncateTables(); err != nil {
+		log.Fatalf("Could not initialize DB: %v", err)
+	}
 }
 
 // Use this in the end of every unit test.

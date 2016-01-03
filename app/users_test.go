@@ -47,8 +47,8 @@ func TestCreateUser(t *testing.T) {
 	if err == nil {
 		t.Fatalf("Should be not nil")
 	}
-	if err.Error() != "Too many users!" {
-		t.Fatalf("Got %v; Expected: %v", err.Error(), "Too many users!")
+	if err.Error() != "too many users" {
+		t.Fatalf("Got %v; Expected: %v", err.Error(), "too many users")
 	}
 
 	closeTestDB()
