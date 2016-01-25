@@ -1,7 +1,7 @@
 FROM golang:1.5
 MAINTAINER Miquel Sabaté Solà <mikisabate@gmail.com>
 
-ADD . /go/src/github.com/mssola/todo
+COPY . /go/src/github.com/mssola/todo
 WORKDIR /go/src/github.com/mssola/todo
 
 RUN go get github.com/tools/godep && godep go build
