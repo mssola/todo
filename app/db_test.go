@@ -5,6 +5,7 @@
 package app
 
 import (
+	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
@@ -33,13 +34,15 @@ func closeTestDB() {
 }
 
 func TestConfigURL(t *testing.T) {
+	dbname := EnvOrElse("TODO_DB_NAME", "todo-dev")
+
 	str := configURL()
-	exp := "user=postgres host=localhost port=5432 dbname=todo-dev sslmode=disable"
+	exp := fmt.Sprintf("user=postgres host=localhost port=5432 dbname=%s sslmode=disable", dbname)
 	if str != exp {
 		t.Fatalf("Got: '%s'; Expected: '%s'", str, exp)
 	}
 
-	exp = "user=postgres host=localhost port=5432 dbname=todo-dev sslmode=disable password=1234"
+	exp = fmt.Sprintf("user=postgres host=localhost port=5432 dbname=%s sslmode=disable password=1234", dbname)
 	os.Setenv("TODO_DB_PASSWORD", "1234")
 	str = configURL()
 	os.Setenv("TODO_DB_PASSWORD", "")
