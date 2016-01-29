@@ -117,7 +117,7 @@ The `db` node uses the [official Postgres](https://hub.docker.com/_/postgres/)
 image. Make sure to understand how it works. The `db` node has to be
 initialized with the given command inside of the container:
 
-    $ psql -U postgres < /tmp/db/tables.sql
+    $ psql -U postgres <name-of-db> < /tmp/db/tables.sql
 
 There is also a `Dockerfile` providing an up-to-date image of the application
 (`mssola/todo:latest` on the Docker Hub). However, if you want to build this
@@ -141,7 +141,6 @@ file. You might want to use this file to run a customized version of
 web:
   image: mssola/todo:latest
   volumes:
-    - .:/go/src/github.com/mssola/todo
     - /path/to/certs:/path/to/certs
   ports:
     - 443:3000
