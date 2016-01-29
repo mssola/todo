@@ -108,6 +108,9 @@ environment variables:
 - `TODO_DB_HOST`, defaults to "localhost".
 - `TODO_DB_SSLMODE`, defaults to "disable".
 
+The port in which this application is listening into is set by the environment
+variable `TODO_PORT`. By default it runs on the port 3000.
+
 You might want to use the given **docker compose** setup as given in the
 `docker-compose.yml` file. Note that it will create two nodes: `web` and `db`.
 The `db` node uses the [official Postgres](https://hub.docker.com/_/postgres/)
@@ -121,6 +124,42 @@ There is also a `Dockerfile` providing an up-to-date image of the application
 manually, you can type:
 
     $ godep go build && ./todo
+
+### Secure connection
+
+Since you usually want to run this through a safe connection, this application
+also allows the deployer to set the following environment variables:
+
+- `TODO_KEY_PATH`: the path to your key file.
+- `TODO_CERT_PATH`: the path to the certificate file.
+
+Moreover, the `.gitignore` file ignores the `docker-compose.production.yml`
+file. You might want to use this file to run a customized version of
+`docker-compose.yml` file. An example could be:
+
+```yml
+web:
+  image: mssola/todo:latest
+  volumes:
+    - .:/go/src/github.com/mssola/todo
+    - /path/to/certs:/path/to/certs
+  ports:
+    - 443:3000
+  environment:
+    TODO_DB_NAME: todo-production
+    TODO_DB_HOST: todo_db_1
+    TODO_KEY_PATH: /path/to/certs/todo.key
+    TODO_CERT_PATH: /path/to/certs/todo.crt
+  links:
+    - db
+
+db:
+  image: library/postgres:9.4
+  volumes:
+    - ./db:/tmp/db
+  environment:
+    POSTGRES_DB: todo-production
+```
 
 ## License
 

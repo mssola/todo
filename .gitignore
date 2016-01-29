@@ -3,3 +3,4 @@ todo
 public/stylesheets/*.css
 public/stylesheets/**/*.css
 public/stylesheets/**/*.css.map
+docker-compose.production.yml
