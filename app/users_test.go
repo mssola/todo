@@ -15,6 +15,7 @@ import (
 
 func TestCreateUser(t *testing.T) {
 	initTestDB()
+	defer closeTestDB()
 
 	// There's nothing before.
 	var u User
@@ -50,12 +51,11 @@ func TestCreateUser(t *testing.T) {
 	if err.Error() != "too many users" {
 		t.Fatalf("Got %v; Expected: %v", err.Error(), "too many users")
 	}
-
-	closeTestDB()
 }
 
 func TestMatchPassword(t *testing.T) {
 	initTestDB()
+	defer closeTestDB()
 
 	// User does not exist.
 	u, err := matchPassword("u", "1234")
@@ -82,8 +82,6 @@ func TestMatchPassword(t *testing.T) {
 	if u == "" {
 		t.Fatalf("Expected to not be empty")
 	}
-
-	closeTestDB()
 }
 
 func TestUsersCreate(t *testing.T) {

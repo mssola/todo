@@ -5,6 +5,11 @@
 package lib
 
 import (
+	"html/template"
+	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -23,6 +28,33 @@ func TestView(t *testing.T) {
 	}
 }
 
+func TestRender(t *testing.T) {
+	wd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	if filepath.Base(wd) == "lib" {
+		wd = filepath.Dir(wd)
+	}
+
+	if err := os.Chdir(wd); err != nil {
+		t.Fatalf("Could not change directory")
+	}
+
+	w := httptest.NewRecorder()
+	Render(w, "topics/show", nil)
+
+	body := w.Body.String()
+	if !strings.HasPrefix(body, "<!DOCTYPE html>") {
+		t.Fatalf("Not an HTML document?")
+	}
+
+	if !strings.Contains(body, "<form action=\"/topics\" method=\"POST\"") {
+		t.Fatalf("There should be a POST /topics form")
+	}
+}
+
 func TestHelpers(t *testing.T) {
 	// fmtDate
 	date := viewHelpers()["fmtDate"].(func(time.Time) string)
@@ -35,5 +67,11 @@ func TestHelpers(t *testing.T) {
 	inc := viewHelpers()["inc"].(func(int) int)
 	if i := inc(0); i != 1 {
 		t.Fatalf("Wrong value %v, expected 1", i)
+	}
+
+	// noescape
+	noescape := viewHelpers()["noescape"].(func(string) template.HTML)
+	if html := noescape("<a>"); html != "<a>" {
+		t.Fatalf("Wrong value %v, expected <a>", html)
 	}
 }

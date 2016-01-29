@@ -18,8 +18,7 @@ import (
 
 // maxConnectionTries contains the number of connection attempts that this
 // application is going to make before panic'ing.
-//const maxConnectionTries = 10
-const maxConnectionTries = 5
+const maxConnectionTries = 10
 
 // Db is a global instance that holds a connection to the DB. It gets
 // initialized after calling the InitDB function. You have to call CloseDB in

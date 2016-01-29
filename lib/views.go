@@ -48,11 +48,12 @@ func view(name string) string {
 func Render(res http.ResponseWriter, name string, data interface{}) {
 	b, e := ioutil.ReadFile(view(layout))
 	if e != nil {
-		panic("Could not read layout file!")
+		log.Print("Could not read layout file")
+		return
 	}
 	t, e := template.New("l").Funcs(layoutHelpers(name, data)).Parse(string(b))
 	if e != nil {
-		panic("Could not parse layout file!")
+		panic("Could not parse layout file")
 	}
 	if err := t.Execute(res, data); err != nil {
 		log.Printf("Could not render template %v: %v", name, err)
@@ -68,14 +69,14 @@ func layoutHelpers(name string, data interface{}) template.FuncMap {
 
 			b, e := ioutil.ReadFile(view(name))
 			if e != nil {
-				r := fmt.Sprintf("Could not read: %v => %v", name, e)
-				panic(r)
+				log.Printf("Could not read: %v => %v", name, e)
+				return template.HTML("")
 			}
 			t := template.New(name).Funcs(viewHelpers())
 			t, e = t.Parse(string(b))
 			if e != nil {
-				r := fmt.Sprintf("Could not parse: %v => %v", name, e)
-				panic(r)
+				log.Printf("Could not parse: %v => %v", name, e)
+				return template.HTML("")
 			}
 			if err := t.Execute(&buffer, data); err != nil {
 				log.Printf("Could not yield template %v: %v", name, err)
@@ -103,9 +104,6 @@ func viewHelpers() template.FuncMap {
 		},
 		"noescape": func(str string) template.HTML {
 			return template.HTML(str)
-		},
-		"eqString": func(str1, str2 string) bool {
-			return str1 == str2
 		},
 	}
 }

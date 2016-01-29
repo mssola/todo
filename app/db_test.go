@@ -5,6 +5,8 @@
 package app
 
 import (
+	"io/ioutil"
+	"log"
 	"os"
 	"testing"
 
@@ -13,6 +15,8 @@ import (
 
 // Initialize the database before running an unit test.
 func initTestDB() {
+	log.SetOutput(ioutil.Discard)
+
 	lib.InitSession()
 	lib.ViewsDir = "../views"
 
@@ -26,6 +30,22 @@ func initTestDB() {
 func closeTestDB() {
 	_ = Db.TruncateTables()
 	CloseDB()
+}
+
+func TestConfigURL(t *testing.T) {
+	str := configURL()
+	exp := "user=postgres host=localhost port=5432 dbname=todo-dev sslmode=disable"
+	if str != exp {
+		t.Fatalf("Got: '%s'; Expected: '%s'", str, exp)
+	}
+
+	exp = "user=postgres host=localhost port=5432 dbname=todo-dev sslmode=disable password=1234"
+	os.Setenv("TODO_DB_PASSWORD", "1234")
+	str = configURL()
+	os.Setenv("TODO_DB_PASSWORD", "")
+	if str != exp {
+		t.Fatalf("Got: '%s'; Expected: '%s'", str, exp)
+	}
 }
 
 func TestExists(t *testing.T) {
