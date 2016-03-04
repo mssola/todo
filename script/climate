@@ -1,7 +1,9 @@
 #!/usr/bin/perl -w
-# Copyright (C) 2014-2015 Miquel Sabaté Solà
-# This file is licensed under the MIT license.
-# See the LICENSE file.
+# Copyright (C) 2014-2016 Miquel Sabaté Solà
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at http://mozilla.org/MPL/2.0/.
 
 # This script allows us to perform a check of the state of a Go package. In
 # order to do this, it checks the following options:
