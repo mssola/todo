@@ -55,7 +55,7 @@ func createTopic(name string) (*Topic, error) {
 
 // Sends the main page with the given topic rendered in it as
 // the current one.
-func renderShow(res http.ResponseWriter, topic *Topic) {
+func renderShow(res http.ResponseWriter, topic *Topic, print bool) {
 	var topics []Topic
 	_, err := Db.Select(&topics, "select * from topics order by name")
 	if err != nil {
@@ -69,6 +69,7 @@ func renderShow(res http.ResponseWriter, topic *Topic) {
 		Topics:  topics,
 	}
 	o.JS = "topics"
+	o.Print = print
 	lib.Render(res, "topics/show", o)
 }
 
@@ -90,7 +91,7 @@ func TopicsIndex(res http.ResponseWriter, req *http.Request) {
 	if err != nil {
 		log.Printf("Could not select topics: %v", err)
 	}
-	renderShow(res, &t)
+	renderShow(res, &t, false)
 }
 
 // TopicsCreate responds to: POST /topics
@@ -124,7 +125,8 @@ func TopicsShow(res http.ResponseWriter, req *http.Request) {
 	if t.ID != "" {
 		lib.SetCookie(res, req, "topic", t.ID)
 	}
-	renderShow(res, &t)
+	print := req.URL.Query().Get("print") == "1"
+	renderShow(res, &t, print)
 }
 
 // TopicsUpdate responds to: PUT/PATCH /posts/:id

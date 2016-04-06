@@ -97,18 +97,11 @@ $width: 130px;
     display: inline;
     position: absolute;
     top: 0px;
-    left: $width;
     bottom: 0;
     padding: 10px 30px;
     overflow: auto;
 
-    border-left: 1px solid #ddd;
-    box-shadow: 0 0 6px rgba(0,0,0,0.2);
     background-color: #fff;
-
-    width: calc(100% - 130px - 1px - 60px);
-    width: -moz-calc(100% - 130px - 1px - 60px);
-    width: -webkit-calc(100% - 130px - 1px - 60px);
 
     .header {
         h2 {
@@ -159,6 +152,23 @@ $width: 130px;
             }
         }
     }
+}
+
+#contents.noprint {
+    left: $width;
+
+    width: calc(100% - 130px - 1px - 60px);
+    width: -moz-calc(100% - 130px - 1px - 60px);
+    width: -webkit-calc(100% - 130px - 1px - 60px);
+    border-left: 1px solid #ddd;
+    box-shadow: 0 0 6px rgba(0,0,0,0.2);
+}
+
+#contents.print {
+    left: 0;
+    width: calc(100% - 1px - 60px);
+    width: -moz-calc(100% - 1px - 60px);
+    width: -webkit-calc(100% - 1px - 60px);
 }
 
 #rename-form {

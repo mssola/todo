@@ -38,6 +38,9 @@ type ViewData struct {
 
 	// The error message.
 	Error string
+
+	// Whether we are on print mode or not.
+	Print bool
 }
 
 // Returns the path to be used to open the view with the given name.
