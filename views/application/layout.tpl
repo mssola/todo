@@ -14,7 +14,11 @@
     {{end}}
 </head>
 <body>
+    {{if .Print}}
+    <article style="background-color: white">
+    {{else}}
     <article>
+    {{end}}
         {{ yield }}
     </article>
 </body>

@@ -169,6 +169,7 @@ $width: 130px;
     width: calc(100% - 1px - 60px);
     width: -moz-calc(100% - 1px - 60px);
     width: -webkit-calc(100% - 1px - 60px);
+    position: inherit;
 }
 
 #rename-form {
