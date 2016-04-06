@@ -5,7 +5,7 @@ test :: unit_test checks
 
 vet ::
 	@echo "+ $@"
-		@go vet ./...
+		@go list ./... | grep -v vendor | go vet
 
 fmt ::
 	@echo "+ $@"
