@@ -9,12 +9,12 @@ vet ::
 
 fmt ::
 	@echo "+ $@"
-		@test -z "$$(gofmt -s -l . | grep -v Godeps/_workspace/src/ | tee /dev/stderr)" || \
+		@test -z "$$(gofmt -s -l . | grep -v vendor | tee /dev/stderr)" || \
 			echo "+ please format Go code with 'gofmt -s'"
 
 lint ::
 	@echo "+ $@"
-		@test -z "$$(golint ./... | grep -v Godeps/_workspace/src/ | tee /dev/stderr)"
+		@test -z "$$(golint ./... | grep -v vendor | tee /dev/stderr)"
 
 climate ::
 	@echo "+ $@"
@@ -22,6 +22,6 @@ climate ::
 
 unit_test ::
 	@echo "+ $@"
-		@godep go test -v ./...
+		@go test -v ./...
 
 checks :: vet fmt lint climate

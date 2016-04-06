@@ -1,7 +1,6 @@
 language: go
 go:
-    - 1.4
-    - 1.5
+    - 1.6
     - tip
 matrix:
     allow_failures:
@@ -9,9 +8,7 @@ matrix:
 env:
     - TODO_DB_NAME=todo
 install:
-    - go get -u github.com/tools/godep
     - go get -u github.com/golang/lint/golint
-    - godep restore
 before_script:
     - psql -c 'create database todo;' -U postgres
     - psql -U postgres todo < db/tables.sql
