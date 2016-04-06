@@ -1,16 +1,18 @@
-FROM golang:1.6
+FROM golang:1.6-alpine
 MAINTAINER Miquel Sabaté Solà <mikisabate@gmail.com>
 
 COPY . /go/src/github.com/mssola/todo
 WORKDIR /go/src/github.com/mssola/todo
 
-RUN go build
-
-RUN apt-get update && apt-get install -y ruby && gem install sass --no-ri --no-rdoc
 ENV TODO_DEPLOY 1
-RUN ./script/sass
 
-RUN gem uninstall -x sass && apt-get remove -y ruby && apt-get clean && rm -rf /var/cache/apt
+RUN go build \
+  && apk --no-cache add --update -t deps ruby && gem install sass --no-ri --no-rdoc \
+  && apk --no-cache add --update bash openssl \
+  && ./script/sass \
+  && rm -r public/stylesheets/*.scss; rm -r public/stylesheets/include \
+  && rm -r app lib vendor Godeps script \
+  && apk del --purge deps; rm -rf /tmp/* /var/cache/apk/*
 
-ENTRYPOINT ./todo
+ENTRYPOINT ["./todo"]
 EXPOSE 3000
