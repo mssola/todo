@@ -1,42 +1,50 @@
 {
 	"ImportPath": "github.com/mssola/todo",
-	"GoVersion": "devel",
+	"GoVersion": "go1.6",
+	"Packages": [
+		"./..."
+	],
 	"Deps": [
 		{
 			"ImportPath": "github.com/codegangsta/negroni",
-			"Comment": "v0.1-70-gc7477ad",
+			"Comment": "v0.1-70-gc7477ad8e330",
 			"Rev": "c7477ad8e330bef55bf1ebe300cf8aa67c492d1b"
 		},
 		{
 			"ImportPath": "github.com/coopernurse/gorp",
-			"Comment": "v1.7-1-g236e138",
-			"Rev": "236e1383df4c6b402e251d3fe2dcea50dab1faf1"
+			"Comment": "1.2-90-g9cd2b5ef5b82",
+			"Rev": "9cd2b5ef5b82fde4e7c51776ac3f94398b8af076"
 		},
 		{
 			"ImportPath": "github.com/docker/distribution/uuid",
-			"Comment": "v2.2.0-39-gb66bb12",
-			"Rev": "b66bb1287c49c3ca6649447a968a7df7aa62cc68"
+			"Comment": "v2.3.0-rc.2-168-g971b6c48b9bd",
+			"Rev": "971b6c48b9bd8039ae72060914ce3c2ee320ad1b"
 		},
 		{
 			"ImportPath": "github.com/gorilla/context",
-			"Rev": "1c83b3eabd45b6d76072b66b746c20815fb2872d"
+			"Rev": "14f550f51af52180c2eefed15e5fd18d63c0a64a"
 		},
 		{
 			"ImportPath": "github.com/gorilla/mux",
-			"Rev": "ba336c9cfb43552c90de6cb2ceedd3271c747558"
+			"Rev": "e444e69cbd2e2e3e0749a2f3c717cec491552bbf"
 		},
 		{
 			"ImportPath": "github.com/gorilla/securecookie",
-			"Rev": "e95799a481bbcc3d01c2ad5178524cb8bec9f370"
+			"Rev": "8dacca26977607e637262eb66b15b7d39f2d3009"
 		},
 		{
 			"ImportPath": "github.com/gorilla/sessions",
-			"Rev": "f7261893ca3ea922c30eabe742c036d2c1de6e0a"
+			"Rev": "8cd570d8b4ed84b18bca9d8c3ae2db55885ccd8b"
 		},
 		{
 			"ImportPath": "github.com/lib/pq",
-			"Comment": "go1.0-cutoff-63-g11fc39a",
-			"Rev": "11fc39a580a008f1f39bb3d11d984fb34ed778d9"
+			"Comment": "go1.0-cutoff-84-g3cd0097429be",
+			"Rev": "3cd0097429be7d611bb644ef85b42bfb102ceea4"
+		},
+		{
+			"ImportPath": "github.com/lib/pq/oid",
+			"Comment": "go1.0-cutoff-84-g3cd0097429be",
+			"Rev": "3cd0097429be7d611bb644ef85b42bfb102ceea4"
 		},
 		{
 			"ImportPath": "github.com/microcosm-cc/bluemonday",
@@ -44,12 +52,12 @@
 		},
 		{
 			"ImportPath": "github.com/mssola/go-utils/security",
-			"Comment": "v0.1-6-gaa2bb6c",
-			"Rev": "aa2bb6cd0360e34cb995f24a69e00861b6e50805"
+			"Comment": "v0.1-8-gf5edb8592831",
+			"Rev": "f5edb8592831884df3c4666e10eb951927fb38de"
 		},
 		{
 			"ImportPath": "github.com/russross/blackfriday",
-			"Comment": "v1.3",
+			"Comment": "v1.2-80-g8cec3a854e68",
 			"Rev": "8cec3a854e68dba10faabbe31c089abf4a3e57a6"
 		},
 		{
@@ -58,15 +66,19 @@
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/bcrypt",
-			"Rev": "f18420efc3b4f8e9f3d51f6bd2476e92c46260e9"
+			"Rev": "c10c31b5e94b6f7a0283272dc2bb27163dcea24b"
 		},
 		{
 			"ImportPath": "golang.org/x/crypto/blowfish",
-			"Rev": "f18420efc3b4f8e9f3d51f6bd2476e92c46260e9"
+			"Rev": "c10c31b5e94b6f7a0283272dc2bb27163dcea24b"
 		},
 		{
 			"ImportPath": "golang.org/x/net/html",
-			"Rev": "28273ec927bee3bea305f112fc28ceee575ea893"
+			"Rev": "1dfe7915deaf3f80b962c163b918868d8a6d8974"
+		},
+		{
+			"ImportPath": "golang.org/x/net/html/atom",
+			"Rev": "1dfe7915deaf3f80b962c163b918868d8a6d8974"
 		}
 	]
 }
