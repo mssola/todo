@@ -6,7 +6,6 @@
  */
 $padding-left: 16px;
 
-
 /*
  * There can only be Markdown code inside this class.
  */
@@ -14,7 +13,6 @@ $padding-left: 16px;
     color: #333;
     font-size: 16px;
     font-style: normal;
-    width: 800px;
 
     h1, h2, h3 {
         @include box-sizing;
@@ -112,3 +110,10 @@ $padding-left: 16px;
     }
 }
 
+#contents .contents-body.print {
+    width: 100%;
+}
+
+#contents .contents-body.noprint {
+    width: 800px;
+}

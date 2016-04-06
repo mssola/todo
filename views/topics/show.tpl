@@ -67,7 +67,11 @@
     </div>
 
     <div id="edit-body" class="body">
-        <div class="contents-body">
+        {{if .Print}}
+        <div class="contents-body print">
+        {{else}}
+        <div class="contents-body noprint">
+        {{end}}
             {{noescape $c.Markdown}}
         </div>
 
