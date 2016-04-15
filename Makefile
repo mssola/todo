@@ -22,6 +22,6 @@ climate ::
 
 unit_test ::
 	@echo "+ $@"
-		@go test -v ./...
+		@go list ./... | grep -v vendor | xargs go test -v
 
 checks :: vet fmt lint climate

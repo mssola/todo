@@ -22,8 +22,8 @@ const (
 	// The name of the session to be used for the safe cookies.
 	sessionName = "todo"
 
-	// Max-Age of a whole year.
-	maxAge = 60 * 60 * 24 * 30 * 12
+	// Only the current session.
+	maxAge = 0
 )
 
 // InitSession initializes the global cookie store.
