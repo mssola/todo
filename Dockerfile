@@ -6,7 +6,7 @@ WORKDIR /go/src/github.com/mssola/todo
 
 ENV TODO_DEPLOY 1
 
-RUN go build \
+RUN go build -ldflags="-s -w" \
   && apk --no-cache add --update -t deps ruby && gem install sass --no-ri --no-rdoc \
   && apk --no-cache add --update bash openssl \
   && ./script/sass \
