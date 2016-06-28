@@ -29,6 +29,8 @@
             </form>
         </li>
     </ul>
+    <p></p>
+    <a id="license-link" href="/license" title="This is free software. Click this link for more information">Source code &amp; license</a>
 </div>
 {{end}}
 

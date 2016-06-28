@@ -44,6 +44,10 @@ func notFound(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+func license(w http.ResponseWriter, req *http.Request) {
+	lib.Render(w, "application/license", &lib.ViewData{})
+}
+
 // Handles the routing for this application. Returns a mux.Router with all our
 // routes setup. This handles both the regular web page and the JSON API is.
 // The endpoints open for the API are:
@@ -59,6 +63,7 @@ func route() *mux.Router {
 	// The routing itself.
 	r.HandleFunc("/", app.RootIndex).Methods("GET").
 		MatcherFunc(private)
+	r.HandleFunc("/license", license).Methods("GET")
 	r.HandleFunc("/login", app.Login).Methods("POST")
 	r.HandleFunc("/logout", app.Logout).Methods("POST").
 		MatcherFunc(userLogged).MatcherFunc(private)

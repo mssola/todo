@@ -40,9 +40,16 @@
         }
     }
 
-    .btn {
-        float: right;
-        margin-top: 5px;
+    .foot {
+      width: 100%;
+      padding-top: 5px;
+
+      .container {
+        display: inline-block;
+        padding: .4em .75em .35em;
+      }
+
+      .btn { float: right; }
     }
 }
 

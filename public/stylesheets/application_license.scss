@@ -1,0 +1,18 @@
+
+@import "include/base";
+
+$width: 650px;
+
+body {
+  background-color: #f7f7f7;
+}
+
+#contents {
+  width: $width;
+  margin: 0 auto;
+  padding: 40px 20px;
+
+  h1 {
+    color: #515151;
+  }
+}
