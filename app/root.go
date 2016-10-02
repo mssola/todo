@@ -24,9 +24,9 @@ func RootIndex(res http.ResponseWriter, req *http.Request) {
 	if id == nil {
 		count := Count("users")
 		if count == 0 {
-			lib.Render(res, "users/new", &lib.ViewData{})
+			lib.Render(res, "users/new", lib.DefaultViewData())
 		} else {
-			lib.Render(res, "application/login", &lib.ViewData{})
+			lib.Render(res, "application/login", lib.DefaultViewData())
 		}
 	} else {
 		http.Redirect(res, req, "/topics", http.StatusFound)

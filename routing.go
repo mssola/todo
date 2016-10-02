@@ -45,7 +45,7 @@ func notFound(w http.ResponseWriter, req *http.Request) {
 }
 
 func license(w http.ResponseWriter, req *http.Request) {
-	lib.Render(w, "application/license", &lib.ViewData{})
+	lib.Render(w, "application/license", lib.DefaultViewData())
 }
 
 // Handles the routing for this application. Returns a mux.Router with all our
