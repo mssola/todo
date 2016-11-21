@@ -13,7 +13,6 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"path"
 	"strings"
 	"time"
@@ -42,16 +41,12 @@ type ViewData struct {
 
 	// Whether we are on print mode or not.
 	Print bool
-
-	// The prefix for assets (e.g. if your application is not at the root of
-	// your web server)
-	Prefix string
 }
 
 // DefaultViewData returns a ViewData object with the assets prefix set as
 // expected.
 func DefaultViewData() *ViewData {
-	return &ViewData{Prefix: os.Getenv("TODO_ASSET_PREFIX")}
+	return &ViewData{}
 }
 
 // Returns the path to be used to open the view with the given name.

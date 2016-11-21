@@ -9,7 +9,6 @@ package app
 import (
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/docker/distribution/uuid"
@@ -71,7 +70,6 @@ func renderShow(res http.ResponseWriter, topic *Topic, print bool) {
 	}
 	o.JS = "topics"
 	o.Print = print
-	o.Prefix = os.Getenv("TODO_ASSET_PREFIX")
 	lib.Render(res, "topics/show", o)
 }
 

@@ -8,29 +8,29 @@
     <ul>
         {{range .Topics}}
             {{if eq .ID $c.ID}}
-                <li class="selected"><a href="{{ .Prefix }}/topics/{{.ID}}">{{.Name}}</a></li>
+                <li class="selected"><a href="/topics/{{.ID}}">{{.Name}}</a></li>
             {{else}}
-                <li><a href="{{ .Prefix }}/topics/{{.ID}}">{{.Name}}</a></li>
+                <li><a href="/topics/{{.ID}}">{{.Name}}</a></li>
             {{end}}
         {{end}}
 
         <li class="create">
             <button id="create-button" class="btn grey-btn">create</button>
 
-            <form action="{{ .Prefix }}/topics" method="POST" autocomplete="off" accept-charset="utf-8">
+            <form action="/topics" method="POST" autocomplete="off" accept-charset="utf-8">
                 <input class="tiny-text" type="text" name="name" value="" autocomplete="off" tabindex="1" placeholder="name" required />
                 <input class="btn grey-btn" type="submit" value="create" />
             </form>
         </li>
 
         <li class="logout">
-            <form action="{{ .Prefix }}/logout" method="POST">
+            <form action="/logout" method="POST">
                 <input class="btn grey-btn" type="submit" value="logout" />
             </form>
         </li>
     </ul>
     <p></p>
-    <a id="license-link" href="{{ .Prefix }}/license" title="This is free software. Click this link for more information">Source code &amp; license</a>
+    <a id="license-link" href="/license" title="This is free software. Click this link for more information">Source code &amp; license</a>
 </div>
 {{end}}
 
@@ -49,7 +49,7 @@
                 <li><a href="#" id="rename" title="Rename this topic">rename</a></li>
                 <li><a href="#" id="edit" title="Edit the contents of this topic">edit</a></li>
                 <li><a href="#" id="delete" title="Delete this topic">delete</a></li>
-                <li><a href="{{ .Prefix }}/topics/{{$c.ID}}?print=1" title="Print this topic">print</a></li>
+                <li><a href="/topics/{{$c.ID}}?print=1" title="Print this topic">print</a></li>
                 <li id="confirmation" class="confirmation">
                   <span>are you sure?
                     <a href="#" id="delete-yes" class="yes">yes</a> /
@@ -58,10 +58,10 @@
                 </li>
             </ul>
 
-            <form action="{{ .Prefix }}/topics/{{.Current.ID}}/delete" id="delete-form" class="delete-form" method="POST">
+            <form action="/topics/{{.Current.ID}}/delete" id="delete-form" class="delete-form" method="POST">
             </form>
 
-            <form action="{{ .Prefix }}/topics/{{.Current.ID}}" id="rename-form" method="POST" autocomplete="off" accept-charset="utf-8">
+            <form action="/topics/{{.Current.ID}}" id="rename-form" method="POST" autocomplete="off" accept-charset="utf-8">
                 <input class="tiny-text" type="text" name="name" value="" autocomplete="off" tabindex="1" placeholder="name" required />
                 <input class="btn grey-btn" type="submit" value="rename" />
             </form>
@@ -79,7 +79,7 @@
 
         {{if not .Print}}
             <div class="contents-edit">
-                <form action="{{ .Prefix }}/topics/{{.Current.ID}}" method="POST" autocomplete="off" accept-charset="utf-8">
+                <form action="/topics/{{.Current.ID}}" method="POST" autocomplete="off" accept-charset="utf-8">
                     <textarea name="contents" autocomplete="off" spellcheck="off">{{.Current.Contents}}</textarea>
                     <div class="buttons">
                         <input class="btn green-btn" type="submit" value="update" />
