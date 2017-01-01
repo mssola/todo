@@ -15,7 +15,7 @@ can be found <a href="https://github.com/mssola/td" title="Source code of the td
 <h1>License</h1>
 
 <p>
-Copyright &copy; 2014-2016 Miquel Sabaté Solà &lt;mikisabate@gmail.com&gt;
+Copyright &copy; 2014-2017 Miquel Sabaté Solà &lt;mikisabate@gmail.com&gt;
 </p>
 
 <p>

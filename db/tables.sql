@@ -1,4 +1,4 @@
--- Copyright (C) 2014-2016 Miquel Sabaté Solà
+-- Copyright (C) 2014-2017 Miquel Sabaté Solà
 -- This file is licensed under the MIT license.
 -- See the LICENSE file.
 
